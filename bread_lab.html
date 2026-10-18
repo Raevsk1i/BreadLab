@@ -426,7 +426,7 @@
     .catalog-card .specialty {
       margin: 0;
       font-size: 0.88rem;
-      color: var(--text-soft);
+      color: var(--text-muted);
       line-height: 1.45;
       flex: 1;
     }
@@ -482,6 +482,82 @@
       padding: 0.2rem 0.65rem;
     }
 
+    .nav-menu { display: contents; }
+    .nav-menu > summary { display: none; }
+    @media (max-width: 639px) {
+      .nav-menu {
+        display: block;
+        width: 100%;
+        order: 3;
+      }
+      .nav-menu > summary {
+        display: flex;
+        align-items: center;
+        min-height: 44px;
+        font-weight: 600;
+        color: var(--primary);
+        cursor: pointer;
+        list-style: none;
+      }
+      .nav-menu > summary::-webkit-details-marker { display: none; }
+      .nav-menu:not([open]) .nav { display: none; }
+      .nav { flex-direction: column; align-items: flex-start; width: 100%; }
+    }
+
+    #flour-minus, #flour-plus,
+    #cook-prev, #cook-next, #cook-reset-all,
+    #timer-start, #timer-pause, #timer-reset {
+      min-height: 44px;
+    }
+
+    .cook-actions {
+      position: sticky;
+      bottom: 0;
+      z-index: 2;
+      display: flex;
+      gap: 0.5rem;
+      margin-top: 1rem;
+      flex-wrap: wrap;
+      padding: 0.75rem 0;
+      background: var(--bg);
+      border-top: 1px solid var(--border);
+    }
+
+    .shopping-panel { margin-top: 0.85rem; }
+    .shopping-row {
+      display: flex;
+      gap: 0.6rem;
+      align-items: flex-start;
+      padding: 0.35rem 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .resume-bar {
+      background: var(--green-bg);
+      border-bottom: 1px solid var(--green-border);
+      padding: 0.65rem 1rem;
+    }
+    .resume-bar-inner {
+      max-width: var(--max);
+      margin: 0 auto;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem 0.75rem;
+      align-items: center;
+    }
+
+    .shortcut-row { margin: 0.35rem 0 0.75rem; }
+    .shortcut-row .label {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      margin-right: 0.35rem;
+    }
+
+    body.large-steps #steps-list,
+    body.large-steps .cook-step {
+      font-size: 1rem;
+    }
+
     .chip[role="tab"], .tab[role="tab"] { cursor: pointer; }
     .chip[aria-selected="true"], .tab[aria-selected="true"] { /* active already styled */ }
 
@@ -532,17 +608,22 @@
     Автосохранение недоступно в этом браузере. Для резервной копии используйте «Экспорт JSON».
   </div>
 
+  <div id="resume-cook" class="resume-bar hidden" role="status"></div>
+
   <header class="app-header">
     <div class="app-header-inner">
       <a class="brand" href="#hero"><span class="brand-emoji" aria-hidden="true">🍞</span> BreadLab</a>
-      <nav class="nav" aria-label="Основная навигация">
-        <a href="#pantry">Ингредиенты</a>
-        <a href="#catalog">Виды хлеба</a>
-        <a href="#search-results">Рецепты</a>
-        <a href="#recipe-workspace">Калькулятор</a>
-        <a href="#cook-mode-anchor">Готовим</a>
-        <a href="#sources">Справка</a>
-      </nav>
+      <details class="nav-menu" id="nav-menu">
+        <summary>Меню</summary>
+        <nav class="nav" aria-label="Основная навигация">
+          <a href="#pantry">Ингредиенты</a>
+          <a href="#catalog">Виды хлеба</a>
+          <a href="#search-results">Рецепты</a>
+          <a href="#recipe-workspace">Калькулятор</a>
+          <a href="#cook-mode-anchor">Готовим</a>
+          <a href="#sources">Справка</a>
+        </nav>
+      </details>
       <div class="header-actions no-print">
         <button type="button" class="btn btn-secondary" id="btn-export" title="Экспорт данных">Экспорт</button>
         <button type="button" class="btn btn-secondary" id="btn-import" title="Импорт JSON">Импорт</button>
@@ -616,6 +697,18 @@
             <input type="search" id="catalog-search" class="input" placeholder="Например: бородинский, дарницкий, сырный…" autocomplete="off">
           </div>
           <div class="chips" id="catalog-cats" role="tablist" aria-label="Категории хлеба"></div>
+          <div class="chips" id="catalog-diff" role="group" aria-label="Сложность" style="margin-top:0.5rem"></div>
+          <div style="display:flex;flex-wrap:wrap;gap:0.75rem;margin-top:0.65rem">
+            <label class="check-row" style="max-width:280px">
+              <input type="checkbox" id="flt-fav">
+              <span><span class="name">Только избранное</span></span>
+            </label>
+            <label class="check-row" style="max-width:320px">
+              <input type="checkbox" id="flt-bake">
+              <span><span class="name">Можно испечь из того, что есть</span></span>
+            </label>
+          </div>
+          <div id="catalog-shortcuts"></div>
           <p class="stat-line" id="catalog-stat" aria-live="polite" style="margin:0.75rem 0 0">Показано: 0</p>
           <div id="catalog-grid" class="grid-2" style="margin-top:1rem" role="list"></div>
         </div>
@@ -678,6 +771,7 @@
             <button type="button" class="btn btn-primary" id="btn-shopping">Скопировать, чего не хватает</button>
           </div>
         </div>
+        <div id="shopping-panel" class="shopping-panel"></div>
         <div class="table-wrap desktop-table">
           <table class="ing-table">
             <thead>
@@ -754,6 +848,21 @@
           <li>Индикаторы: 🟢 проверенная адаптация · 🟡 расчётная оценка · 🟠 экспериментальная добавка.</li>
         </ul>
       </div>
+      <div class="card" id="settings" style="margin-top:1rem">
+        <h3 style="font-size:1.05rem">Настройки</h3>
+        <div class="field" style="margin-bottom:0.75rem">
+          <label for="set-machine">Машина по умолчанию в каталоге</label>
+          <select id="set-machine" class="input">
+            <option value="panasonic_sd_yr2540hts">Panasonic SD-YR2540HTS</option>
+            <option value="redmond_rmc_m92s">REDMOND SkyCooker RMC-M92S</option>
+          </select>
+        </div>
+        <p style="font-size:0.85rem;color:var(--text-muted)">Количество муки запоминается, пока вы не откроете другой рецепт.</p>
+        <label class="check-row" style="max-width:360px">
+          <input type="checkbox" id="set-large">
+          <span><span class="name">Крупный текст шагов</span></span>
+        </label>
+      </div>
     </section>
 
     <div id="debug-panel" class="hidden" aria-live="polite"></div>
@@ -787,7 +896,7 @@
       </div>
 
       <div id="cook-steps"></div>
-      <div style="display:flex;gap:0.5rem;margin-top:1rem;flex-wrap:wrap">
+      <div class="cook-actions" id="cook-actions">
         <button type="button" class="btn btn-secondary" id="cook-prev">← Назад</button>
         <button type="button" class="btn btn-primary" id="cook-next">Готово →</button>
         <button type="button" class="btn btn-ghost" id="cook-reset-all">Сбросить процесс</button>
@@ -3472,6 +3581,14 @@
     pantryQuery: "",
     catalogCategory: "all",
     catalogQuery: "",
+    catalogDifficulty: "all",
+    catalogFavoritesOnly: false,
+    catalogCanBake: false,
+    addinsByRecipe: {},
+    cookSession: null,
+    defaultMachineId: "panasonic_sd_yr2540hts",
+    largeSteps: false,
+    searchRan: false,
     results: [],
     resultsTab: "panasonic",
     selectedRecipeId: null,
@@ -3541,8 +3658,9 @@
 
   var _persistFailNotified = false;
 
-  function persist() {
-    var ok = StorageAdapter.save({
+  function persistPayload() {
+    pruneChecklist();
+    return {
       pantry: state.pantry,
       staplesOn: state.staplesOn,
       nearMatchOn: state.nearMatchOn,
@@ -3550,11 +3668,22 @@
       recent: state.recent,
       calibrations: state.calibrations,
       enabledTasteAddins: state.enabledTasteAddins,
+      addinsByRecipe: state.addinsByRecipe,
+      cookSession: state.cookSession,
+      defaultMachineId: state.defaultMachineId,
+      largeSteps: state.largeSteps,
+      catalogDifficulty: state.catalogDifficulty,
+      catalogFavoritesOnly: state.catalogFavoritesOnly,
+      catalogCanBake: state.catalogCanBake,
       selectedRecipeId: state.selectedRecipeId,
       selectedMachineId: state.selectedMachineId,
       targetFlourG: state.targetFlourG,
       checklist: state.checklist
-    });
+    };
+  }
+
+  function persist() {
+    var ok = StorageAdapter.save(persistPayload());
     if (!ok && StorageAdapter.available && !_persistFailNotified) {
       _persistFailNotified = true;
       toast("Не удалось сохранить данные (квота хранилища?)", "err");
@@ -3576,7 +3705,18 @@
     if (data.favorites) state.favorites = data.favorites;
     if (data.recent) state.recent = data.recent;
     if (data.calibrations) state.calibrations = data.calibrations;
+    if (data.addinsByRecipe && typeof data.addinsByRecipe === "object") {
+      state.addinsByRecipe = data.addinsByRecipe;
+    } else if (data.enabledTasteAddins && data.selectedRecipeId) {
+      state.addinsByRecipe[data.selectedRecipeId] = data.enabledTasteAddins;
+    }
     if (data.enabledTasteAddins) state.enabledTasteAddins = data.enabledTasteAddins;
+    if (data.cookSession && data.cookSession.recipeId) state.cookSession = data.cookSession;
+    if (data.defaultMachineId && DB.machines[data.defaultMachineId]) state.defaultMachineId = data.defaultMachineId;
+    if (typeof data.largeSteps === "boolean") state.largeSteps = data.largeSteps;
+    if (data.catalogDifficulty) state.catalogDifficulty = data.catalogDifficulty;
+    if (typeof data.catalogFavoritesOnly === "boolean") state.catalogFavoritesOnly = data.catalogFavoritesOnly;
+    if (typeof data.catalogCanBake === "boolean") state.catalogCanBake = data.catalogCanBake;
     if (data.selectedRecipeId) state.selectedRecipeId = data.selectedRecipeId;
     if (data.selectedMachineId) state.selectedMachineId = data.selectedMachineId;
     if (data.targetFlourG) state.targetFlourG = data.targetFlourG;
@@ -3766,9 +3906,14 @@
     return CATALOG_CATEGORY_ORDER.filter(function (c) { return present[c]; });
   }
 
+  var _catalogCatSig = "";
+
   function renderCatalogCats() {
     var wrap = $("#catalog-cats");
     if (!wrap) return;
+    var sig = catalogCategories().join("|") + "|" + state.catalogCategory;
+    if (sig === _catalogCatSig && wrap.childElementCount) return;
+    _catalogCatSig = sig;
     wrap.textContent = "";
     var cats = [{ id: "all", name: "Все" }].concat(
       catalogCategories().map(function (c) { return { id: c, name: c }; })
@@ -3790,19 +3935,104 @@
     });
   }
 
+  function renderDifficultyChips() {
+    var wrap = $("#catalog-diff");
+    if (!wrap || wrap.childElementCount) {
+      if (wrap) {
+        $all("button", wrap).forEach(function (b) {
+          var on = b.getAttribute("data-diff") === state.catalogDifficulty;
+          b.classList.toggle("active", on);
+          b.setAttribute("aria-pressed", on ? "true" : "false");
+        });
+      }
+      return;
+    }
+    [
+      { id: "all", name: "Любая сложность" },
+      { id: "лёгкий", name: "Лёгкий" },
+      { id: "средний", name: "Средний" }
+    ].forEach(function (d) {
+      var on = state.catalogDifficulty === d.id;
+      var b = el("button", {
+        type: "button",
+        className: "chip" + (on ? " active" : ""),
+        text: d.name,
+        "data-diff": d.id,
+        "aria-pressed": on ? "true" : "false"
+      });
+      b.addEventListener("click", function () {
+        state.catalogDifficulty = d.id;
+        persist();
+        renderCatalog();
+      });
+      wrap.appendChild(b);
+    });
+  }
+
+  function bakeableIds() {
+    var set = {};
+    matchRecipes(pantrySet(), { nearMatch: state.nearMatchOn }).forEach(function (m) {
+      set[m.recipeId] = true;
+    });
+    return set;
+  }
+
+  function recipePassesCatalogFilters(recipe, id, bakeSet) {
+    if (state.catalogCategory !== "all" && recipe.category !== state.catalogCategory) return false;
+    if (state.catalogDifficulty !== "all" && recipe.difficulty !== state.catalogDifficulty) return false;
+    if (state.catalogFavoritesOnly && state.favorites.indexOf(id) === -1) return false;
+    if (state.catalogCanBake && (!bakeSet || !bakeSet[id])) return false;
+    return true;
+  }
+
+  function renderShortcutRow(title, ids) {
+    var row = el("div", { className: "shortcut-row chips" });
+    row.appendChild(el("span", { className: "label", text: title }));
+    ids.forEach(function (id) {
+      var recipe = DB.recipes[id];
+      if (!recipe) return;
+      var b = el("button", { type: "button", className: "chip", text: recipe.title });
+      b.addEventListener("click", function () {
+        openRecipe(id, state.defaultMachineId, { fromCatalog: true });
+      });
+      row.appendChild(b);
+    });
+    return row;
+  }
+
+  function renderCatalogShortcuts() {
+    var wrap = $("#catalog-shortcuts");
+    if (!wrap) return;
+    wrap.textContent = "";
+    var recent = state.recent.filter(function (id) { return DB.recipes[id]; }).slice(0, 6);
+    if (recent.length) wrap.appendChild(renderShortcutRow("Недавние", recent));
+    if (state.favorites.length) {
+      wrap.appendChild(renderShortcutRow("Избранное", state.favorites.filter(function (id) {
+        return DB.recipes[id];
+      })));
+    }
+  }
+
   function renderCatalog() {
     renderCatalogCats();
+    renderDifficultyChips();
+    renderCatalogShortcuts();
+    var fav = $("#flt-fav");
+    var bake = $("#flt-bake");
+    if (fav) fav.checked = !!state.catalogFavoritesOnly;
+    if (bake) bake.checked = !!state.catalogCanBake;
     var grid = $("#catalog-grid");
     if (!grid) return;
     grid.textContent = "";
     var q = normalizeName(state.catalogQuery);
+    var bakeSet = state.catalogCanBake ? bakeableIds() : null;
     var ids = Object.keys(DB.recipes).sort(function (a, b) {
       return DB.recipes[a].title.localeCompare(DB.recipes[b].title, "ru");
     });
     var shown = 0;
     ids.forEach(function (id) {
       var recipe = DB.recipes[id];
-      if (state.catalogCategory !== "all" && recipe.category !== state.catalogCategory) return;
+      if (!recipePassesCatalogFilters(recipe, id, bakeSet)) return;
       if (q) {
         var hay = normalizeName(
           recipe.title + " " + (recipe.specialty || "") + " " + (recipe.category || "") + " " + (recipe.tags || []).join(" ")
@@ -3827,7 +4057,7 @@
         text: "Открыть рецепт"
       });
       btn.addEventListener("click", function () {
-        openRecipe(id, "panasonic_sd_yr2540hts", { fromCatalog: true });
+        openRecipe(id, state.defaultMachineId, { fromCatalog: true });
       });
       card.appendChild(btn);
       grid.appendChild(card);
@@ -3900,6 +4130,7 @@
    * Render: Results
    * ========================================================= */
   function runSearch() {
+    state.searchRan = true;
     state.results = matchRecipes(pantrySet(), {
       nearMatch: state.nearMatchOn
     });
@@ -3975,14 +4206,22 @@
   /* =========================================================
    * Workspace
    * ========================================================= */
+  function syncAddinsFor(recipeId) {
+    if (!recipeId) return;
+    if (!state.addinsByRecipe[recipeId]) state.addinsByRecipe[recipeId] = {};
+    state.enabledTasteAddins = state.addinsByRecipe[recipeId];
+  }
+
   function openRecipe(recipeId, machineId, opts) {
     var recipe = DB.recipes[recipeId];
     if (!recipe) return;
     opts = opts || {};
     state.selectedRecipeId = recipeId;
-    state.selectedMachineId = machineId || "panasonic_sd_yr2540hts";
-    state.targetFlourG = Math.min(600, Math.max(300, recipe.baseTotalFlourG));
-    state.enabledTasteAddins = {};
+    state.selectedMachineId = machineId || state.defaultMachineId || "panasonic_sd_yr2540hts";
+    if (!opts.keepFlour) {
+      state.targetFlourG = Math.min(600, Math.max(300, recipe.baseTotalFlourG));
+    }
+    syncAddinsFor(recipeId);
     state.expandedIng = null;
     if (state.recent.indexOf(recipeId) === -1) state.recent.unshift(recipeId);
     state.recent = state.recent.slice(0, 10);
@@ -4000,7 +4239,10 @@
   }
 
   function enabledAddinList() {
-    return Object.keys(state.enabledTasteAddins).filter(function (k) { return state.enabledTasteAddins[k]; });
+    var bag = state.selectedRecipeId && state.addinsByRecipe[state.selectedRecipeId]
+      ? state.addinsByRecipe[state.selectedRecipeId]
+      : state.enabledTasteAddins;
+    return Object.keys(bag || {}).filter(function (k) { return bag[k]; });
   }
 
   function getCalibrationForCurrent() {
@@ -4015,6 +4257,7 @@
   function renderWorkspace() {
     var recipe = currentRecipe();
     if (!recipe) return;
+    syncAddinsFor(recipe.id);
     $("#ws-title").textContent = recipe.title;
     $("#ws-desc").textContent = (recipe.specialty || recipe.description || "") +
       (recipe.category ? " · " + recipe.category : "") +
@@ -4027,6 +4270,7 @@
     renderIngredientTable(recipe, scaled);
     renderAddins(recipe, scaled);
     renderSteps(recipe, scaled);
+    renderShoppingPanel();
     updateFavoriteBtn();
   }
 
@@ -4072,22 +4316,94 @@
     display.textContent = String(state.targetFlourG);
   }
 
-  function missingForCurrentRecipe() {
+  function missingRows() {
     var recipe = currentRecipe();
     if (!recipe) return [];
+    var scaled = scaleRecipe(recipe, state.targetFlourG, enabledAddinList());
     var pantry = pantrySet();
-    return recipeRequiredIds(recipe).filter(function (id) { return !pantry.has(id); })
-      .map(function (id) { return DB.ingredients[id] ? DB.ingredients[id].name : id; })
-      .sort(function (a, b) { return a.localeCompare(b, "ru"); });
+    return scaled.items.filter(function (row) {
+      if (row.optional || isAlwaysAvailable(row.ingredientId)) return false;
+      return !pantry.has(row.ingredientId);
+    }).map(function (row) {
+      return {
+        id: row.ingredientId,
+        name: (DB.ingredients[row.ingredientId] && DB.ingredients[row.ingredientId].name) || row.ingredientId,
+        grams: row.grams
+      };
+    }).sort(function (a, b) { return a.name.localeCompare(b.name, "ru"); });
   }
 
-  function setFlour(v) {
+  function missingForCurrentRecipe() {
+    return missingRows().map(function (row) {
+      return row.name + " — " + formatGrams(row.id, row.grams) + " г";
+    });
+  }
+
+  function renderShoppingPanel() {
+    var panel = $("#shopping-panel");
+    if (!panel) return;
+    panel.textContent = "";
+    var rows = missingRows();
+    if (!currentRecipe()) return;
+    if (!rows.length) {
+      panel.appendChild(el("p", { className: "stat-line", text: "Для этого рецепта всё есть дома." }));
+      return;
+    }
+    panel.appendChild(el("p", { className: "stat-line", text: "Не хватает — отметьте, когда купите:" }));
+    rows.forEach(function (row) {
+      var line = el("label", { className: "shopping-row" });
+      var cb = el("input", { type: "checkbox" });
+      cb.addEventListener("change", function () {
+        if (!cb.checked) return;
+        state.pantry[row.id] = true;
+        persist();
+        renderPantry();
+        renderShoppingPanel();
+        if (state.catalogCanBake) renderCatalog();
+      });
+      line.appendChild(cb);
+      line.appendChild(el("span", {
+        text: row.name + " — " + formatGrams(row.id, row.grams) + " г"
+      }));
+      panel.appendChild(line);
+    });
+  }
+
+  var _persistTimer = null;
+
+  function schedulePersist() {
+    if (_persistTimer) clearTimeout(_persistTimer);
+    _persistTimer = setTimeout(function () {
+      _persistTimer = null;
+      persist();
+    }, 200);
+  }
+
+  function refreshFlourViews() {
+    renderScaleControls();
+    var recipe = currentRecipe();
+    if (!recipe) return;
+    var scaled = scaleRecipe(recipe, state.targetFlourG, enabledAddinList());
+    renderKPIs(recipe, scaled);
+    renderIngredientTable(recipe, scaled);
+    renderSteps(recipe, scaled);
+    renderAddins(recipe, scaled);
+    renderShoppingPanel();
+  }
+
+  function setFlour(v, commit) {
     v = Math.round(Number(v));
     if (!isFinite(v)) return;
     v = Math.max(250, Math.min(650, v));
     state.targetFlourG = v;
-    persist();
-    renderWorkspace();
+    refreshFlourViews();
+    if (commit) {
+      if (_persistTimer) clearTimeout(_persistTimer);
+      _persistTimer = null;
+      persist();
+    } else {
+      schedulePersist();
+    }
   }
 
   function renderKPIs(recipe, scaled) {
@@ -4245,7 +4561,9 @@
       var cb = el("input", { type: "checkbox" });
       cb.checked = on;
       cb.addEventListener("change", function () {
-        state.enabledTasteAddins[aid] = cb.checked;
+        syncAddinsFor(state.selectedRecipeId);
+        state.addinsByRecipe[state.selectedRecipeId][aid] = cb.checked;
+        state.enabledTasteAddins = state.addinsByRecipe[state.selectedRecipeId];
         persist();
         renderWorkspace();
       });
@@ -4382,7 +4700,83 @@
       .filter(function (n) { return !n.disabled && n.offsetParent !== null; });
   }
 
-  function openCookMode() {
+  function buildCookSession() {
+    var t = state.timers[state._timerFullId];
+    var remaining = null;
+    if (t) {
+      remaining = (t.running && t.deadline) ? Math.max(0, t.deadline - Date.now()) : t.remainingMs;
+    }
+    var overlay = $("#cook-overlay");
+    return {
+      recipeId: state.selectedRecipeId,
+      machineId: state.selectedMachineId,
+      stepIndex: state.cookStepIndex,
+      timerId: state.activeTimerId || null,
+      ckKey: overlay && overlay._ckKey || null,
+      remainingMs: remaining,
+      running: false
+    };
+  }
+
+  function saveCookSession() {
+    if (!state.selectedRecipeId) return;
+    state.cookSession = buildCookSession();
+    persist();
+  }
+
+  function pruneChecklist() {
+    var keys = Object.keys(state.checklist || {});
+    if (keys.length <= 8) return;
+    var keepIds = {};
+    state.recent.slice(0, 8).forEach(function (id) { keepIds[id] = true; });
+    if (state.cookSession && state.cookSession.recipeId) keepIds[state.cookSession.recipeId] = true;
+    if (state.selectedRecipeId) keepIds[state.selectedRecipeId] = true;
+    var next = {};
+    keys.forEach(function (k) {
+      var rid = k.split("::")[0];
+      if (keepIds[rid]) next[k] = state.checklist[k];
+    });
+    var left = Object.keys(next);
+    if (left.length > 8) {
+      var trimmed = {};
+      left.slice(-8).forEach(function (k) { trimmed[k] = next[k]; });
+      next = trimmed;
+    }
+    state.checklist = next;
+  }
+
+  function renderResumeBanner() {
+    var bar = $("#resume-cook");
+    if (!bar) return;
+    var s = state.cookSession;
+    bar.textContent = "";
+    if (!s || !s.recipeId || !DB.recipes[s.recipeId]) {
+      bar.classList.add("hidden");
+      return;
+    }
+    bar.classList.remove("hidden");
+    var inner = el("div", { className: "resume-bar-inner" });
+    inner.appendChild(el("span", {
+      text: "Продолжить: " + DB.recipes[s.recipeId].title + ", шаг " + ((s.stepIndex || 0) + 1)
+    }));
+    var go = el("button", { type: "button", className: "btn btn-primary", text: "Продолжить" });
+    go.addEventListener("click", function () {
+      openRecipe(s.recipeId, s.machineId, { keepFlour: true });
+      openCookMode({ resume: true });
+    });
+    var drop = el("button", { type: "button", className: "btn btn-ghost", text: "Сбросить" });
+    drop.addEventListener("click", function () {
+      state.cookSession = null;
+      persist();
+      renderResumeBanner();
+    });
+    inner.appendChild(go);
+    inner.appendChild(drop);
+    bar.appendChild(inner);
+  }
+
+  function openCookMode(opts) {
+    opts = opts || {};
     var recipe = currentRecipe();
     if (!recipe) {
       toast("Сначала откройте рецепт", "warn");
@@ -4402,8 +4796,9 @@
     var scaledCook = scaleRecipe(recipe, state.targetFlourG, enabledAddinList());
     var steps = getCookingSteps(recipe, key, scaledCook);
     var ckKey = recipe.id + "::" + state.selectedMachineId + "::addins:" + enabledAddinList().sort().join(",");
+    if (opts.resume && state.cookSession && state.cookSession.ckKey) ckKey = state.cookSession.ckKey;
     if (!state.checklist[ckKey]) state.checklist[ckKey] = {};
-    state.cookStepIndex = 0;
+    state.cookStepIndex = (opts.resume && state.cookSession) ? (state.cookSession.stepIndex || 0) : 0;
 
     _cookReturnFocus = document.activeElement;
     var overlay = $("#cook-overlay");
@@ -4426,8 +4821,14 @@
     overlay._ckKey = ckKey;
     overlay._steps = steps;
     overlay._scaled = scaledCook;
+    if (opts.resume && state.cookSession && state.cookSession.remainingMs != null && state.timers[state._timerFullId]) {
+      state.timers[state._timerFullId].remainingMs = state.cookSession.remainingMs;
+      state.timers[state._timerFullId].running = false;
+      state.timers[state._timerFullId].deadline = null;
+    }
     renderCookSteps();
     tickTimers();
+    saveCookSession();
     if (!timerInterval) timerInterval = setInterval(tickTimers, 250);
 
     var closeBtn = $("#btn-close-cook");
@@ -4476,7 +4877,7 @@
       cb.checked = done;
       cb.addEventListener("change", function () {
         state.checklist[ckKey][s.id] = cb.checked;
-        persist();
+        saveCookSession();
         renderCookSteps();
       });
       var body = el("div", {});
@@ -4548,6 +4949,8 @@
       t.running = false;
       t.deadline = null;
     }
+    saveCookSession();
+    renderResumeBanner();
     var back = _cookReturnFocus || $("#btn-cook");
     _cookReturnFocus = null;
     if (back && back.focus) {
@@ -4570,7 +4973,14 @@
       recent: state.recent,
       calibrations: state.calibrations,
       enabledTasteAddins: state.enabledTasteAddins,
-      settings: {}
+      addinsByRecipe: state.addinsByRecipe,
+      cookSession: state.cookSession,
+      defaultMachineId: state.defaultMachineId,
+      largeSteps: state.largeSteps,
+      settings: {
+        defaultMachineId: state.defaultMachineId,
+        largeSteps: state.largeSteps
+      }
     };
     var blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
     var a = document.createElement("a");
@@ -4620,9 +5030,20 @@
         if (Array.isArray(data.favorites)) state.favorites = data.favorites;
         if (Array.isArray(data.recent)) state.recent = data.recent;
         if (Array.isArray(data.calibrations)) state.calibrations = data.calibrations;
+        if (data.addinsByRecipe && typeof data.addinsByRecipe === "object") {
+          state.addinsByRecipe = data.addinsByRecipe;
+        }
         if (data.enabledTasteAddins && typeof data.enabledTasteAddins === "object") {
           state.enabledTasteAddins = data.enabledTasteAddins;
+          if (!data.addinsByRecipe && state.selectedRecipeId) {
+            state.addinsByRecipe[state.selectedRecipeId] = data.enabledTasteAddins;
+          }
         }
+        if (data.cookSession && data.cookSession.recipeId) state.cookSession = data.cookSession;
+        if (data.defaultMachineId) state.defaultMachineId = data.defaultMachineId;
+        if (data.settings && data.settings.defaultMachineId) state.defaultMachineId = data.settings.defaultMachineId;
+        if (typeof data.largeSteps === "boolean") state.largeSteps = data.largeSteps;
+        if (data.settings && typeof data.settings.largeSteps === "boolean") state.largeSteps = data.settings.largeSteps;
         persist();
         renderPantry();
         renderCatalog();
@@ -4706,6 +5127,70 @@
     }));
     assert("catalog cats nonempty", catalogCategories().length >= 8);
     assert("catalog details exists", !!$("#catalog-details"));
+
+    var prevId = state.selectedRecipeId;
+    var prevFlour = state.targetFlourG;
+    var prevPantry = state.pantry;
+    var prevFav = state.catalogFavoritesOnly;
+    var prevFavs = state.favorites.slice();
+    var prevAddins = state.addinsByRecipe;
+    var prevSession = state.cookSession;
+    var prevTimers = state.timers;
+    var prevTimerId = state._timerFullId;
+    var prevStep = state.cookStepIndex;
+    var prevMachine = state.selectedMachineId;
+    var prevActive = state.activeTimerId;
+
+    state.selectedRecipeId = "p01";
+    state.selectedMachineId = "panasonic_sd_yr2540hts";
+    state.targetFlourG = 400;
+    state.pantry = {};
+    state.addinsByRecipe = { p01: {}, p27: {} };
+    var shop = missingForCurrentRecipe();
+    assert("shopping lists grams", shop.some(function (line) {
+      return line.indexOf("г") !== -1 && line.indexOf("Мука") !== -1;
+    }));
+
+    state.addinsByRecipe = { p01: { walnut: true }, p27: { cheese_add: true } };
+    state.selectedRecipeId = "p01";
+    var a1 = enabledAddinList();
+    state.selectedRecipeId = "p27";
+    var a2 = enabledAddinList();
+    assert("addins stay on their recipe", a1.indexOf("walnut") !== -1 && a1.indexOf("cheese_add") === -1 &&
+      a2.indexOf("cheese_add") !== -1 && a2.indexOf("walnut") === -1);
+
+    state.selectedRecipeId = "p01";
+    state.cookStepIndex = 3;
+    state.activeTimerId = "cycle";
+    state._timerFullId = "selftest-timer";
+    state.timers["selftest-timer"] = { remainingMs: 90000, running: false, deadline: null, label: "test" };
+    var session = buildCookSession();
+    assert("cook session keeps step and time", session.stepIndex === 3 && session.remainingMs === 90000 && session.running === false);
+
+    state.catalogFavoritesOnly = true;
+    state.favorites = ["p16"];
+    state.catalogCategory = "all";
+    state.catalogDifficulty = "all";
+    state.catalogCanBake = false;
+    assert("favorite filter keeps p16", recipePassesCatalogFilters(DB.recipes.p16, "p16", null));
+    assert("favorite filter hides p01", !recipePassesCatalogFilters(DB.recipes.p01, "p01", null));
+
+    state.selectedRecipeId = prevId;
+    state.targetFlourG = prevFlour;
+    state.pantry = prevPantry;
+    state.catalogFavoritesOnly = prevFav;
+    state.favorites = prevFavs;
+    state.addinsByRecipe = prevAddins;
+    state.cookSession = prevSession;
+    state.timers = prevTimers;
+    delete state.timers["selftest-timer"];
+    state._timerFullId = prevTimerId;
+    state.cookStepIndex = prevStep;
+    state.selectedMachineId = prevMachine;
+    state.activeTimerId = prevActive;
+    state.catalogCategory = "all";
+    state.catalogDifficulty = "all";
+    state.catalogCanBake = false;
     // Instruction wording: no generic liquid/fat/addin labels left in steps
     var badStep = false;
     var cheeseStepOk = false;
@@ -4882,6 +5367,85 @@
       });
     }
     bindCatalogDetails();
+    var fav = $("#flt-fav");
+    var bake = $("#flt-bake");
+    if (fav) fav.addEventListener("change", function () {
+      state.catalogFavoritesOnly = fav.checked;
+      persist();
+      renderCatalog();
+    });
+    if (bake) bake.addEventListener("change", function () {
+      state.catalogCanBake = bake.checked;
+      persist();
+      renderCatalog();
+    });
+  }
+
+  function bindNavEvents() {
+    function go(sel, fn) {
+      $all(sel).forEach(function (a) {
+        a.addEventListener("click", function (e) {
+          e.preventDefault();
+          fn();
+          var menu = $("#nav-menu");
+          if (menu && window.matchMedia && window.matchMedia("(max-width: 639px)").matches) menu.open = false;
+        });
+      });
+    }
+    go('a[href="#recipe-workspace"]', function () {
+      var ws = $("#recipe-workspace");
+      if (!ws || ws.classList.contains("hidden") || !currentRecipe()) {
+        setCatalogOpen(true);
+        var cat = $("#catalog");
+        if (cat && cat.scrollIntoView) cat.scrollIntoView({ behavior: "smooth", block: "start" });
+        toast("Сначала выберите хлеб", "warn");
+        return;
+      }
+      ws.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+    go('a[href="#cook-mode-anchor"]', function () {
+      if (!currentRecipe() || $("#recipe-workspace").classList.contains("hidden")) {
+        setCatalogOpen(true);
+        $("#catalog").scrollIntoView({ behavior: "smooth", block: "start" });
+        toast("Сначала выберите хлеб", "warn");
+        return;
+      }
+      $("#cook-mode-anchor").scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+    go('a[href="#search-results"]', function () {
+      var sec = $("#search-results");
+      if (!state.searchRan) {
+        $("#pantry").scrollIntoView({ behavior: "smooth", block: "start" });
+        var btn = $("#btn-search");
+        if (btn && btn.focus) btn.focus();
+        toast("Отметьте продукты и нажмите «Найти, что можно испечь»", "warn");
+        return;
+      }
+      sec.classList.remove("hidden");
+      sec.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+  }
+
+  function bindSettings() {
+    var machine = $("#set-machine");
+    var large = $("#set-large");
+    if (machine) {
+      machine.value = state.defaultMachineId;
+      machine.addEventListener("change", function () {
+        state.defaultMachineId = machine.value;
+        persist();
+        toast("Машина по умолчанию сохранена", "ok");
+      });
+    }
+    if (large) {
+      large.checked = !!state.largeSteps;
+      document.body.classList.toggle("large-steps", !!state.largeSteps);
+      large.addEventListener("change", function () {
+        state.largeSteps = large.checked;
+        document.body.classList.toggle("large-steps", state.largeSteps);
+        persist();
+      });
+    }
   }
 
   function bindResultsEvents() {
@@ -4905,10 +5469,11 @@
       copyText("Не хватает для «" + title + "»:\n" + list.join("\n"));
     });
 
-    $("#flour-range").addEventListener("input", function (e) { setFlour(e.target.value); });
-    $("#flour-input").addEventListener("change", function (e) { setFlour(e.target.value); });
-    $("#flour-minus").addEventListener("click", function () { setFlour(state.targetFlourG - 10); });
-    $("#flour-plus").addEventListener("click", function () { setFlour(state.targetFlourG + 10); });
+    $("#flour-range").addEventListener("input", function (e) { setFlour(e.target.value, false); });
+    $("#flour-range").addEventListener("change", function (e) { setFlour(e.target.value, true); });
+    $("#flour-input").addEventListener("change", function (e) { setFlour(e.target.value, true); });
+    $("#flour-minus").addEventListener("click", function () { setFlour(state.targetFlourG - 10, true); });
+    $("#flour-plus").addEventListener("click", function () { setFlour(state.targetFlourG + 10, true); });
 
     $("#btn-copy-ings").addEventListener("click", function () {
       var recipe = currentRecipe();
@@ -4937,10 +5502,12 @@
       }
       persist();
       updateFavoriteBtn();
+      renderCatalog();
     });
 
     $("#btn-reset-addins").addEventListener("click", function () {
-      state.enabledTasteAddins = {};
+      if (state.selectedRecipeId) state.addinsByRecipe[state.selectedRecipeId] = {};
+      state.enabledTasteAddins = state.selectedRecipeId ? state.addinsByRecipe[state.selectedRecipeId] : {};
       persist();
       renderWorkspace();
       toast("Добавки сброшены", "ok");
@@ -4966,6 +5533,7 @@
     $("#cook-prev").addEventListener("click", function () {
       if (!isCookOpen() || !currentRecipe()) return;
       state.cookStepIndex = Math.max(0, state.cookStepIndex - 1);
+      saveCookSession();
       renderCookSteps();
     });
 
@@ -4979,11 +5547,9 @@
       if (!ckKey) return;
       if (!state.checklist[ckKey]) state.checklist[ckKey] = {};
       var cur = steps[state.cookStepIndex];
-      if (cur) {
-        state.checklist[ckKey][cur.id] = true;
-        persist();
-      }
+      if (cur) state.checklist[ckKey][cur.id] = true;
       state.cookStepIndex = Math.min(Math.max(steps.length - 1, 0), state.cookStepIndex + 1);
+      saveCookSession();
       renderCookSteps();
     });
 
@@ -4993,7 +5559,7 @@
       if (!ckKey) return;
       state.checklist[ckKey] = {};
       state.cookStepIndex = 0;
-      persist();
+      saveCookSession();
       renderCookSteps();
     });
 
@@ -5079,6 +5645,8 @@
     bindWorkspaceEvents();
     bindCookEvents();
     bindIOEvents();
+    bindNavEvents();
+    bindSettings();
     bindGlobalKeyboard();
   }
 
@@ -5087,9 +5655,12 @@
     if (!ok) $("#storage-banner").classList.remove("hidden");
     restore();
     restoreCatalogOpen();
+    if (state.largeSteps) document.body.classList.add("large-steps");
+    if (state.selectedRecipeId) syncAddinsFor(state.selectedRecipeId);
     bindEvents();
     renderPantry();
     renderCatalog();
+    renderResumeBanner();
     if (state.selectedRecipeId && DB.recipes[state.selectedRecipeId]) {
       $("#recipe-workspace").classList.remove("hidden");
       $("#calibration").classList.remove("hidden");
