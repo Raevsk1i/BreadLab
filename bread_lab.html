@@ -407,6 +407,36 @@
       font-size: 0.9rem;
     }
 
+    .catalog-card {
+      display: flex;
+      flex-direction: column;
+      gap: 0.65rem;
+      padding: 1.1rem 1.15rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-card);
+    }
+    .catalog-card h3 {
+      margin: 0;
+      font-size: 1.1rem;
+      font-family: Georgia, "Times New Roman", serif;
+      color: var(--primary);
+    }
+    .catalog-card .specialty {
+      margin: 0;
+      font-size: 0.88rem;
+      color: var(--text-soft);
+      line-height: 1.45;
+      flex: 1;
+    }
+    .catalog-card .catalog-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.35rem;
+      align-items: center;
+    }
+
     .chip[role="tab"], .tab[role="tab"] { cursor: pointer; }
     .chip[aria-selected="true"], .tab[aria-selected="true"] { /* active already styled */ }
 
@@ -462,6 +492,7 @@
       <a class="brand" href="#hero"><span class="brand-emoji" aria-hidden="true">🍞</span> BreadLab</a>
       <nav class="nav" aria-label="Основная навигация">
         <a href="#pantry">Ингредиенты</a>
+        <a href="#catalog">Каталог</a>
         <a href="#search-results">Рецепты</a>
         <a href="#recipe-workspace">Калькулятор</a>
         <a href="#cook-mode-anchor">Готовим</a>
@@ -522,6 +553,23 @@
         </div>
         <p class="stat-line" id="pantry-stat" aria-live="polite">Выбрано: 0</p>
       </div>
+    </section>
+
+    <!-- CATALOG -->
+    <section id="catalog" class="section">
+      <div class="section-head">
+        <h2>Виды хлеба</h2>
+        <p>Каталог всех 35 видов: выберите понравившийся — откроются ингредиенты, расчёты и шаги для вашей машины.</p>
+      </div>
+      <div class="card">
+        <div class="field" style="margin-bottom:0.85rem">
+          <label for="catalog-search">Найти хлеб</label>
+          <input type="search" id="catalog-search" class="input" placeholder="Например: бородинский, дарницкий, сырный…" autocomplete="off">
+        </div>
+        <div class="chips" id="catalog-cats" role="tablist" aria-label="Категории хлеба"></div>
+        <p class="stat-line" id="catalog-stat" aria-live="polite" style="margin:0.75rem 0 0">Показано: 0</p>
+      </div>
+      <div id="catalog-grid" class="grid-2" style="margin-top:1rem" role="list"></div>
     </section>
 
     <!-- RESULTS -->
@@ -1186,8 +1234,10 @@
 
   DB.recipes.p01 = {
     id: "p01",
-    title: "Белый пшеничный",
-    description: "Технологическая карта из сборника 35 видов хлеба для REDMOND RMC-M92S и Panasonic SD-YR2540HTS. Категория: БАЗОВЫЕ.",
+    title: "Нарезной белый",
+    category: "Базовые",
+    specialty: "Классический пшеничный хлеб на дрожжах с мягким мякишем и тонкой корочкой — базовая «эталонная» буханка. От экспресс-батона отличается полной программой Основной (~4 ч) и более развитой пористостью.",
+    description: "Классический пшеничный хлеб на дрожжах с мягким мякишем и тонкой корочкой — базовая «эталонная» буханка. От экспресс-батона отличается полной программой Основной (~4 ч) и более развитой пористостью.",
     tags: ["базовый", "пшеничный", "белый"],
     difficulty: "лёгкий",
     sourceConfidence: "verified-adaptation",
@@ -1236,8 +1286,10 @@
 
   DB.recipes.p02 = {
     id: "p02",
-    title: "Белый быстрый",
-    description: "Технологическая карта из сборника 35 видов хлеба для REDMOND RMC-M92S и Panasonic SD-YR2540HTS. Категория: БАЗОВЫЕ.",
+    title: "Экспресс-батон",
+    category: "Базовые",
+    specialty: "Тот же белый профиль, но на программе «Основной быстрый»: меньше времени, чуть плотнее мякиш. Берите, когда нужен свежий хлеб «к ужину», а не максимум объёма.",
+    description: "Тот же белый профиль, но на программе «Основной быстрый»: меньше времени, чуть плотнее мякиш. Берите, когда нужен свежий хлеб «к ужину», а не максимум объёма.",
     tags: ["базовый", "пшеничный", "белый"],
     difficulty: "лёгкий",
     sourceConfidence: "verified-adaptation",
@@ -1286,8 +1338,10 @@
 
   DB.recipes.p03 = {
     id: "p03",
-    title: "Молочный",
-    description: "Технологическая карта из сборника 35 видов хлеба для REDMOND RMC-M92S и Panasonic SD-YR2540HTS. Категория: БАЗОВЫЕ.",
+    title: "Молочный батон",
+    category: "Базовые",
+    specialty: "Вместо части воды — молоко: мякиш нежнее и слаще, корочка румянее. От нарезного белого отличается молочным вкусом и более «булочной» текстурой.",
+    description: "Вместо части воды — молоко: мякиш нежнее и слаще, корочка румянее. От нарезного белого отличается молочным вкусом и более «булочной» текстурой.",
     tags: ["базовый", "пшеничный", "молочный"],
     difficulty: "лёгкий",
     sourceConfidence: "verified-adaptation",
@@ -1337,8 +1391,10 @@
 
   DB.recipes.p04 = {
     id: "p04",
-    title: "Сливочный",
-    description: "Технологическая карта из сборника 35 видов хлеба для REDMOND RMC-M92S и Panasonic SD-YR2540HTS. Категория: БАЗОВЫЕ.",
+    title: "Сдобный сливочный",
+    category: "Базовые",
+    specialty: "Сливочное масло даёт сдобность и мягкость, ближе к лёгкой бриоши. Тяжелее поднимается, чем нарезной белый, зато богаче вкус и дольше не черствеет.",
+    description: "Сливочное масло даёт сдобность и мягкость, ближе к лёгкой бриоши. Тяжелее поднимается, чем нарезной белый, зато богаче вкус и дольше не черствеет.",
     tags: ["базовый", "пшеничный", "сливочный"],
     difficulty: "лёгкий",
     sourceConfidence: "verified-adaptation",
@@ -1388,8 +1444,10 @@
 
   DB.recipes.p05 = {
     id: "p05",
-    title: "Яичный",
-    description: "Технологическая карта из сборника 35 видов хлеба для REDMOND RMC-M92S и Panasonic SD-YR2540HTS. Категория: БАЗОВЫЕ.",
+    title: "Яичный сдобный",
+    category: "Базовые",
+    specialty: "Яйцо связывает тесто, даёт золотистый цвет и «пирожный» тон. Плотнее молочного батона, но воздушнее чисто масляного сдобного.",
+    description: "Яйцо связывает тесто, даёт золотистый цвет и «пирожный» тон. Плотнее молочного батона, но воздушнее чисто масляного сдобного.",
     tags: ["базовый", "пшеничный", "яичный"],
     difficulty: "лёгкий",
     sourceConfidence: "verified-adaptation",
@@ -1443,8 +1501,10 @@
 
   DB.recipes.p06 = {
     id: "p06",
-    title: "Малодрожжевой",
-    description: "Технологическая карта из сборника 35 видов хлеба для REDMOND RMC-M92S и Panasonic SD-YR2540HTS. Категория: БАЗОВЫЕ.",
+    title: "Хлеб на малой дрожжевой",
+    category: "Базовые",
+    specialty: "Меньше дрожжей и более длинный цикл (меню №5 + расстойка у REDMOND): вкус чище, без дрожжевого запаха. Не путать с бездрожжевым — подъём всё же дрожжевой, просто спокойный.",
+    description: "Меньше дрожжей и более длинный цикл (меню №5 + расстойка у REDMOND): вкус чище, без дрожжевого запаха. Не путать с бездрожжевым — подъём всё же дрожжевой, просто спокойный.",
     tags: ["базовый", "пшеничный", "малодрожжевой"],
     difficulty: "лёгкий",
     sourceConfidence: "verified-adaptation",
@@ -1493,8 +1553,10 @@
 
   DB.recipes.p07 = {
     id: "p07",
-    title: "Французский",
-    description: "Технологическая карта из сборника 35 видов хлеба для REDMOND RMC-M92S и Panasonic SD-YR2540HTS. Категория: ЕВРОПЕЙСКИЕ.",
+    title: "Французский багетный",
+    category: "Европейские",
+    specialty: "Высокая гидратация и программа «Французский»: хрустящая корочка и открытая пористость. Минимум жира и сахара — в отличие от нарезного белого почти «чистый» хлебный вкус.",
+    description: "Высокая гидратация и программа «Французский»: хрустящая корочка и открытая пористость. Минимум жира и сахара — в отличие от нарезного белого почти «чистый» хлебный вкус.",
     tags: ["европейский", "пшеничный", "французский"],
     difficulty: "лёгкий",
     sourceConfidence: "verified-adaptation",
@@ -1542,7 +1604,9 @@
   DB.recipes.p08 = {
     id: "p08",
     title: "Деревенский пшеничный",
-    description: "Технологическая карта из сборника 35 видов хлеба для REDMOND RMC-M92S и Panasonic SD-YR2540HTS. Категория: ЕВРОПЕЙСКИЕ.",
+    category: "Европейские",
+    specialty: "Пшеничный кантри-профиль на французской программе: плотнее багетного, с более «домашним» мякишем. Ближе к деревенской буханке, чем к тонкому багету.",
+    description: "Пшеничный кантри-профиль на французской программе: плотнее багетного, с более «домашним» мякишем. Ближе к деревенской буханке, чем к тонкому багету.",
     tags: ["европейский", "пшеничный", "деревенский"],
     difficulty: "лёгкий",
     sourceConfidence: "verified-adaptation",
@@ -1590,8 +1654,10 @@
 
   DB.recipes.p09 = {
     id: "p09",
-    title: "Пшеничный цельнозерновой 50 %",
-    description: "Технологическая карта из сборника 35 видов хлеба для REDMOND RMC-M92S и Panasonic SD-YR2540HTS. Категория: ЦЕЛЬНОЗЕРНОВЫЕ.",
+    title: "Пшеничный полуоборный",
+    category: "Цельнозерновые",
+    specialty: "Половина белой, половина цельнозерновой муки: баланс объёма и пользы. Легче 100% цельнозернового и мягче отрубного.",
+    description: "Половина белой, половина цельнозерновой муки: баланс объёма и пользы. Легче 100% цельнозернового и мягче отрубного.",
     tags: ["цельнозерновой", "пшеничный"],
     difficulty: "лёгкий",
     sourceConfidence: "verified-adaptation",
@@ -1641,8 +1707,10 @@
 
   DB.recipes.p10 = {
     id: "p10",
-    title: "Цельнозерновой 100 %",
-    description: "Технологическая карта из сборника 35 видов хлеба для REDMOND RMC-M92S и Panasonic SD-YR2540HTS. Категория: ЦЕЛЬНОЗЕРНОВЫЕ.",
+    title: "Цельнозерновой пшеничный",
+    category: "Цельнозерновые",
+    specialty: "100% цельнозерновой: плотный полезный мякиш и зерновой вкус. Ниже подъём, чем у полуоборного — зато максимум клетчатки.",
+    description: "100% цельнозерновой: плотный полезный мякиш и зерновой вкус. Ниже подъём, чем у полуоборного — зато максимум клетчатки.",
     tags: ["цельнозерновой", "цельнозерновой"],
     difficulty: "лёгкий",
     sourceConfidence: "verified-adaptation",
@@ -1691,8 +1759,10 @@
 
   DB.recipes.p11 = {
     id: "p11",
-    title: "Цельнозерновой быстрый",
-    description: "Технологическая карта из сборника 35 видов хлеба для REDMOND RMC-M92S и Panasonic SD-YR2540HTS. Категория: ЦЕЛЬНОЗЕРНОВЫЕ.",
+    title: "Цельнозерновой экспресс",
+    category: "Цельнозерновые",
+    specialty: "Цельнозерновой на быстрой программе №7: экономит время, мякиш чуть грубее полного ЦЗ-цикла. Компромисс между пользой и скоростью.",
+    description: "Цельнозерновой на быстрой программе №7: экономит время, мякиш чуть грубее полного ЦЗ-цикла. Компромисс между пользой и скоростью.",
     tags: ["цельнозерновой", "цельнозерновой"],
     difficulty: "лёгкий",
     sourceConfidence: "verified-adaptation",
@@ -1741,8 +1811,10 @@
 
   DB.recipes.p12 = {
     id: "p12",
-    title: "Пшеничный с отрубями",
-    description: "Технологическая карта из сборника 35 видов хлеба для REDMOND RMC-M92S и Panasonic SD-YR2540HTS. Категория: ЦЕЛЬНОЗЕРНОВЫЕ.",
+    title: "Отрубной хлеб",
+    category: "Цельнозерновые",
+    specialty: "Пшеничная основа с отрубями: грубая текстура и клетчатка без полной замены на обойную муку. «Зернистее» полуоборного, но воздушнее 100% ЦЗ.",
+    description: "Пшеничная основа с отрубями: грубая текстура и клетчатка без полной замены на обойную муку. «Зернистее» полуоборного, но воздушнее 100% ЦЗ.",
     tags: ["цельнозерновой", "пшеничный"],
     difficulty: "лёгкий",
     sourceConfidence: "verified-adaptation",
@@ -1792,8 +1864,10 @@
 
   DB.recipes.p13 = {
     id: "p13",
-    title: "Овсяный",
-    description: "Технологическая карта из сборника 35 видов хлеба для REDMOND RMC-M92S и Panasonic SD-YR2540HTS. Категория: СМЕСОВЫЕ.",
+    title: "Овсяный хлеб",
+    category: "Смесовые",
+    specialty: "Овсяная мука смягчает мякиш и даёт лёгкий ореховый тон. Нежнее мультизлакового, без грубых хлопьев.",
+    description: "Овсяная мука смягчает мякиш и даёт лёгкий ореховый тон. Нежнее мультизлакового, без грубых хлопьев.",
     tags: ["смесовой", "овсяный"],
     difficulty: "лёгкий",
     sourceConfidence: "verified-adaptation",
@@ -1845,8 +1919,10 @@
 
   DB.recipes.p14 = {
     id: "p14",
-    title: "С семью злаками",
-    description: "Технологическая карта из сборника 35 видов хлеба для REDMOND RMC-M92S и Panasonic SD-YR2540HTS. Категория: СМЕСОВЫЕ.",
+    title: "Мультизлаковый",
+    category: "Смесовые",
+    specialty: "Смесь 7 злаков — выраженный «зерновой» вкус и пёстрая текстура. Грубее овсяного, ближе к «фермерскому» хлебу с полки.",
+    description: "Смесь 7 злаков — выраженный «зерновой» вкус и пёстрая текстура. Грубее овсяного, ближе к «фермерскому» хлебу с полки.",
     tags: ["смесовой", "с"],
     difficulty: "лёгкий",
     sourceConfidence: "verified-adaptation",
@@ -1896,8 +1972,10 @@
 
   DB.recipes.p15 = {
     id: "p15",
-    title: "Ржано-пшеничный 50:50",
-    description: "Технологическая карта из сборника 35 видов хлеба для REDMOND RMC-M92S и Panasonic SD-YR2540HTS. Категория: РЖАНЫЕ.",
+    title: "Дарницкий",
+    category: "Ржаные",
+    specialty: "Классический ржано-пшеничный ~50:50: кисловатый ржаной вкус при ещё приемлемом подъёме. Светлее и мягче Бородинского — без солодовой заварки.",
+    description: "Классический ржано-пшеничный ~50:50: кисловатый ржаной вкус при ещё приемлемом подъёме. Светлее и мягче Бородинского — без солодовой заварки.",
     tags: ["ржаной", "ржано-пшеничный"],
     difficulty: "средний",
     sourceConfidence: "verified-adaptation",
@@ -1947,8 +2025,10 @@
 
   DB.recipes.p16 = {
     id: "p16",
-    title: "Ржано-солодовый",
-    description: "Технологическая карта из сборника 35 видов хлеба для REDMOND RMC-M92S и Panasonic SD-YR2540HTS. Категория: РЖАНЫЕ.",
+    title: "Бородинский",
+    category: "Ржаные",
+    specialty: "Тёмный ржано-солодовый профиль с заваркой солода: плотный ароматный мякиш и характерный цвет. От Дарницкого отличается солодом, мёдом и более «бородинским» вкусом.",
+    description: "Тёмный ржано-солодовый профиль с заваркой солода: плотный ароматный мякиш и характерный цвет. От Дарницкого отличается солодом, мёдом и более «бородинским» вкусом.",
     tags: ["ржаной", "ржано-солодовый"],
     difficulty: "средний",
     sourceConfidence: "verified-adaptation",
@@ -2003,7 +2083,9 @@
   DB.recipes.p17 = {
     id: "p17",
     title: "Ржаной на кефире",
-    description: "Технологическая карта из сборника 35 видов хлеба для REDMOND RMC-M92S и Panasonic SD-YR2540HTS. Категория: РЖАНЫЕ.",
+    category: "Ржаные",
+    specialty: "Кефир даёт мягкую кислотность и нежность без длинной заварки. Кислее Дарницкого по молочной ноте, но без солодового «Бородинского» аромата.",
+    description: "Кефир даёт мягкую кислотность и нежность без длинной заварки. Кислее Дарницкого по молочной ноте, но без солодового «Бородинского» аромата.",
     tags: ["ржаной", "ржаной"],
     difficulty: "средний",
     sourceConfidence: "verified-adaptation",
@@ -2055,7 +2137,9 @@
   DB.recipes.p18 = {
     id: "p18",
     title: "Ржаной с кориандром",
-    description: "Технологическая карта из сборника 35 видов хлеба для REDMOND RMC-M92S и Panasonic SD-YR2540HTS. Категория: РЖАНЫЕ.",
+    category: "Ржаные",
+    specialty: "Ржаная основа с кориандром — пряный аромат, знакомый по бородинским буханкам. Легче полного Бородинского, акцент на специи, а не на солод.",
+    description: "Ржаная основа с кориандром — пряный аромат, знакомый по бородинским буханкам. Легче полного Бородинского, акцент на специи, а не на солод.",
     tags: ["ржаной", "ржаной"],
     difficulty: "средний",
     sourceConfidence: "verified-adaptation",
@@ -2107,8 +2191,10 @@
 
   DB.recipes.p19 = {
     id: "p19",
-    title: "Кукурузно-пшеничный",
-    description: "Технологическая карта из сборника 35 видов хлеба для REDMOND RMC-M92S и Panasonic SD-YR2540HTS. Категория: СМЕСОВЫЕ.",
+    title: "Кукурузный хлеб",
+    category: "Смесовые",
+    specialty: "Кукурузная мука даёт золотистый цвет и рассыпчатость. Слабее глютен, чем у чисто пшеничных — мякиш крошливее овсяного.",
+    description: "Кукурузная мука даёт золотистый цвет и рассыпчатость. Слабее глютен, чем у чисто пшеничных — мякиш крошливее овсяного.",
     tags: ["смесовой", "кукурузно-пшеничный"],
     difficulty: "лёгкий",
     sourceConfidence: "verified-adaptation",
@@ -2158,8 +2244,10 @@
 
   DB.recipes.p20 = {
     id: "p20",
-    title: "Гречишно-пшеничный",
-    description: "Технологическая карта из сборника 35 видов хлеба для REDMOND RMC-M92S и Panasonic SD-YR2540HTS. Категория: СМЕСОВЫЕ.",
+    title: "Гречневый хлеб",
+    category: "Смесовые",
+    specialty: "Гречневая мука — тёмный ореховый вкус и плотноватый мякиш. Ароматнее кукурузного, ближе к «гречневым» буханкам из пекарни.",
+    description: "Гречневая мука — тёмный ореховый вкус и плотноватый мякиш. Ароматнее кукурузного, ближе к «гречневым» буханкам из пекарни.",
     tags: ["смесовой", "гречишно-пшеничный"],
     difficulty: "лёгкий",
     sourceConfidence: "verified-adaptation",
@@ -2209,8 +2297,10 @@
 
   DB.recipes.p21 = {
     id: "p21",
-    title: "Пшеничный с полбой",
-    description: "Технологическая карта из сборника 35 видов хлеба для REDMOND RMC-M92S и Panasonic SD-YR2540HTS. Категория: СМЕСОВЫЕ.",
+    title: "Хлеб с полбой",
+    category: "Смесовые",
+    specialty: "Полба (спельта) добавляет мягкий ореховый тон и «древнезерновой» характер. Нежнее цельнозернового пшеничного, без горечи ржи.",
+    description: "Полба (спельта) добавляет мягкий ореховый тон и «древнезерновой» характер. Нежнее цельнозернового пшеничного, без горечи ржи.",
     tags: ["смесовой", "пшеничный"],
     difficulty: "лёгкий",
     sourceConfidence: "verified-adaptation",
@@ -2260,8 +2350,10 @@
 
   DB.recipes.p22 = {
     id: "p22",
-    title: "Картофельный",
-    description: "Технологическая карта из сборника 35 видов хлеба для REDMOND RMC-M92S и Panasonic SD-YR2540HTS. Категория: ДОБАВКИ.",
+    title: "Картофельный хлеб",
+    category: "Добавки",
+    specialty: "Пюре из картофеля удерживает влагу: мякиш долго остаётся мягким. От обычного белого — более влажная текстура и лёгкий картофельный вкус.",
+    description: "Пюре из картофеля удерживает влагу: мякиш долго остаётся мягким. От обычного белого — более влажная текстура и лёгкий картофельный вкус.",
     tags: ["с добавками", "картофельный"],
     difficulty: "средний",
     sourceConfidence: "verified-adaptation",
@@ -2315,8 +2407,10 @@
 
   DB.recipes.p23 = {
     id: "p23",
-    title: "Йогуртовый цельнозерновой",
-    description: "Технологическая карта из сборника 35 видов хлеба для REDMOND RMC-M92S и Panasonic SD-YR2540HTS. Категория: КИСЛОМОЛОЧНЫЕ.",
+    title: "Цельнозерновой на йогурте",
+    category: "Кисломолочные",
+    specialty: "Цельнозерновая база на йогурте: кислота смягчает клейковину и освежает вкус. Нежнее сухого ЦЗ на воде, полезнее кефирного белого батона.",
+    description: "Цельнозерновая база на йогурте: кислота смягчает клейковину и освежает вкус. Нежнее сухого ЦЗ на воде, полезнее кефирного белого батона.",
     tags: ["кисломолочный", "йогуртовый"],
     difficulty: "лёгкий",
     sourceConfidence: "verified-adaptation",
@@ -2368,8 +2462,10 @@
 
   DB.recipes.p24 = {
     id: "p24",
-    title: "Кефирный пшеничный",
-    description: "Технологическая карта из сборника 35 видов хлеба для REDMOND RMC-M92S и Panasonic SD-YR2540HTS. Категория: КИСЛОМОЛОЧНЫЕ.",
+    title: "Кефирный батон",
+    category: "Кисломолочные",
+    specialty: "Пшеничный хлеб на кефире: лёгкая кислинка и мягкий мякиш. Белее и воздушнее ржаного на кефире, без ржаной плотности.",
+    description: "Пшеничный хлеб на кефире: лёгкая кислинка и мягкий мякиш. Белее и воздушнее ржаного на кефире, без ржаной плотности.",
     tags: ["кисломолочный", "кефирный"],
     difficulty: "лёгкий",
     sourceConfidence: "verified-adaptation",
@@ -2419,8 +2515,10 @@
 
   DB.recipes.p25 = {
     id: "p25",
-    title: "Луковый",
-    description: "Технологическая карта из сборника 35 видов хлеба для REDMOND RMC-M92S и Panasonic SD-YR2540HTS. Категория: ДОБАВКИ.",
+    title: "Луковый хлеб",
+    category: "Добавки",
+    specialty: "Обжаренный лук — сладковатый закусочный аромат; на Panasonic добавка по сигналу №4. Не путать с чесночным: здесь карамельная сладость лука, не острота.",
+    description: "Обжаренный лук — сладковатый закусочный аромат; на Panasonic добавка по сигналу №4. Не путать с чесночным: здесь карамельная сладость лука, не острота.",
     tags: ["с добавками", "луковый"],
     difficulty: "средний",
     sourceConfidence: "verified-adaptation",
@@ -2474,8 +2572,10 @@
 
   DB.recipes.p26 = {
     id: "p26",
-    title: "Чесночный с прованскими травами",
-    description: "Технологическая карта из сборника 35 видов хлеба для REDMOND RMC-M92S и Panasonic SD-YR2540HTS. Категория: ДОБАВКИ.",
+    title: "Чесночный прованский",
+    category: "Добавки",
+    specialty: "Сухой чеснок и прованские травы — средиземноморский акцент к супам и сыру. Острее лукового, без влажных кусочков сыра или оливок.",
+    description: "Сухой чеснок и прованские травы — средиземноморский акцент к супам и сыру. Острее лукового, без влажных кусочков сыра или оливок.",
     tags: ["с добавками", "чесночный"],
     difficulty: "лёгкий",
     sourceConfidence: "verified-adaptation",
@@ -2526,8 +2626,10 @@
 
   DB.recipes.p27 = {
     id: "p27",
-    title: "С сыром",
-    description: "Технологическая карта из сборника 35 видов хлеба для REDMOND RMC-M92S и Panasonic SD-YR2540HTS. Категория: ДОБАВКИ.",
+    title: "Сырный хлеб",
+    category: "Добавки",
+    specialty: "Кубики твёрдого сыра в мякише: солёные «карманы» вкуса. Жирнее чесночного; влажный сыр — только в форму по сигналу, не в диспенсер.",
+    description: "Кубики твёрдого сыра в мякише: солёные «карманы» вкуса. Жирнее чесночного; влажный сыр — только в форму по сигналу, не в диспенсер.",
     tags: ["с добавками", "с"],
     difficulty: "средний",
     sourceConfidence: "verified-adaptation",
@@ -2581,8 +2683,10 @@
 
   DB.recipes.p28 = {
     id: "p28",
-    title: "С оливками",
-    description: "Технологическая карта из сборника 35 видов хлеба для REDMOND RMC-M92S и Panasonic SD-YR2540HTS. Категория: ДОБАВКИ.",
+    title: "Хлеб с оливками",
+    category: "Добавки",
+    specialty: "Оливки дают средиземноморскую солёность и тёмные вкрапления. Ближе к фокачче по характеру, чем к сырному — меньше жира от сыра.",
+    description: "Оливки дают средиземноморскую солёность и тёмные вкрапления. Ближе к фокачче по характеру, чем к сырному — меньше жира от сыра.",
     tags: ["с добавками", "с"],
     difficulty: "лёгкий",
     sourceConfidence: "verified-adaptation",
@@ -2636,8 +2740,10 @@
 
   DB.recipes.p29 = {
     id: "p29",
-    title: "С изюмом",
-    description: "Технологическая карта из сборника 35 видов хлеба для REDMOND RMC-M92S и Panasonic SD-YR2540HTS. Категория: СЛАДКИЕ.",
+    title: "Изюмный хлеб",
+    category: "Сладкие",
+    specialty: "Сладковатый завтрачный хлеб с изюмом (диспенсер добавок / меню №3). От орехово-медового — ярче сухофруктовая сладость, без хруста ореха.",
+    description: "Сладковатый завтрачный хлеб с изюмом (диспенсер добавок / меню №3). От орехово-медового — ярче сухофруктовая сладость, без хруста ореха.",
     tags: ["сладкий", "с"],
     difficulty: "лёгкий",
     sourceConfidence: "verified-adaptation",
@@ -2692,8 +2798,10 @@
 
   DB.recipes.p30 = {
     id: "p30",
-    title: "С грецким орехом и мёдом",
-    description: "Технологическая карта из сборника 35 видов хлеба для REDMOND RMC-M92S и Panasonic SD-YR2540HTS. Категория: СЛАДКИЕ.",
+    title: "Орехово-медовый",
+    category: "Сладкие",
+    specialty: "Грецкий орех и мёд: хруст и тёплую сладость. «Десертнее» изюмного, с ореховым послевкусием.",
+    description: "Грецкий орех и мёд: хруст и тёплую сладость. «Десертнее» изюмного, с ореховым послевкусием.",
     tags: ["сладкий", "с"],
     difficulty: "лёгкий",
     sourceConfidence: "verified-adaptation",
@@ -2746,8 +2854,10 @@
 
   DB.recipes.p31 = {
     id: "p31",
-    title: "С семечками",
-    description: "Технологическая карта из сборника 35 видов хлеба для REDMOND RMC-M92S и Panasonic SD-YR2540HTS. Категория: СЕМЕНА.",
+    title: "Хлеб с семечками",
+    category: "Семена",
+    specialty: "Подсолнечник, тыква, лён, кунжут — хрустящая «семечковая» буханка. Сытнее сладких вариантов, без сахаристости изюма или мёда.",
+    description: "Подсолнечник, тыква, лён, кунжут — хрустящая «семечковая» буханка. Сытнее сладких вариантов, без сахаристости изюма или мёда.",
     tags: ["семена", "с"],
     difficulty: "лёгкий",
     sourceConfidence: "verified-adaptation",
@@ -2802,8 +2912,10 @@
 
   DB.recipes.p32 = {
     id: "p32",
-    title: "Бездрожжевой на йогурте",
-    description: "Технологическая карта из сборника 35 видов хлеба для REDMOND RMC-M92S и Panasonic SD-YR2540HTS. Категория: БЕЗ ДРОЖЖЕЙ.",
+    title: "Йогуртовый бездрожжевой",
+    category: "Без дрожжей",
+    specialty: "Подъём на разрыхлителе и йогурте (меню №11): быстрый профиль вроде soda bread. Плотнее дрожжевых, без брожения и дрожжевого вкуса.",
+    description: "Подъём на разрыхлителе и йогурте (меню №11): быстрый профиль вроде soda bread. Плотнее дрожжевых, без брожения и дрожжевого вкуса.",
     tags: ["бездрожжевой", "бездрожжевой"],
     difficulty: "средний",
     sourceConfidence: "verified-adaptation",
@@ -2855,8 +2967,10 @@
 
   DB.recipes.p33 = {
     id: "p33",
-    title: "Пшенично-ржаной бездрожжевой",
-    description: "Технологическая карта из сборника 35 видов хлеба для REDMOND RMC-M92S и Panasonic SD-YR2540HTS. Категория: БЕЗ ДРОЖЖЕЙ.",
+    title: "Пшенично-ржаной без дрожжей",
+    category: "Без дрожжей",
+    specialty: "Бездрожжевой с долей ржи: плотнее и «хлебнее» чисто йогуртового. Ближе к ржаным по вкусу, но без дрожжевой расстойки.",
+    description: "Бездрожжевой с долей ржи: плотнее и «хлебнее» чисто йогуртового. Ближе к ржаным по вкусу, но без дрожжевой расстойки.",
     tags: ["бездрожжевой", "пшенично-ржаной"],
     difficulty: "средний",
     sourceConfidence: "verified-adaptation",
@@ -2909,8 +3023,10 @@
 
   DB.recipes.p34 = {
     id: "p34",
-    title: "Безглютеновый классический",
-    description: "Технологическая карта из сборника 35 видов хлеба для REDMOND RMC-M92S и Panasonic SD-YR2540HTS. Категория: БЕЗ ГЛЮТЕНА.",
+    title: "Безглютеновый белый",
+    category: "Без глютена",
+    specialty: "Готовая БГ-смесь на программе №12: мягкий «белый» профиль без пшеницы. Не переворачивать на REDMOND — мякиш хрупкий.",
+    description: "Готовая БГ-смесь на программе №12: мягкий «белый» профиль без пшеницы. Не переворачивать на REDMOND — мякиш хрупкий.",
     tags: ["безглютеновый", "безглютеновый"],
     difficulty: "средний",
     sourceConfidence: "verified-adaptation",
@@ -2959,7 +3075,9 @@
   DB.recipes.p35 = {
     id: "p35",
     title: "Безглютеновый с семенами",
-    description: "Технологическая карта из сборника 35 видов хлеба для REDMOND RMC-M92S и Panasonic SD-YR2540HTS. Категория: БЕЗ ГЛЮТЕНА.",
+    category: "Без глютена",
+    specialty: "БГ-основа с семенами для хруста и сытности. Тот же безглютеновый цикл, что у «белого» БГ, но с зерновой текстурой.",
+    description: "БГ-основа с семенами для хруста и сытности. Тот же безглютеновый цикл, что у «белого» БГ, но с зерновой текстурой.",
     tags: ["безглютеновый", "безглютеновый"],
     difficulty: "средний",
     sourceConfidence: "verified-adaptation",
@@ -3302,6 +3420,8 @@
     nearMatchOn: true,
     pantryCategory: "all",
     pantryQuery: "",
+    catalogCategory: "all",
+    catalogQuery: "",
     results: [],
     resultsTab: "panasonic",
     selectedRecipeId: null,
@@ -3317,6 +3437,20 @@
     expandedIng: null,
     activeTimerId: null
   };
+
+  var CATALOG_CATEGORY_ORDER = [
+    "Базовые",
+    "Европейские",
+    "Цельнозерновые",
+    "Смесовые",
+    "Ржаные",
+    "Добавки",
+    "Кисломолочные",
+    "Сладкие",
+    "Семена",
+    "Без дрожжей",
+    "Без глютена"
+  ];
 
   var StorageAdapter = {
     available: false,
@@ -3571,6 +3705,97 @@
   }
 
   /* =========================================================
+   * Render: Catalog of bread types
+   * ========================================================= */
+  function catalogCategories() {
+    var present = {};
+    Object.keys(DB.recipes).forEach(function (id) {
+      var c = DB.recipes[id].category;
+      if (c) present[c] = true;
+    });
+    return CATALOG_CATEGORY_ORDER.filter(function (c) { return present[c]; });
+  }
+
+  function renderCatalogCats() {
+    var wrap = $("#catalog-cats");
+    if (!wrap) return;
+    wrap.textContent = "";
+    var cats = [{ id: "all", name: "Все" }].concat(
+      catalogCategories().map(function (c) { return { id: c, name: c }; })
+    );
+    cats.forEach(function (c) {
+      var selected = state.catalogCategory === c.id;
+      var b = el("button", {
+        type: "button",
+        className: "chip" + (selected ? " active" : ""),
+        text: c.name,
+        role: "tab",
+        "aria-selected": selected ? "true" : "false"
+      });
+      b.addEventListener("click", function () {
+        state.catalogCategory = c.id;
+        renderCatalog();
+      });
+      wrap.appendChild(b);
+    });
+  }
+
+  function renderCatalog() {
+    renderCatalogCats();
+    var grid = $("#catalog-grid");
+    if (!grid) return;
+    grid.textContent = "";
+    var q = normalizeName(state.catalogQuery);
+    var ids = Object.keys(DB.recipes).sort(function (a, b) {
+      return DB.recipes[a].title.localeCompare(DB.recipes[b].title, "ru");
+    });
+    var shown = 0;
+    ids.forEach(function (id) {
+      var recipe = DB.recipes[id];
+      if (state.catalogCategory !== "all" && recipe.category !== state.catalogCategory) return;
+      if (q) {
+        var hay = normalizeName(
+          recipe.title + " " + (recipe.specialty || "") + " " + (recipe.category || "") + " " + (recipe.tags || []).join(" ")
+        );
+        if (hay.indexOf(q) === -1) return;
+      }
+      var card = el("article", { className: "catalog-card", role: "listitem" });
+      card.appendChild(el("h3", { text: recipe.title }));
+      var meta = el("div", { className: "catalog-meta" });
+      if (recipe.category) {
+        meta.appendChild(el("span", { className: "badge badge-gold", text: recipe.category }));
+      }
+      meta.appendChild(el("span", { className: "badge badge-green", text: recipe.difficulty || "" }));
+      card.appendChild(meta);
+      card.appendChild(el("p", {
+        className: "specialty",
+        text: recipe.specialty || recipe.description || ""
+      }));
+      var btn = el("button", {
+        type: "button",
+        className: "btn btn-primary",
+        text: "Открыть рецепт"
+      });
+      btn.addEventListener("click", function () {
+        openRecipe(id, "panasonic_sd_yr2540hts");
+      });
+      card.appendChild(btn);
+      grid.appendChild(card);
+      shown++;
+    });
+    if (!shown) {
+      grid.appendChild(el("p", {
+        className: "pantry-empty",
+        text: q
+          ? "Ничего не найдено по запросу «" + state.catalogQuery + "»."
+          : "В этой категории пока нет рецептов."
+      }));
+    }
+    var stat = $("#catalog-stat");
+    if (stat) stat.textContent = "Показано: " + shown + " из " + Object.keys(DB.recipes).length;
+  }
+
+  /* =========================================================
    * Render: Results
    * ========================================================= */
   function runSearch() {
@@ -3631,8 +3856,7 @@
         }));
       }
       card.appendChild(el("p", {
-        text: m.recipe.description,
-        // style via attr not supported easily
+        text: m.recipe.specialty || m.recipe.description || ""
       }));
       card.lastChild.style.fontSize = "0.85rem";
       card.lastChild.style.color = "var(--text-muted)";
@@ -3688,7 +3912,9 @@
     var recipe = currentRecipe();
     if (!recipe) return;
     $("#ws-title").textContent = recipe.title;
-    $("#ws-desc").textContent = recipe.description + " · " + (recipe.sourceNotes || "");
+    $("#ws-desc").textContent = (recipe.specialty || recipe.description || "") +
+      (recipe.category ? " · " + recipe.category : "") +
+      (recipe.sourceNotes ? " · " + recipe.sourceNotes : "");
 
     renderMachinePicker(recipe);
     renderScaleControls();
@@ -4295,6 +4521,7 @@
         }
         persist();
         renderPantry();
+        renderCatalog();
         if (state.selectedRecipeId && DB.recipes[state.selectedRecipeId]) {
           renderWorkspace();
         }
@@ -4367,6 +4594,13 @@
     assert("p27 has cheese", DB.recipes.p27.ingredients.some(function (i) { return i.ingredientId === "cheese"; }));
     assert("pantry hides puree name", DB.ingredients.potato.name === "Картофель");
     assert("pantry onion raw name", DB.ingredients.onion_fried.name.indexOf("Лук") === 0);
+    assert("p15 Darnitsky", DB.recipes.p15.title === "Дарницкий");
+    assert("p16 Borodinsky", DB.recipes.p16.title === "Бородинский");
+    assert("p01 sliced white", DB.recipes.p01.title === "Нарезной белый");
+    assert("all have specialty", Object.keys(DB.recipes).every(function (id) {
+      return !!(DB.recipes[id].specialty && DB.recipes[id].specialty.length > 20 && DB.recipes[id].category);
+    }));
+    assert("catalog cats nonempty", catalogCategories().length >= 8);
 
     var r = DB.recipes.p01;
     var s400 = scaleRecipe(r, 400, []);
@@ -4514,6 +4748,15 @@
       toast("Список продуктов очищен", "ok");
     });
     $("#btn-search").addEventListener("click", runSearch);
+
+    var debouncedCatalog = debounce(function () { renderCatalog(); }, 180);
+    var catalogSearch = $("#catalog-search");
+    if (catalogSearch) {
+      catalogSearch.addEventListener("input", function (e) {
+        state.catalogQuery = e.target.value;
+        debouncedCatalog();
+      });
+    }
   }
 
   function bindResultsEvents() {
@@ -4720,6 +4963,7 @@
     restore();
     bindEvents();
     renderPantry();
+    renderCatalog();
     if (state.selectedRecipeId && DB.recipes[state.selectedRecipeId]) {
       $("#recipe-workspace").classList.remove("hidden");
       $("#calibration").classList.remove("hidden");
@@ -4737,7 +4981,8 @@
       isBreadLabImportPayload: isBreadLabImportPayload,
       stopCookTimerInterval: stopCookTimerInterval,
       closeCookMode: closeCookMode,
-      openCookMode: openCookMode
+      openCookMode: openCookMode,
+      renderCatalog: renderCatalog
     };
   }
 
