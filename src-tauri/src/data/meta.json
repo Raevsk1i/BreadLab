@@ -1,0 +1,63 @@
+{
+  "version": "1.0.0",
+  "alwaysAvailable": [
+    "water",
+    "water_extra",
+    "scald_water",
+    "potato_water",
+    "seed_mix",
+    "salt",
+    "sugar"
+  ],
+  "categories": [
+    {
+      "id": "all",
+      "name": "Все"
+    },
+    {
+      "id": "flour",
+      "name": "Мука"
+    },
+    {
+      "id": "yeast",
+      "name": "Дрожжи"
+    },
+    {
+      "id": "liquid",
+      "name": "Жидкости"
+    },
+    {
+      "id": "fat",
+      "name": "Масла"
+    },
+    {
+      "id": "sweetener",
+      "name": "Сладости"
+    },
+    {
+      "id": "dairy",
+      "name": "Молочное"
+    },
+    {
+      "id": "seed",
+      "name": "Семена"
+    },
+    {
+      "id": "nut",
+      "name": "Орехи"
+    },
+    {
+      "id": "spice",
+      "name": "Специи"
+    },
+    {
+      "id": "veg",
+      "name": "Овощи/зелень"
+    },
+    {
+      "id": "other",
+      "name": "Прочее"
+    }
+  ],
+  "staples": []
+}

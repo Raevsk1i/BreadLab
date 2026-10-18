@@ -1,0 +1,30 @@
+:root {
+      --bg: #FDFBF7;
+      --surface: #FFFFFF;
+      --text: #2C221E;
+      --text-muted: #65534A;
+      --text-soft: #8C7A70;
+      --primary: #8C5A32;
+      --primary-hover: #734826;
+      --border: #EFE8DE;
+      --border-accent: #D4B28C;
+      --green: #587B53;
+      --green-dark: #3B6032;
+      --green-bg: #E8F0E6;
+      --green-border: #C4DCBF;
+      --gold: #D99B26;
+      --gold-bg: #FBF3E0;
+      --danger: #A94442;
+      --danger-bg: #F8E8E8;
+      --warn: #B8860B;
+      --warn-bg: #FBF3E0;
+      --radius-sm: 10px;
+      --radius-md: 14px;
+      --radius-lg: 20px;
+      --shadow-card: 0 6px 24px rgba(44, 34, 30, 0.06);
+      --max: 1120px;
+      --header-h: 64px;
+    }
+
+*, *::before, *::after { box-sizing: border-box; }
+html { scroll-behavior: smooth; }

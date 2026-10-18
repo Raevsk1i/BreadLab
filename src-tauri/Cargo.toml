@@ -1,0 +1,32 @@
+[package]
+name = "breadlab"
+version = "1.0.0"
+description = "BreadLab — desktop bread recipe lab for Panasonic and REDMOND"
+authors = ["BreadLab"]
+edition = "2021"
+
+[lib]
+name = "breadlab_lib"
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+tauri = { version = "2", features = [] }
+tauri-plugin-dialog = "2"
+tauri-plugin-clipboard-manager = "2"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+thiserror = "2"
+chrono = { version = "0.4", default-features = true, features = ["serde", "clock"] }
+
+[dev-dependencies]
+tempfile = "3"
+
+[profile.release]
+codegen-units = 1
+lto = true
+opt-level = "z"
+panic = "abort"
+strip = true

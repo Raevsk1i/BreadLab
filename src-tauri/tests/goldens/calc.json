@@ -1,0 +1,56 @@
+{
+  "recipeCount": 35,
+  "p01_scale_factor_600": 1.5,
+  "p01_water_600": 390,
+  "p01_hydration_400": 65,
+  "p01_dough_mass_400": 697,
+  "p01_finished_400": {
+    "min": 592.4499999999999,
+    "max": 620.33
+  },
+  "p01_volume_400": {
+    "initialMl": 663.8095238095237,
+    "proofedMinMl": 1261.238095238095,
+    "proofedMaxMl": 1460.3809523809523,
+    "recommendedBowlMl": 1825.4761904761904
+  },
+  "panasonic_warns": {
+    "f349": [
+      {
+        "level": "warn",
+        "code": "flour_low"
+      }
+    ],
+    "f350": [],
+    "f600": [],
+    "f601": [
+      {
+        "level": "danger",
+        "code": "flour_high"
+      }
+    ]
+  },
+  "dispenser_over_150": {
+    "load": 208,
+    "codes": [
+      "dispenser"
+    ],
+    "levels": [
+      "danger"
+    ]
+  },
+  "mixed_flour_ratio": {
+    "at400": 1,
+    "at500": 1
+  },
+  "alias_wheat": "wheat_flour",
+  "match_count": 48,
+  "match_has_exact_or_near": true,
+  "programs": {
+    "p01": "01",
+    "p02": "02",
+    "p07": "09",
+    "p16": "10",
+    "p32": "11"
+  }
+}

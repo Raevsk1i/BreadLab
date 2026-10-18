@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="BreadLab — автономная лаборатория выпечки хлеба для Panasonic SD-YR2540HTS и REDMOND SkyCooker RMC-M92S" />
+  <title>BreadLab — лаборатория хлеба</title>
+</head>
+<body>
+<div id="storage-banner" class="storage-banner hidden" role="status">
+    Автосохранение недоступно в этом браузере. Для резервной копии используйте «Экспорт JSON».
+  </div>
+
+  <div id="resume-cook" class="resume-bar hidden" role="status"></div>
+
+  <header class="app-header">
+    <div class="app-header-inner">
+      <a class="brand" href="#hero"><span class="brand-emoji" aria-hidden="true">🍞</span> BreadLab</a>
+      <details class="nav-menu" id="nav-menu">
+        <summary>Меню</summary>
+        <nav class="nav" aria-label="Основная навигация">
+          <a href="#pantry">Ингредиенты</a>
+          <a href="#catalog">Виды хлеба</a>
+          <a href="#search-results">Рецепты</a>
+          <a href="#recipe-workspace">Калькулятор</a>
+          <a href="#cook-mode-anchor">Готовим</a>
+          <a href="#sources">Справка</a>
+        </nav>
+      </details>
+      <div class="header-actions no-print">
+        <button type="button" class="btn btn-secondary" id="btn-export" title="Экспорт данных">Экспорт</button>
+        <button type="button" class="btn btn-secondary" id="btn-import" title="Импорт JSON">Импорт</button>
+        </div>
+    </div>
+  </header>
+
+  <main id="app">
+    <!-- HERO -->
+    <section id="hero" class="section">
+      <div class="hero-card">
+        <span class="badge badge-green">Offline · без сервера · desktop</span>
+        <h1>Отметьте, что есть дома — BreadLab подскажет, какой хлеб испечь</h1>
+        <p class="lead">
+          Локальный поиск по верифицированным рецептам для Panasonic SD-YR2540HTS и REDMOND SkyCooker RMC-M92S.
+          Масштабирование по пекарским процентам, расчёт массы теста, оценка подъёма и пошаговый режим готовки.
+        </p>
+        <div class="grid-2" style="margin-top:1.25rem">
+          <div class="machine-mini">
+            <strong>Panasonic SD-YR2540HTS</strong>
+            <span>Автоцикл · диспенсер дрожжей и добавок · программы 01–13, 27–28</span>
+          </div>
+          <div class="machine-mini">
+            <strong>REDMOND SkyCooker RMC-M92S</strong>
+            <span>MULTI COOK 35 °C · BAKE · BREAD · переворот — рекомендация</span>
+          </div>
+        </div>
+        <div style="margin-top:1.25rem">
+          <a class="btn btn-primary btn-lg" href="#pantry">Выбрать продукты</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- PANTRY -->
+    <section id="pantry" class="section">
+      <div class="section-head">
+        <h2>Что есть дома</h2>
+        <p>Отметьте продукты — приложение сопоставит их с каталогом рецептов (не генерирует новые).</p>
+      </div>
+      <div class="card">
+        <div class="field" style="margin-bottom:0.85rem">
+          <label for="pantry-search">Найти ингредиент</label>
+          <input type="search" id="pantry-search" class="input" placeholder="Например: ржаная, дрожжи, сыр…" autocomplete="off">
+        </div>
+        <div class="chips" id="pantry-cats" role="tablist" aria-label="Категории"></div>
+        <div class="pantry-grid" id="pantry-list" role="group" aria-label="Список продуктов"></div>
+        <div class="toolbar">
+          <div style="display:flex;flex-wrap:wrap;gap:0.5rem;align-items:center">
+            <button type="button" class="btn btn-ghost" id="btn-clear-pantry">Очистить</button>
+            <button type="button" class="btn btn-primary btn-lg" id="btn-search">Найти, что можно испечь</button>
+          </div>
+        </div>
+        <p class="stat-line" id="pantry-stat" aria-live="polite">Выбрано: 0</p>
+      </div>
+    </section>
+
+    <!-- CATALOG -->
+    <section id="catalog" class="section">
+      <details id="catalog-details" open>
+        <summary>
+          <span>Виды хлеба</span>
+          <span class="catalog-count" id="catalog-count">35 видов</span>
+        </summary>
+        <div class="catalog-body">
+          <p style="margin:0.85rem 0 1rem;color:var(--text-soft);font-size:0.92rem">
+            Каталог всех видов: выберите понравившийся — откроются ингредиенты, расчёты и шаги для вашей машины.
+          </p>
+          <div class="field" style="margin-bottom:0.85rem">
+            <label for="catalog-search">Найти хлеб</label>
+            <input type="search" id="catalog-search" class="input" placeholder="Например: бородинский, дарницкий, сырный…" autocomplete="off">
+          </div>
+          <div class="chips" id="catalog-cats" role="tablist" aria-label="Категории хлеба"></div>
+          <div class="chips" id="catalog-diff" role="group" aria-label="Сложность" style="margin-top:0.5rem"></div>
+          <div style="display:flex;flex-wrap:wrap;gap:0.75rem;margin-top:0.65rem">
+            <label class="check-row" style="max-width:280px">
+              <input type="checkbox" id="flt-fav">
+              <span><span class="name">Только избранное</span></span>
+            </label>
+            <label class="check-row" style="max-width:320px">
+              <input type="checkbox" id="flt-bake">
+              <span><span class="name">Можно испечь из того, что есть</span></span>
+            </label>
+          </div>
+          <div id="catalog-shortcuts"></div>
+          <p class="stat-line" id="catalog-stat" aria-live="polite" style="margin:0.75rem 0 0">Показано: 0</p>
+          <div id="catalog-grid" class="grid-2" style="margin-top:1rem" role="list"></div>
+        </div>
+      </details>
+    </section>
+
+    <!-- RESULTS -->
+    <section id="search-results" class="section hidden">
+      <div class="section-head">
+        <h2>Что можно испечь</h2>
+        <p id="results-summary" aria-live="polite">Результаты поиска</p>
+      </div>
+      <label class="check-row" style="max-width:560px;margin-bottom:1rem">
+        <input type="checkbox" id="opt-near" checked>
+        <span><span class="name">Показывать рецепты, где не хватает ≤ 2 ингредиентов</span></span>
+      </label>
+      <div class="tabs" role="tablist">
+        <button type="button" class="tab active" data-tab="panasonic" id="tab-panasonic">Panasonic SD-YR2540HTS</button>
+        <button type="button" class="tab" data-tab="redmond" id="tab-redmond">REDMOND SkyCooker</button>
+      </div>
+      <div id="results-panasonic" class="grid-2" role="tabpanel"></div>
+      <div id="results-redmond" class="grid-2 hidden" role="tabpanel"></div>
+    </section>
+
+    <!-- WORKSPACE -->
+    <section id="recipe-workspace" class="section hidden">
+      <div class="section-head">
+        <h2 id="ws-title">Рецепт</h2>
+        <p id="ws-desc"></p>
+      </div>
+
+      <div class="card" style="margin-bottom:1rem">
+        <h3 style="font-size:1.05rem;margin-bottom:0.75rem">Где будем готовить?</h3>
+        <div class="grid-2" id="machine-picker"></div>
+      </div>
+
+      <div class="card" style="margin-bottom:1rem">
+        <div class="scale-box">
+          <div class="scale-row">
+            <label for="flour-range"><strong>Количество общей муки</strong></label>
+            <div style="display:flex;align-items:center;gap:0.5rem">
+              <button type="button" class="btn btn-secondary" id="flour-minus" aria-label="Уменьшить">−</button>
+              <input type="number" id="flour-input" class="input" style="width:6rem;text-align:center" min="250" max="650" step="1">
+              <button type="button" class="btn btn-secondary" id="flour-plus" aria-label="Увеличить">+</button>
+              <span class="flour-value"><span id="flour-display">450</span> г</span>
+            </div>
+          </div>
+          <input type="range" id="flour-range" min="300" max="600" step="5" value="450" aria-label="Количество общей муки">
+          <div id="scale-warnings"></div>
+        </div>
+      </div>
+
+      <div class="grid-kpi" id="kpi-grid" style="margin-bottom:1rem"></div>
+
+      <div class="card" style="margin-bottom:1rem">
+        <div style="display:flex;flex-wrap:wrap;justify-content:space-between;gap:0.5rem;align-items:center;margin-bottom:0.75rem">
+          <h3 style="font-size:1.05rem;margin:0">Ингредиенты</h3>
+          <div style="display:flex;flex-wrap:wrap;gap:0.5rem">
+            <button type="button" class="btn btn-secondary" id="btn-copy-ings">Скопировать список</button>
+            <button type="button" class="btn btn-primary" id="btn-shopping">Скопировать, чего не хватает</button>
+          </div>
+        </div>
+        <div id="shopping-panel" class="shopping-panel"></div>
+        <div class="table-wrap desktop-table">
+          <table class="ing-table">
+            <thead>
+              <tr>
+                <th>Ингредиент</th>
+                <th>Граммы</th>
+                <th>% пекаря</th>
+                <th>Роль</th>
+                <th>Куда</th>
+                <th>Когда</th>
+              </tr>
+            </thead>
+            <tbody id="ing-tbody"></tbody>
+          </table>
+        </div>
+        <div class="mobile-cards" id="ing-mobile"></div>
+      </div>
+
+      <div class="card" style="margin-bottom:1rem">
+        <h3 style="font-size:1.05rem;margin-bottom:0.35rem">Добавить по вкусу</h3>
+        <p style="font-size:0.85rem;color:var(--text-muted);margin-bottom:0.85rem">
+          Добавки масштабируются с мукой, входят в массу теста, прогноз буханки и лимит диспенсера.
+        </p>
+        <div class="grid-2" id="addins-grid"></div>
+      </div>
+
+      <div class="card" style="margin-bottom:1rem" id="machine-instructions">
+        <h3 style="font-size:1.05rem;margin-bottom:0.75rem">Инструкция для выбранной техники</h3>
+        <ol id="steps-list" style="margin:0;padding-left:1.25rem;color:var(--text-muted);font-size:0.9rem"></ol>
+      </div>
+
+      <div id="cook-mode-anchor" class="toolbar" style="justify-content:flex-start;gap:0.75rem">
+        <button type="button" class="btn btn-primary btn-lg" id="btn-cook">🍞 Начать приготовление</button>
+        <button type="button" class="btn btn-secondary" id="btn-favorite">☆ В избранное</button>
+        <button type="button" class="btn btn-ghost" id="btn-reset-addins">Сбросить добавки</button>
+      </div>
+    </section>
+
+    <!-- CALIBRATION -->
+    <section id="calibration" class="section hidden">
+      <div class="section-head">
+        <h2>Что получилось?</h2>
+        <p>Сохраните фактический вес буханки — следующая оценка станет точнее для вашей кухни.</p>
+      </div>
+      <div class="card" style="max-width:480px">
+        <div class="field" style="margin-bottom:0.75rem">
+          <label for="calib-weight">Фактическая масса хлеба, г</label>
+          <input type="number" id="calib-weight" class="input" min="100" max="2000" step="1" placeholder="например 680">
+        </div>
+        <div class="field" style="margin-bottom:0.75rem">
+          <label for="calib-fill">Пиковое заполнение чаши, % (оценка)</label>
+          <input type="number" id="calib-fill" class="input" min="10" max="100" step="1" placeholder="например 65">
+        </div>
+        <button type="button" class="btn btn-primary" id="btn-save-calib">Сохранить калибровку</button>
+        <p class="stat-line" id="calib-status" style="margin-top:0.75rem"></p>
+      </div>
+    </section>
+
+    <!-- SOURCES -->
+    <section id="sources" class="section">
+      <div class="section-head">
+        <h2>Методология и источники</h2>
+        <p>Как считаем и откуда данные.</p>
+      </div>
+      <div class="card">
+        <ul style="margin:0;padding-left:1.2rem;color:var(--text-muted);font-size:0.9rem">
+          <li><strong>Пекарский %</strong> — суммарная мука = 100%; остальные ингредиенты масштабируются пропорционально.</li>
+          <li><strong>Гидратация</strong> — только водосодержащие жидкости (вода, молоко, кефир, отвар). Масла не входят.</li>
+          <li><strong>Вес буханки</strong> — диапазон с упёком 11–16%: оценка, не лабораторное измерение.</li>
+          <li><strong>Объём теста</strong> — эвристика (плотность ≈1.05 г/мл × коэффициент расширения × запас 25%).</li>
+          <li><strong>Panasonic SD-YR2540HTS</strong> — программы по ТЗ: 01 Основной, 03 с изюмом, 04 с начинкой, 06 цельнозерновой, 08 ЦЗ с изюмом, 09 французский, 10 ржаной, 13 выпечка, 27/28 ручной замес/подъём. Лимиты муки 350–600 г (хлеб), диспенсер добавок ≤150 г.</li>
+          <li><strong>REDMOND</strong> — переворот не обязателен производителем; предлагается для румяной верхней корочки.</li>
+          <li>Рецептуры 1–10 — из технологического справочника; номера программ исправлены по таблице модели.</li>
+          <li>Индикаторы: 🟢 проверенная адаптация · 🟡 расчётная оценка · 🟠 экспериментальная добавка.</li>
+        </ul>
+      </div>
+      <div class="card" id="settings" style="margin-top:1rem">
+        <h3 style="font-size:1.05rem">Настройки</h3>
+        <div class="field" style="margin-bottom:0.75rem">
+          <label for="set-machine">Машина по умолчанию в каталоге</label>
+          <select id="set-machine" class="input">
+            <option value="panasonic_sd_yr2540hts">Panasonic SD-YR2540HTS</option>
+            <option value="redmond_rmc_m92s">REDMOND SkyCooker RMC-M92S</option>
+          </select>
+        </div>
+        <p style="font-size:0.85rem;color:var(--text-muted)">Количество муки запоминается, пока вы не откроете другой рецепт.</p>
+        <label class="check-row" style="max-width:360px">
+          <input type="checkbox" id="set-large">
+          <span><span class="name">Крупный текст шагов</span></span>
+        </label>
+      </div>
+    </section>
+
+    <div id="debug-panel" class="hidden" aria-live="polite"></div>
+  </main>
+
+  <footer class="app-footer">
+    BreadLab · автономная лаборатория хлеба · desktop · Rust + TypeScript + Tauri 2
+  </footer>
+
+  <!-- Cook Mode Overlay -->
+  <div id="cook-overlay" class="cook-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="cook-heading">
+    <div class="cook-inner">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:0.75rem;flex-wrap:wrap">
+        <h2 id="cook-heading" style="margin:0">Режим готовки</h2>
+        <button type="button" class="btn btn-secondary" id="btn-close-cook">Закрыть</button>
+      </div>
+      <p id="cook-sub" style="color:var(--text-muted);font-size:0.9rem"></p>
+      <div class="progress-track"><div class="progress-fill" id="cook-progress"></div></div>
+      <p class="stat-line" id="cook-progress-label">Шаг 0 из 0</p>
+
+      <div class="timer-box" id="timer-box">
+        <div>
+          <div style="font-size:0.8rem;color:var(--text-soft)" id="timer-label">Таймер</div>
+          <div class="timer-display" id="timer-display">00:00</div>
+        </div>
+        <div style="display:flex;gap:0.4rem;flex-wrap:wrap">
+          <button type="button" class="btn btn-primary" id="timer-start">Старт</button>
+          <button type="button" class="btn btn-secondary" id="timer-pause">Пауза</button>
+          <button type="button" class="btn btn-ghost" id="timer-reset">Сброс</button>
+        </div>
+      </div>
+
+      <div id="cook-steps"></div>
+      <div class="cook-actions" id="cook-actions">
+        <button type="button" class="btn btn-secondary" id="cook-prev">← Назад</button>
+        <button type="button" class="btn btn-primary" id="cook-next">Готово →</button>
+        <button type="button" class="btn btn-ghost" id="cook-reset-all">Сбросить процесс</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast-wrap" id="toasts" aria-live="polite"></div>
+
+  <noscript>
+    <p style="padding:2rem;text-align:center">Для работы BreadLab необходим JavaScript.</p>
+  </noscript>
+  <script type="module" src="/src/main.ts"></script>
+</body>
+</html>
