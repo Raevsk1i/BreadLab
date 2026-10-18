@@ -372,7 +372,13 @@
       display: flex; gap: 0.75rem; align-items: flex-start;
     }
     .cook-step.done { opacity: 0.65; }
-    .cook-step.current { border-color: var(--border-accent); box-shadow: var(--shadow-card); }
+    .cook-step.current {
+      border-color: var(--primary);
+      background: var(--gold-bg);
+      box-shadow: var(--shadow-card);
+      scroll-margin-top: 1rem;
+      scroll-margin-bottom: 6rem;
+    }
     .cook-step input { width: 1.25rem; height: 1.25rem; margin-top: 0.15rem; accent-color: var(--primary); }
     .timer-box {
       background: var(--bg); border: 1px solid var(--border);
@@ -4903,6 +4909,15 @@
     $("#cook-progress").style.width = pct + "%";
     $("#cook-progress-label").textContent = "Шаг " + Math.min(state.cookStepIndex + 1, steps.length) +
       " из " + steps.length + " · выполнено " + doneCount;
+    var prevBtn = $("#cook-prev");
+    if (prevBtn) prevBtn.textContent = state.cookStepIndex <= 0 ? "← К рецепту" : "← Назад";
+  }
+
+  function scrollCurrentCookStep() {
+    var cur = $("#cook-steps .cook-step.current");
+    if (cur && cur.scrollIntoView) {
+      cur.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
   }
 
   function tickTimers() {
@@ -5532,9 +5547,14 @@
 
     $("#cook-prev").addEventListener("click", function () {
       if (!isCookOpen() || !currentRecipe()) return;
-      state.cookStepIndex = Math.max(0, state.cookStepIndex - 1);
+      if (state.cookStepIndex <= 0) {
+        closeCookMode();
+        return;
+      }
+      state.cookStepIndex -= 1;
       saveCookSession();
       renderCookSteps();
+      scrollCurrentCookStep();
     });
 
     $("#cook-next").addEventListener("click", function () {
@@ -5551,6 +5571,7 @@
       state.cookStepIndex = Math.min(Math.max(steps.length - 1, 0), state.cookStepIndex + 1);
       saveCookSession();
       renderCookSteps();
+      scrollCurrentCookStep();
     });
 
     $("#cook-reset-all").addEventListener("click", function () {
@@ -5561,6 +5582,7 @@
       state.cookStepIndex = 0;
       saveCookSession();
       renderCookSteps();
+      scrollCurrentCookStep();
     });
 
     $("#timer-start").addEventListener("click", function () {
