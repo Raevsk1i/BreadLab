@@ -1,0 +1,694 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Тостовый хлеб «Фисташковый бархат» в Redmond SkyCooker</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,600;0,700;1,400&display=swap" rel="stylesheet">
+  <style>
+    /* Custom Theme & Typography */
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background-color: #FDFBF7;
+      color: #2C221E;
+    }
+    h1, h2, h3, .serif-heading {
+      font-family: 'Playfair Display', serif;
+    }
+    .chart-container {
+      position: relative;
+      width: 100%;
+      max-width: 680px;
+      margin-left: auto;
+      margin-right: auto;
+      height: 320px;
+      max-height: 400px;
+    }
+    @media (min-width: 768px) {
+      .chart-container {
+        height: 360px;
+      }
+    }
+    .accent-bg {
+      background-color: #8C5A32;
+    }
+    .accent-bg-hover:hover {
+      background-color: #734826;
+    }
+    .accent-border {
+      border-color: #D4B28C;
+    }
+    .card-bg {
+      background-color: #FFFFFF;
+      border: 1px solid #EFE8DE;
+    }
+    .pistachio-badge {
+      background-color: #E8F0E6;
+      color: #3B6032;
+      border: 1px solid #C4DCBF;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col">
+
+  <!-- Chosen Palette: Warm Artisan Neutral (#FDFBF7 bg, #8C5A32 crust brown, #D99B26 gold accent, #587B53 pistachio green, #2C221E text) -->
+  
+  <!-- Application Structure Plan: 
+       Designed as a 5-part interactive culinary science dashboard:
+       1. Hero Banner: Core metrics & highlight of user's chosen yeast choice from photo.
+       2. Ingredient Bio-Chemistry Explorer & Yeast Chooser: Matrix comparing yeast types and explaining starch rheology.
+       3. Baker's % Dynamic Calculator: Interactive scaling slider calculating exact grams & domestic measures.
+       4. Thermal Kinetics Chart (Chart.js): Visualizing 180-min Redmond bread program & 120-min flip point.
+       5. Interactive Step-by-Step Execution Checklist: Interactive workflow with progress tracking & embedded timers.
+  -->
+
+  <!-- Visualization & Content Choices:
+       1. Yeast Comparison Matrix -> Dynamic HTML Cards with interaction -> Highlights Dr. Bakers + enzymes from photo.
+       2. Rheology Matrix -> Chart.js Donut Chart -> Shows proportion replacement of gluten by starches & fiber.
+       3. Heat Kinetics -> Chart.js Responsive Line Chart -> Visualizes 36°C proofing vs 125°C baking & 120m mechanical flip.
+       4. Recipe Calculator -> Dynamic JS Inputs -> Real-time calculation of Baker's % and domestic units.
+       Confirming NO SVG graphics used. NO Mermaid JS used.
+  -->
+
+  <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+
+  <!-- Top Header Navigation -->
+  <header class="bg-white/80 backdrop-blur-md sticky top-0 z-50 border-b border-[#EFE8DE]">
+    <div class="max-w-6xl mx-auto px-4 py-3 flex flex-wrap justify-between items-center">
+      <div class="flex items-center gap-2">
+        <span class="text-2xl">🍞</span>
+        <span class="font-bold text-lg text-[#8C5A32] serif-heading">Redmond SkyCooker BakeLab</span>
+      </div>
+      <nav class="flex gap-4 text-sm font-medium text-[#65534A]">
+        <a href="#science" class="hover:text-[#8C5A32] transition-colors">Биохимия</a>
+        <a href="#calculator" class="hover:text-[#8C5A32] transition-colors">Калькулятор</a>
+        <a href="#timeline" class="hover:text-[#8C5A32] transition-colors">Тепломассообмен</a>
+        <a href="#recipe-steps" class="hover:text-[#8C5A32] transition-colors">Инструкция</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="flex-grow max-w-6xl mx-auto px-4 py-8 w-full space-y-12">
+
+    <!-- Hero Section -->
+    <section class="card-bg rounded-2xl p-6 md:p-10 shadow-sm relative overflow-hidden border border-[#EFE8DE]">
+      <div class="max-w-3xl space-y-4">
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold pistachio-badge">
+          <span>✨ Научно-адаптированный рецепт</span>
+          <span>•</span>
+          <span>Redmond SkyCooker</span>
+        </div>
+        <h1 class="text-3xl md:text-5xl font-bold text-[#2C221E] leading-tight">
+          Тостовый хлеб «Фисташковый бархат»
+        </h1>
+        <p class="text-[#65534A] text-base md:text-lg leading-relaxed">
+          Интерактивное руководство по созданию ультрамягкого тостового хлеба, сохраняющего свежесть до 72 часов. Рецепт рассчитан на основе физико-химической модификации клейковины крахмалами и ферментированными дрожжами.
+        </p>
+        
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 pt-4">
+          <div class="bg-[#FDFBF7] p-3 rounded-xl border border-[#EFE8DE]">
+            <span class="block text-xs text-[#8C7A70]">Программа</span>
+            <span class="font-bold text-sm text-[#8C5A32]">«ХЛЕБ» (3 часа)</span>
+          </div>
+          <div class="bg-[#FDFBF7] p-3 rounded-xl border border-[#EFE8DE]">
+            <span class="block text-xs text-[#8C7A70]">Переворот</span>
+            <span class="font-bold text-sm text-[#8C5A32]">На 120-й минуте</span>
+          </div>
+          <div class="bg-[#FDFBF7] p-3 rounded-xl border border-[#EFE8DE]">
+            <span class="block text-xs text-[#8C7A70]">Выход буханки</span>
+            <span class="font-bold text-sm text-[#8C5A32]">~715 грамм</span>
+          </div>
+          <div class="bg-[#FDFBF7] p-3 rounded-xl border border-[#EFE8DE]">
+            <span class="block text-xs text-[#8C7A70]">Выбранные дрожжи</span>
+            <span class="font-bold text-sm text-[#3B6032]">Dr. Bakers + ферменты</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 1: Science & Yeast Explorer -->
+    <section id="science" class="space-y-6">
+      <div class="border-l-4 border-[#8C5A32] pl-4">
+        <h2 class="text-2xl font-bold text-[#2C221E]">1. Биохимия и реология теста</h2>
+        <p class="text-sm text-[#65534A] mt-1">
+          Раздел объясняет, почему сочетание пшеничной муки с крахмалами, клетчаткой и энзимами создает мякиш, который пружинит и не крошится при нарезке для бутербродов.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        
+        <!-- Yeast Selection Logic -->
+        <div class="card-bg p-6 rounded-2xl space-y-4">
+          <h3 class="text-lg font-bold text-[#2C221E] flex items-center gap-2">
+            <span>🧪</span> Выбор дрожжевой системы (из вашего фото)
+          </h3>
+          <p class="text-xs text-[#65534A]">
+            Нажмите на вариант дрожжей, чтобы сравнить их воздействие на белковую матрицу:
+          </p>
+
+          <div class="space-y-3" id="yeast-options">
+            <div onclick="selectYeast('enzymes')" id="yeast-enzymes" class="p-4 rounded-xl border-2 border-[#587B53] bg-[#E8F0E6]/40 cursor-pointer transition-all-custom">
+              <div class="flex justify-between items-center mb-1">
+                <span class="font-bold text-sm text-[#2C221E]">Dr. Bakers с ферментами (РЕКОМЕНДОВАНО)</span>
+                <span class="text-xs font-bold text-[#3B6032] px-2 py-0.5 rounded bg-[#E8F0E6]">Выбрано</span>
+              </div>
+              <p class="text-xs text-[#4A5D46]">
+                Содержит **альфа-амилазу** (питание сахарами) и **ксиланазу** (расщепление пентозанов). Снижает жесткость клейковины, делая мякиш ультрамягким и шелковистым.
+              </p>
+            </div>
+
+            <div onclick="selectYeast('saf')" id="yeast-saf" class="p-4 rounded-xl border border-[#EFE8DE] bg-white cursor-pointer hover:border-[#D4B28C] transition-all-custom">
+              <div class="flex justify-between items-center mb-1">
+                <span class="font-bold text-sm text-[#2C221E]">Саф-Момент</span>
+                <span class="text-xs text-[#8C7A70]">Классический</span>
+              </div>
+              <p class="text-xs text-[#65534A]">
+                Чистая культура *Saccharomyces cerevisiae*. Быстрый подъем, но клейковина сохраняет жесткость. Требуется строгая дозировка крахмала.
+              </p>
+            </div>
+
+            <div onclick="selectYeast('universal')" id="yeast-universal" class="p-4 rounded-xl border border-[#EFE8DE] bg-white cursor-pointer hover:border-[#D4B28C] transition-all-custom">
+              <div class="flex justify-between items-center mb-1">
+                <span class="font-bold text-sm text-[#2C221E]">Dr. Bakers Универсальные</span>
+                <span class="text-xs text-[#8C7A70]">Базовый</span>
+              </div>
+              <p class="text-xs text-[#65534A]">
+                Стабильное умеренное газообразование. Формирует более плотную структуру с укрупненными порами.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Dough Rheology & Starch Distribution Chart -->
+        <div class="card-bg p-6 rounded-2xl flex flex-col justify-between">
+          <div>
+            <h3 class="text-lg font-bold text-[#2C221E] flex items-center gap-2 mb-2">
+              <span>🌾</span> Состав мучной матрицы
+            </h3>
+            <p class="text-xs text-[#65534A] mb-4">
+              Замена 6.7% муки на кукурузный, картофельный крахмалы и клетчатку ослабляет избыточный глютен и удерживает влагу до 3 дней.
+            </p>
+          </div>
+
+          <div class="chart-container">
+            <canvas id="starchDonutChart"></canvas>
+          </div>
+
+          <div class="grid grid-cols-3 gap-2 text-center text-xs mt-4 pt-3 border-t border-[#EFE8DE]">
+            <div>
+              <span class="block font-bold text-[#8C5A32]">Кукурузный</span>
+              <span class="text-[#8C7A70]">Нежность и бархат</span>
+            </div>
+            <div>
+              <span class="block font-bold text-[#D99B26]">Картофельный</span>
+              <span class="text-[#8C7A70]">Защита от черствения</span>
+            </div>
+            <div>
+              <span class="block font-bold text-[#3B6032]">Клетчатка</span>
+              <span class="text-[#8C7A70]">Связывание воды</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Section 2: Interactive Dynamic Recipe Calculator -->
+    <section id="calculator" class="card-bg rounded-2xl p-6 md:p-8 space-y-6">
+      <div class="border-l-4 border-[#8C5A32] pl-4">
+        <h2 class="text-2xl font-bold text-[#2C221E]">2. Интерактивный калькулятор рецептуры (Baker's %)</h2>
+        <p class="text-sm text-[#65534A] mt-1">
+          Калькулятор рассчитывает точные пропорции ингредиентов в граммах и бытовых измерениях. Передвигайте ползунок базового количества муки для масштабирования под размер вашей чаши.
+        </p>
+      </div>
+
+      <!-- Slider Input -->
+      <div class="bg-[#FDFBF7] p-4 md:p-6 rounded-xl border border-[#EFE8DE] space-y-4">
+        <div class="flex flex-wrap justify-between items-center gap-4">
+          <label for="flourRange" class="font-bold text-sm text-[#2C221E]">
+            Масса пшеничной муки высшего сорта: <span id="flourValDisplay" class="text-lg text-[#8C5A32] font-extrabold">420</span> г
+          </label>
+          <div class="text-xs bg-white px-3 py-1.5 rounded-lg border border-[#EFE8DE] text-[#65534A]">
+            Расчетная масса буханки: <strong id="totalLoafWeight" class="text-[#8C5A32]">~715 г</strong>
+          </div>
+        </div>
+        <input type="range" id="flourRange" min="300" max="600" step="10" value="420" 
+               class="w-full h-2 bg-[#EFE8DE] rounded-lg appearance-none cursor-pointer accent-[#8C5A32]"
+               oninput="calculateRecipe(this.value)">
+        <div class="flex justify-between text-xs text-[#8C7A70]">
+          <span>300 г (Маленькая чаша)</span>
+          <span>420 г (Стандарт Redmond 4-5л)</span>
+          <span>600 г (Максимальный объем)</span>
+        </div>
+      </div>
+
+      <!-- Ingredient Table -->
+      <div class="overflow-x-auto">
+        <table class="w-full text-left text-sm border-collapse">
+          <thead>
+            <tr class="border-b border-[#EFE8DE] text-[#8C7A70] text-xs font-semibold uppercase tracking-wider">
+              <th class="py-3 px-3">Ингредиент</th>
+              <th class="py-3 px-3">Вес (г / мл)</th>
+              <th class="py-3 px-3">Бытовое измерение</th>
+              <th class="py-3 px-3">Процент пекаря (%)</th>
+              <th class="py-3 px-3">Роль в тесте</th>
+            </tr>
+          </thead>
+          <tbody id="recipeTableBody" class="divide-y divide-[#EFE8DE] text-[#2C221E]">
+            <!-- JS populated rows -->
+          </tbody>
+        </table>
+      </div>
+
+      <div class="bg-[#E8F0E6]/50 p-4 rounded-xl border border-[#C4DCBF] text-xs text-[#3B6032] flex items-start gap-3">
+        <span class="text-base">💡</span>
+        <span>
+          <strong>Пряность и орехи:</strong> Фисташки подсушиваются и дробятся ножом (фракция 2–4 мм). Кориандр придает глубокий пряно-пшеничный аромат, маскируя травянистый нотатки клетчатки.
+        </span>
+      </div>
+    </section>
+
+    <!-- Section 3: Redmond Thermal Kinetics Chart -->
+    <section id="timeline" class="space-y-6">
+      <div class="border-l-4 border-[#8C5A32] pl-4">
+        <h2 class="text-2xl font-bold text-[#2C221E]">3. Тепломассообмен в Redmond SkyCooker</h2>
+        <p class="text-sm text-[#65534A] mt-1">
+          График показывают кинетику автоматической программы «ХЛЕБ» (180 минут) и критическую точку механического переворота заготовки.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        
+        <div class="lg:col-span-2 card-bg p-6 rounded-2xl flex flex-col justify-between">
+          <div>
+            <div class="flex justify-between items-center mb-4">
+              <h3 class="text-lg font-bold text-[#2C221E] flex items-center gap-2">
+                <span>🔥</span> Температурный профиль режима «Хлеб»
+              </h3>
+              <span class="text-xs bg-[#FDFBF7] px-2.5 py-1 rounded-md border border-[#EFE8DE] text-[#8C5A32] font-semibold">
+                Всего: 180 мин
+              </span>
+            </div>
+            <p class="text-xs text-[#65534A] mb-4">
+              В мультиварке Redmond нагреватель расположен снизу. Верхняя корочка формируется за счет пара. Для румяного верха необходим переворот за 60 мин до конца!
+            </p>
+          </div>
+
+          <div class="chart-container">
+            <canvas id="redmondTempChart"></canvas>
+          </div>
+        </div>
+
+        <!-- Key Milestones -->
+        <div class="space-y-4">
+          <div class="card-bg p-5 rounded-2xl border-l-4 border-emerald-500">
+            <span class="text-xs font-bold uppercase tracking-wider text-emerald-700">Этап 1: 0 – 60 мин</span>
+            <h4 class="font-bold text-sm text-[#2C221E] mt-1">Расстойка (35–38 °C)</h4>
+            <p class="text-xs text-[#65534A] mt-1 leading-relaxed">
+              Активная ферментация дрожжей, образование микропористого объема. <strong>Крышку категорически не открывать!</strong>
+            </p>
+          </div>
+
+          <div class="card-bg p-5 rounded-2xl border-l-4 border-amber-500">
+            <span class="text-xs font-bold uppercase tracking-wider text-amber-700">Этап 2 (Часть 1): 60 – 120 мин</span>
+            <h4 class="font-bold text-sm text-[#2C221E] mt-1">Первичное выпекание (125 °C)</h4>
+            <p class="text-xs text-[#65534A] mt-1 leading-relaxed">
+              Денатурация белков и клейстеризация крахмалов. Нижняя и боковые корки запекаются, мякиш фиксируется.
+            </p>
+          </div>
+
+          <div class="card-bg p-5 rounded-2xl border-l-4 border-red-500 bg-red-50/20">
+            <span class="text-xs font-bold uppercase tracking-wider text-red-600">Критическая точка: 120-я минута</span>
+            <h4 class="font-bold text-sm text-[#2C221E] mt-1">⚡ Механический переворот</h4>
+            <p class="text-xs text-[#65534A] mt-1 leading-relaxed">
+              Таймер обратного отсчета показывает <strong>1:00</strong>. Аккуратно переверните буханку подрумяненным дном вверх для равномерной корочки.
+            </p>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Section 4: Interactive Step-by-Step Execution Guide -->
+    <section id="recipe-steps" class="card-bg rounded-2xl p-6 md:p-8 space-y-6">
+      <div class="flex flex-wrap justify-between items-center gap-4 border-b border-[#EFE8DE] pb-4">
+        <div>
+          <h2 class="text-2xl font-bold text-[#2C221E]">4. Пошаговый регламент приготовления</h2>
+          <p class="text-sm text-[#65534A] mt-0.5">Отмечайте выполненные шаги для контроля процесса</p>
+        </div>
+        
+        <!-- Progress Bar -->
+        <div class="w-full sm:w-48 bg-[#EFE8DE] h-3 rounded-full overflow-hidden">
+          <div id="progressBar" class="bg-[#8C5A32] h-full w-0 transition-all duration-300"></div>
+        </div>
+      </div>
+
+      <!-- Embedded Timer Widget -->
+      <div class="bg-[#FDFBF7] p-4 rounded-xl border border-[#EFE8DE] flex flex-wrap justify-between items-center gap-4">
+        <div class="flex items-center gap-3">
+          <span class="text-2xl">⏱️</span>
+          <div>
+            <h4 class="font-bold text-sm text-[#2C221E]">Таймер активации дрожжей (10 минут)</h4>
+            <p class="text-xs text-[#65534A]">Используйте при замачивании дрожжей Dr. Bakers с сахаром</p>
+          </div>
+        </div>
+        <div class="flex items-center gap-3">
+          <span id="timerDisplay" class="font-mono text-2xl font-bold text-[#8C5A32]">10:00</span>
+          <button onclick="toggleTimer()" id="timerBtn" class="accent-bg accent-bg-hover text-white text-xs font-bold px-4 py-2 rounded-lg transition-colors">
+            Старт
+          </button>
+          <button onclick="resetTimer()" class="bg-white border border-[#EFE8DE] text-[#65534A] text-xs font-bold px-3 py-2 rounded-lg hover:bg-gray-50">
+            Сброс
+          </button>
+        </div>
+      </div>
+
+      <!-- Step Checklist -->
+      <div class="space-y-4" id="stepsContainer">
+        
+        <!-- Step 1 -->
+        <div class="p-4 rounded-xl border border-[#EFE8DE] bg-white flex items-start gap-4 hover:border-[#D4B28C] transition-colors">
+          <input type="checkbox" id="step1" onchange="updateProgress()" class="mt-1 h-5 w-5 rounded border-gray-300 text-[#8C5A32] focus:ring-[#8C5A32] cursor-pointer">
+          <div class="space-y-1">
+            <label for="step1" class="font-bold text-sm text-[#2C221E] cursor-pointer">
+              Шаг 1: Подготовка сухого комплекса и гидратация клетчатки
+            </label>
+            <p class="text-xs text-[#65534A] leading-relaxed">
+              Просейте через сито муку (420г), кукурузный (20г) и картофельный (10г) крахмалы. Добавьте 15г клетчатки, 8г соли и 2г кориандра. Подсушите 35г фисташек на сковороде 3 мин и измельчите ножом.
+            </p>
+          </div>
+        </div>
+
+        <!-- Step 2 -->
+        <div class="p-4 rounded-xl border border-[#EFE8DE] bg-white flex items-start gap-4 hover:border-[#D4B28C] transition-colors">
+          <input type="checkbox" id="step2" onchange="updateProgress()" class="mt-1 h-5 w-5 rounded border-gray-300 text-[#8C5A32] focus:ring-[#8C5A32] cursor-pointer">
+          <div class="space-y-1">
+            <label for="step2" class="font-bold text-sm text-[#2C221E] cursor-pointer">
+              Шаг 2: Активация дрожжей Dr. Bakers с ферментами
+            </label>
+            <p class="text-xs text-[#65534A] leading-relaxed">
+              Подогрейте 310 мл воды до 36–37 °C. Растворите 22г тростникового сахара, высыпьте 8г дрожжей. Оставьте на 7–10 минут до образования пенной шапки.
+            </p>
+          </div>
+        </div>
+
+        <!-- Step 3 -->
+        <div class="p-4 rounded-xl border border-[#EFE8DE] bg-white flex items-start gap-4 hover:border-[#D4B28C] transition-colors">
+          <input type="checkbox" id="step3" onchange="updateProgress()" class="mt-1 h-5 w-5 rounded border-gray-300 text-[#8C5A32] focus:ring-[#8C5A32] cursor-pointer">
+          <div class="space-y-1">
+            <label for="step3" class="font-bold text-sm text-[#2C221E] cursor-pointer">
+              Шаг 3: Замес теста и добавление фисташек
+            </label>
+            <p class="text-xs text-[#65534A] leading-relaxed">
+              Влейте жидкую фазу и 30мл подсолнечного масла в сухую смесь. Вымешивайте руками 8–10 минут. За 2 минуты до конца вымешивания вмешайте рубленые фисташки.
+            </p>
+          </div>
+        </div>
+
+        <!-- Step 4 -->
+        <div class="p-4 rounded-xl border border-[#EFE8DE] bg-white flex items-start gap-4 hover:border-[#D4B28C] transition-colors">
+          <input type="checkbox" id="step4" onchange="updateProgress()" class="mt-1 h-5 w-5 rounded border-gray-300 text-[#8C5A32] focus:ring-[#8C5A32] cursor-pointer">
+          <div class="space-y-1">
+            <label for="step4" class="font-bold text-sm text-[#2C221E] cursor-pointer">
+              Шаг 4: Укладка и запуск программы Redmond
+            </label>
+            <p class="text-xs text-[#65534A] leading-relaxed">
+              Смажьте чашу мультиварки 3–5мл масла. Сформируйте гладкий шар и поместите в центр. Включите режим **«ХЛЕБ»** на **3 часа**.
+            </p>
+          </div>
+        </div>
+
+        <!-- Step 5 -->
+        <div class="p-4 rounded-xl border border-[#EFE8DE] bg-white flex items-start gap-4 hover:border-[#D4B28C] transition-colors">
+          <input type="checkbox" id="step5" onchange="updateProgress()" class="mt-1 h-5 w-5 rounded border-gray-300 text-[#8C5A32] focus:ring-[#8C5A32] cursor-pointer">
+          <div class="space-y-1">
+            <label for="step5" class="font-bold text-sm text-[#2C221E] cursor-pointer">
+              Шаг 5: Переворот буханки (спустя 2 часа / на отметке 1:00)
+            </label>
+            <p class="text-xs text-[#65534A] leading-relaxed">
+              Через 120 минут от начала выпечки открывайте крышку. Используя рукавицы, аккуратно переверните хлеб подрумяненной стороной вверх. Закройте крышку и выпекайте оставшиеся 60 минут.
+            </p>
+          </div>
+        </div>
+
+        <!-- Step 6 -->
+        <div class="p-4 rounded-xl border border-[#EFE8DE] bg-white flex items-start gap-4 hover:border-[#D4B28C] transition-colors">
+          <input type="checkbox" id="step6" onchange="updateProgress()" class="mt-1 h-5 w-5 rounded border-gray-300 text-[#8C5A32] focus:ring-[#8C5A32] cursor-pointer">
+          <div class="space-y-1">
+            <label for="step6" class="font-bold text-sm text-[#2C221E] cursor-pointer">
+              Шаг 6: Извлечение и стабилизация на решетке
+            </label>
+            <p class="text-xs text-[#65534A] leading-relaxed">
+              Сразу после сигнала извлеките хлеб с помощью контейнера-пароварки. Остужайте на решетке 2 часа под хлопковым полотенцем. **Не нарезайте горячим!**
+            </p>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- FAQ Accordion Section -->
+    <section class="card-bg rounded-2xl p-6 md:p-8 space-y-4">
+      <h3 class="text-xl font-bold text-[#2C221E] border-b border-[#EFE8DE] pb-3">Часто задаваемые вопросы (FAQ)</h3>
+      
+      <div class="space-y-3">
+        <details class="group border border-[#EFE8DE] rounded-xl p-4 bg-[#FDFBF7]">
+          <summary class="font-bold text-sm text-[#2C221E] cursor-pointer flex justify-between items-center">
+            Зачем использовать сразу два вида крахмала?
+            <span class="text-[#8C5A32] group-open:rotate-180 transition-transform">▼</span>
+          </summary>
+          <p class="text-xs text-[#65534A] mt-2 leading-relaxed">
+            Кукурузный крахмал разбавляет тяжелый пшеничный глютен, делая мякиш рассыпчатым и «тостовым». Картофельный крахмал связывает больше свободной воды и блокирует черствение (синерезис) до 3 суток.
+          </p>
+        </details>
+
+        <details class="group border border-[#EFE8DE] rounded-xl p-4 bg-[#FDFBF7]">
+          <summary class="font-bold text-sm text-[#2C221E] cursor-pointer flex justify-between items-center">
+            Почему важно не открывать мультиварку в первый час?
+            <span class="text-[#8C5A32] group-open:rotate-180 transition-transform">▼</span>
+          </summary>
+          <p class="text-xs text-[#65534A] mt-2 leading-relaxed">
+            В первый час идет фаза расстойки при 35-38 °C. Открытие крышки приведет к падению давления и температуры, из-за чего поднявшаяся углекислым газом заготовка опадет и станет плотной.
+          </p>
+        </details>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="bg-white border-t border-[#EFE8DE] mt-12 py-6">
+    <div class="max-w-6xl mx-auto px-4 text-center text-xs text-[#8C7A70]">
+      <p>Технологический регламент выпечки тостового хлеба в мультиварках Redmond SkyCooker • 2026</p>
+    </div>
+  </footer>
+
+  <!-- Application JavaScript Logic -->
+  <script>
+    // Base Recipe Formulation Reference Data (Calculated per 420g Flour Base)
+    const baseIngredients = [
+      { name: "Пшеничная мука (высший сорт)", key: "flour", bakerPct: 100, ratio: 1.0, unit: "г", note: "Базовый клейковинный каркас", domestic: (g) => `${Math.round(g)} г (~${(g/130).toFixed(1)} стакана)` },
+      { name: "Кукурузный крахмал", key: "cornStarch", bakerPct: 4.76, ratio: 20/420, unit: "г", note: "Размягчение глютена, бархатистость", domestic: (g) => `${Math.round(g)} г (~1 ст. л. с горкой)` },
+      { name: "Картофельный крахмал", key: "potStarch", bakerPct: 2.38, ratio: 10/420, unit: "г", note: "Удержание влаги, защита от черствения", domestic: (g) => `${Math.round(g)} г (~1 ч. л. с горкой)` },
+      { name: "Сибирская клетчатка «Витаминная»", key: "fiber", bakerPct: 3.57, ratio: 15/420, unit: "г", note: "Укрепление пор, связывание воды", domestic: (g) => `${Math.round(g)} г (~1.5 ст. л.)` },
+      { name: "Вода питьевая (36–37 °C)", key: "water", bakerPct: 73.81, ratio: 310/420, unit: "мл", note: "Гидратация белков и крахмала", domestic: (g) => `${Math.round(g)} мл (~1.25 стакана)` },
+      { name: "Дрожжи Dr. Bakers с ферментами", key: "yeast", bakerPct: 1.90, ratio: 8/420, unit: "г", note: "Ферментативный гидролиз", domestic: (g) => `${Math.round(g)} г (1 пакетик)` },
+      { name: "Тростниковый сахар", key: "sugar", bakerPct: 5.24, ratio: 22/420, unit: "г", note: "Питание дрожжей, карамелизация", domestic: (g) => `${Math.round(g)} г (~1 ст. л. с горкой)` },
+      { name: "Соль поваренная мелкая", key: "salt", bakerPct: 1.90, ratio: 8/420, unit: "г", note: "Укрепление клейковины", domestic: (g) => `${Math.round(g)} г (~1 ч. л. с горкой)` },
+      { name: "Подсолнечное масло", key: "oil", bakerPct: 7.14, ratio: 30/420, unit: "мл", note: "Пластификатор клейковинных нитей", domestic: (g) => `${Math.round(g)} мл (~2 ст. л.)` },
+      { name: "Фисташки очищенные (рубленые)", key: "pistachio", bakerPct: 8.33, ratio: 35/420, unit: "г", note: "Текстурный акцент и вкус", domestic: (g) => `${Math.round(g)} г (~1 горсть)` },
+      { name: "Кориандр молотый", key: "coriander", bakerPct: 0.48, ratio: 2/420, unit: "г", note: "Ароматический профиль", domestic: (g) => `${(g).toFixed(1)} г (~0.5 ч. л.)` }
+    ];
+
+    // Initialize Page & Dynamic Calculations
+    document.addEventListener('DOMContentLoaded', () => {
+      calculateRecipe(420);
+      initDonutChart();
+      initTempChart();
+    });
+
+    // 1. Calculate Recipe Amounts dynamically
+    function calculateRecipe(flourMass) {
+      flourMass = parseFloat(flourMass);
+      document.getElementById('flourValDisplay').innerText = flourMass;
+
+      const tbody = document.getElementById('recipeTableBody');
+      tbody.innerHTML = '';
+
+      let calculatedLoafMass = 0;
+
+      baseIngredients.forEach(item => {
+        const amount = flourMass * item.ratio;
+        if (item.key !== 'coriander') calculatedLoafMass += amount; // estimate raw dough mass
+
+        const tr = document.createElement('tr');
+        tr.className = "hover:bg-[#FDFBF7] transition-colors";
+        tr.innerHTML = `
+          <td class="py-3 px-3 font-semibold text-[#2C221E]">${item.name}</td>
+          <td class="py-3 px-3 font-bold text-[#8C5A32]">${Math.round(amount * 10) / 10} ${item.unit}</td>
+          <td class="py-3 px-3 text-xs text-[#65534A]">${item.domestic(amount)}</td>
+          <td class="py-3 px-3 text-xs text-[#8C7A70]">${item.bakerPct.toFixed(1)}%</td>
+          <td class="py-3 px-3 text-xs text-[#65534A]">${item.note}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+
+      // Rough bake loss calculation (~12% water evaporation during bake)
+      const finishedWeight = Math.round(calculatedLoafMass * 0.88);
+      document.getElementById('totalLoafWeight').innerText = `~${finishedWeight} г`;
+    }
+
+    // 2. Yeast Selection Interactive Matrix
+    function selectYeast(type) {
+      const options = ['enzymes', 'saf', 'universal'];
+      options.forEach(opt => {
+        const el = document.getElementById(`yeast-${opt}`);
+        if (opt === type) {
+          el.className = "p-4 rounded-xl border-2 border-[#587B53] bg-[#E8F0E6]/40 cursor-pointer transition-all-custom";
+        } else {
+          el.className = "p-4 rounded-xl border border-[#EFE8DE] bg-white cursor-pointer hover:border-[#D4B28C] transition-all-custom";
+        }
+      });
+    }
+
+    // 3. Starch Composition Donut Chart
+    function initDonutChart() {
+      const ctx = document.getElementById('starchDonutChart').getContext('2d');
+      new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+          labels: ['Пшеничная мука', 'Кукурузный крахмал', 'Картофельный крахмал', 'Сибирская клетчатка'],
+          datasets: [{
+            data: [93.3, 4.4, 2.2, 3.3],
+            backgroundColor: ['#8C5A32', '#D99B26', '#E2B155', '#587B53'],
+            borderWidth: 2,
+            borderColor: '#FFFFFF'
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              position: 'bottom',
+              labels: { font: { family: 'Plus Jakarta Sans', size: 11 }, boxWidth: 12 }
+            },
+            tooltip: {
+              callbacks: {
+                label: function(context) { return ` ${context.label}: ${context.raw}%`; }
+              }
+            }
+          }
+        }
+      });
+    }
+
+    // 4. Redmond SkyCooker Temperature Kinetics Chart
+    function initTempChart() {
+      const ctx = document.getElementById('redmondTempChart').getContext('2d');
+      new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: ['0m', '15m', '30m', '45m', '60m (Старт печи)', '75m', '90m', '105m', '120m (ПЕРЕВОРОТ)', '135m', '150m', '165m', '180m (Готово)'],
+          datasets: [{
+            label: 'Температура рабочей камеры (°C)',
+            data: [36, 36, 37, 37, 125, 125, 125, 125, 90, 125, 125, 125, 25],
+            borderColor: '#8C5A32',
+            backgroundColor: 'rgba(140, 90, 50, 0.1)',
+            fill: true,
+            tension: 0.3,
+            pointBackgroundColor: [
+              '#8C5A32', '#8C5A32', '#8C5A32', '#8C5A32', 
+              '#D99B26', '#D99B26', '#D99B26', '#D99B26', 
+              '#EF4444', // Highlight Flip Point
+              '#D99B26', '#D99B26', '#D99B26', '#3B6032'
+            ],
+            pointRadius: [4, 4, 4, 4, 5, 5, 5, 5, 8, 5, 5, 5, 6]
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            y: {
+              beginAtZero: true,
+              max: 140,
+              title: { display: true, text: 'Температура (°C)', font: { size: 11 } }
+            },
+            x: {
+              ticks: { maxRotation: 45, minRotation: 45, font: { size: 10 } }
+            }
+          },
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              callbacks: {
+                afterLabel: function(context) {
+                  if (context.dataIndex === 8) return '⚠️ Извлечь чашу и перевернуть хлеб!';
+                  if (context.dataIndex < 4) return 'Фаза расстойки теста';
+                  return 'Фаза выпекания';
+                }
+              }
+            }
+          }
+        }
+      });
+    }
+
+    // 5. Checklist Progress Tracking
+    function updateProgress() {
+      const totalSteps = 6;
+      let checkedCount = 0;
+      for (let i = 1; i <= totalSteps; i++) {
+        if (document.getElementById(`step${i}`).checked) checkedCount++;
+      }
+      const percentage = (checkedCount / totalSteps) * 100;
+      document.getElementById('progressBar').style.width = `${percentage}%`;
+    }
+
+    // 6. Interactive Timer Logic
+    let timerInterval = null;
+    let timerSeconds = 600; // 10 minutes default
+
+    function toggleTimer() {
+      const btn = document.getElementById('timerBtn');
+      if (timerInterval) {
+        clearInterval(timerInterval);
+        timerInterval = null;
+        btn.innerText = 'Старт';
+      } else {
+        btn.innerText = 'Пауза';
+        timerInterval = setInterval(() => {
+          if (timerSeconds > 0) {
+            timerSeconds--;
+            updateTimerDisplay();
+          } else {
+            clearInterval(timerInterval);
+            timerInterval = null;
+            btn.innerText = 'Готово!';
+            alert('⏱️ 10 минут истекли! Дрожжи активированы и готовы к замесу.');
+          }
+        }, 1000);
+      }
+    }
+
+    function resetTimer() {
+      if (timerInterval) {
+        clearInterval(timerInterval);
+        timerInterval = null;
+      }
+      timerSeconds = 600;
+      document.getElementById('timerBtn').innerText = 'Старт';
+      updateTimerDisplay();
+    }
+
+    function updateTimerDisplay() {
+      const mins = Math.floor(timerSeconds / 60);
+      const secs = timerSeconds % 60;
+      document.getElementById('timerDisplay').innerText = 
+        `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+    }
+  </script>
+</body>
+</html>
