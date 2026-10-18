@@ -1,48 +1,50 @@
 # BreadLab — метрики сборки и памяти
 
-Значения ниже — фактические измерения в среде Cloud Agent (Linux), если не указано иное.  
-Цели ТЗ (10–15 МБ дистрибутив, 30–50 МБ RAM) являются ориентирами Tauri+WebView; WebKitGTK/WebView2 добавляют собственный footprint.
+Измерения: Cloud Agent, Linux x86_64, 2026-10-18.  
+Цели ТЗ (10–15 МБ дистрибутив, 30–50 МБ RAM) — ориентиры; системный WebKitGTK/WebView2 доминирует в footprint.
 
 ## Frontend production (Vite)
 
-Измерено: `npm run build` (2026-10-18)
+`npm run build`
 
 | Артефакт | Размер |
 |---|---|
-| `dist/index.html` | ~18 KB |
-| CSS bundle | ~17 KB |
-| JS bundle | ~33 KB |
+| `dist/index.html` | 18.25 KB |
+| CSS bundle | 16.97 KB |
+| JS bundle | 33.31 KB |
 
-Справочные JSON рецептов вшиты в Rust binary (`include_str!`), не в JS-бандл.
+Справочные JSON вшиты в Rust (`include_str!`).
 
-## Rust / Tauri
+## Rust / Tauri checks
 
-| Проверка | Статус |
+| Проверка | Результат |
 |---|---|
 | `cargo test` | 17 passed |
 | `cargo clippy -D warnings` | ok |
 | `npm run build` / `tsc` | ok |
 | `npm test` (Vitest) | 6 passed |
-| `npm run tauri build` | см. ниже |
+| `npm run tauri build` (Linux) | AppImage + DEB ok |
 
-### Release binary / installer
+## Release sizes (Linux)
 
-Заполняется после `npm run tauri build` на доступной ОС.
+| Артефакт | Размер |
+|---|---|
+| `target/release/breadlab` | **4.6 MiB** |
+| `BreadLab_1.0.0_amd64.deb` | **1.8 MiB** |
+| `BreadLab_1.0.0_amd64.AppImage` | **78 MiB** |
 
-| Платформа | Артефакт | Размер | Примечание |
-|---|---|---|---|
-| Linux | AppImage / DEB / binary | _измерить после сборки_ | требует WebKitGTK |
-| Windows | NSIS / MSI | _не собрано в Linux CI_ | собирать на Windows |
+AppImage существенно выше цели 10–15 МБ из‑за упаковки helper/runtime слоёв linuxdeploy; компактный `.deb` ближе к целевому диапазону для систем с установленным WebKitGTK.
 
-## RAM / startup
+Windows NSIS/MSI в этой среде **не собирались**.
 
-| Сценарий | Значение | Примечание |
-|---|---|---|
-| Idle | _измерить при `tauri dev`/`tauri build` run_ | учитывать процесс WebKitGTK |
-| Каталог открыт | _измерить_ | |
-| Cook Mode | _измерить_ | |
-| После open/close Cook ×N | _измерить_ | |
-| Cold start | _измерить_ | |
-| 30 мин idle delta | _не измерено в этой среде_ | |
+## RAM (xvfb, cold start ~5 s, idle)
 
-Если целевые 30–50 МБ недостжимы, причина обычно в системном WebView, а не в объёме прикладного кода BreadLab.
+| Процесс | RSS |
+|---|---|
+| `breadlab` | ~171 MiB |
+| `WebKitNetworkProcess` | ~48 MiB |
+| `WebKitWebProcess` | ~438 MiB |
+| **Сумма (оценка)** | **~657 MiB** |
+
+Цель 30–50 МБ **не достигнута**: основной вклад даёт WebKitGTK WebProcess, а не прикладной код BreadLab.  
+Не измерено в этой среде: каталог/cook-mode дельты, 30‑минутный idle, cold-start latency с UI automation.
