@@ -262,22 +262,29 @@
     .machine-pick small { color: var(--text-soft); font-size: 0.8rem; }
 
     .scale-box {
-      background: var(--bg); border: 1px solid var(--border);
-      border-radius: var(--radius-md); padding: 1rem;
+      background: var(--bg);
+      border: 2px solid var(--border-accent);
+      border-radius: var(--radius-md);
+      padding: 1rem;
+      box-shadow: inset 0 0 0 1px rgba(140, 90, 50, 0.08);
     }
     .scale-row { display: flex; flex-wrap: wrap; gap: 0.75rem; align-items: center; justify-content: space-between; }
     .flour-value { font-size: 1.5rem; color: var(--primary); font-weight: 800; font-family: Georgia, serif; }
     input[type="range"] {
-      width: 100%; height: 8px; border-radius: 999px;
-      appearance: none; background: var(--border); accent-color: var(--primary); margin: 0.75rem 0;
+      width: 100%; height: 12px; border-radius: 999px;
+      appearance: none; background: #C9A87A; accent-color: var(--primary); margin: 0.9rem 0 0.35rem;
+      border: 1px solid #A8875A;
     }
-    .presets { display: flex; flex-wrap: wrap; gap: 0.4rem; }
-    .preset {
-      min-width: 52px; min-height: 36px; padding: 0.3rem 0.55rem;
-      border-radius: var(--radius-sm); border: 1px solid var(--border);
-      background: var(--surface); font-size: 0.8rem; font-weight: 600; color: var(--text-muted);
+    input[type="range"]::-webkit-slider-thumb {
+      appearance: none; width: 28px; height: 28px; border-radius: 50%;
+      background: var(--primary); border: 3px solid #fff;
+      box-shadow: 0 2px 8px rgba(44, 34, 30, 0.25); cursor: pointer;
     }
-    .preset.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+    input[type="range"]::-moz-range-thumb {
+      width: 28px; height: 28px; border-radius: 50%;
+      background: var(--primary); border: 3px solid #fff;
+      box-shadow: 0 2px 8px rgba(44, 34, 30, 0.25); cursor: pointer;
+    }
 
     .kpi {
       background: var(--bg); border: 1px solid var(--border);
@@ -493,18 +500,8 @@
         <div class="chips" id="pantry-cats" role="tablist" aria-label="Категории"></div>
         <div class="pantry-grid" id="pantry-list" role="group" aria-label="Список продуктов"></div>
         <div class="toolbar">
-          <div style="display:flex;flex-direction:column;gap:0.5rem;flex:1">
-            <label class="check-row" style="max-width:520px">
-              <input type="checkbox" id="opt-staples" checked>
-              <span><span class="name">Считать воду, соль и сахар всегда имеющимися</span></span>
-            </label>
-            <label class="check-row" style="max-width:520px">
-              <input type="checkbox" id="opt-near" checked>
-              <span><span class="name">Показывать рецепты, где не хватает ≤ 2 ингредиентов</span></span>
-            </label>
-          </div>
           <div style="display:flex;flex-wrap:wrap;gap:0.5rem;align-items:center">
-            <button type="button" class="btn btn-secondary" id="btn-select-staples">Базовые</button>
+            <button type="button" class="btn btn-secondary" id="btn-select-staples">Соль и сахар</button>
             <button type="button" class="btn btn-ghost" id="btn-clear-pantry">Очистить</button>
             <button type="button" class="btn btn-primary btn-lg" id="btn-search">Найти, что можно испечь</button>
           </div>
@@ -519,15 +516,16 @@
         <h2>Что можно испечь</h2>
         <p id="results-summary" aria-live="polite">Результаты поиска</p>
       </div>
+      <label class="check-row" style="max-width:560px;margin-bottom:1rem">
+        <input type="checkbox" id="opt-near" checked>
+        <span><span class="name">Показывать рецепты, где не хватает ≤ 2 ингредиентов</span></span>
+      </label>
       <div class="tabs" role="tablist">
         <button type="button" class="tab active" data-tab="panasonic" id="tab-panasonic">Panasonic SD-YR2540HTS</button>
         <button type="button" class="tab" data-tab="redmond" id="tab-redmond">REDMOND SkyCooker</button>
       </div>
       <div id="results-panasonic" class="grid-2" role="tabpanel"></div>
       <div id="results-redmond" class="grid-2 hidden" role="tabpanel"></div>
-      <div class="toolbar">
-        <button type="button" class="btn btn-secondary" id="btn-shopping">Скопировать список покупок (чего не хватает)</button>
-      </div>
     </section>
 
     <!-- WORKSPACE -->
@@ -553,8 +551,7 @@
               <span class="flour-value"><span id="flour-display">450</span> г</span>
             </div>
           </div>
-          <input type="range" id="flour-range" min="300" max="600" step="5" value="450">
-          <div class="presets" id="flour-presets"></div>
+          <input type="range" id="flour-range" min="300" max="600" step="5" value="450" aria-label="Количество общей муки">
           <div id="scale-warnings"></div>
         </div>
       </div>
@@ -564,7 +561,10 @@
       <div class="card" style="margin-bottom:1rem">
         <div style="display:flex;flex-wrap:wrap;justify-content:space-between;gap:0.5rem;align-items:center;margin-bottom:0.75rem">
           <h3 style="font-size:1.05rem;margin:0">Ингредиенты</h3>
-          <button type="button" class="btn btn-secondary" id="btn-copy-ings">Скопировать список</button>
+          <div style="display:flex;flex-wrap:wrap;gap:0.5rem">
+            <button type="button" class="btn btn-secondary" id="btn-copy-ings">Скопировать список</button>
+            <button type="button" class="btn btn-primary" id="btn-shopping">Скопировать, чего не хватает</button>
+          </div>
         </div>
         <div class="table-wrap desktop-table">
           <table class="ing-table">
@@ -698,7 +698,8 @@
    * ========================================================= */
   const DB = {
     version: "1.0.0",
-    staples: ["water", "salt", "sugar"],
+    staples: ["salt", "sugar"],
+    alwaysAvailable: ["water", "scald_water", "potato_water", "seed_mix"],
     categories: [
       { id: "all", name: "Все" },
       { id: "flour", name: "Мука" },
@@ -735,7 +736,7 @@
     }, def);
   }
 
-  ing({ id: "wheat_flour", name: "Мука пшеничная высшего / 1 сорта", category: "flour",
+  ing({ id: "wheat_flour", name: "Мука пшеничная", category: "flour",
     aliases: ["пшеничная мука", "хлебопекарная мука", "белая мука", "мука в/с"],
     description: "Основной клейковинный каркас теста.",
     roleDefault: "Структура и объём",
@@ -749,28 +750,28 @@
     increaseEffect: "Ниже подъём, грубее мякиш.",
     decreaseEffect: "Более лёгкий мякиш.",
     substitutions: ["Смесь пшеничной + отрубей"] });
-  ing({ id: "rye_flour", name: "Мука ржаная обдирная", category: "flour",
-    aliases: ["ржаная мука", "обдирная ржаная"],
+  ing({ id: "rye_flour", name: "Мука ржаная", category: "flour",
+    aliases: ["ржаная мука", "обдирная ржаная", "мука ржаная обдирная"],
     description: "Мало глютена; структура за счёт слизей и кислотности.",
     roleDefault: "Ржаной вкус и плотность",
     increaseEffect: "Плотнее и кислее мякиш.",
     decreaseEffect: "Ближе к пшеничному характеру.",
     substitutions: ["Обойная ржаная (чуть грубее)"] });
-  ing({ id: "corn_flour", name: "Мука кукурузная тонкого помола", category: "flour",
+  ing({ id: "corn_flour", name: "Мука кукурузная", category: "flour",
     aliases: ["кукурузная мука"],
     description: "Цвет и рассыпчатость; ослабляет глютен.",
     roleDefault: "Цвет и текстура",
     increaseEffect: "Крошливее мякиш — нужен глютен.",
     decreaseEffect: "Менее выраженный кукурузный вкус.",
     substitutions: ["Кукурузная крупа мелкого помола"] });
-  ing({ id: "water", name: "Вода питьевая", category: "liquid", hydrationFraction: 1,
+  ing({ id: "water", name: "Вода", hideFromPantry: true, category: "liquid", hydrationFraction: 1,
     aliases: ["вода", "тёплая вода"], defaultPantryStaple: true,
     description: "Гидратация белков и крахмала.",
     roleDefault: "Гидратация",
     increaseEffect: "Липкое слабое тесто, риск опадения.",
     decreaseEffect: "Плотный мякиш, слабый подъём.",
     substitutions: ["Слабый картофельный отвар"] });
-  ing({ id: "milk", name: "Молоко цельное", category: "liquid", hydrationFraction: 0.87,
+  ing({ id: "milk", name: "Молоко", category: "liquid", hydrationFraction: 0.87,
     aliases: ["молоко", "тёплое молоко"], category_note: "dairy",
     description: "Смягчает мякиш, даёт лёгкую сладость.",
     roleDefault: "Нежность мякиша",
@@ -779,24 +780,24 @@
     substitutions: ["Вода + сухое молоко"] });
   // fix milk category
   DB.ingredients.milk.category = "dairy";
-  ing({ id: "kefir", name: "Кефир 2,5–3,2%", category: "dairy", hydrationFraction: 0.88,
+  ing({ id: "kefir", name: "Кефир", category: "dairy", hydrationFraction: 0.88,
     aliases: ["кефир"],
     description: "Кисломолочная среда; активирует соду или смягчает клейковину.",
     roleDefault: "Кислотность / разрыхление",
     increaseEffect: "Кислее вкус, мягче тесто.",
     decreaseEffect: "Слабее реакция с содой.",
     substitutions: ["Простокваша", "Натуральный йогурт (разбавить водой)"] });
-  ing({ id: "potato_water", name: "Отвар картофельный", category: "liquid", hydrationFraction: 1,
+  ing({ id: "potato_water", name: "Отвар картофельный", hideFromPantry: true, category: "liquid", hydrationFraction: 1,
     aliases: ["картофельный отвар"],
     description: "Крахмалистая жидкость для мягкости.",
     roleDefault: "Гидратация + крахмал",
     substitutions: ["Вода"] });
-  ing({ id: "scald_water", name: "Кипяток для заварки", category: "liquid", hydrationFraction: 1,
+  ing({ id: "scald_water", name: "Кипяток для заварки", hideFromPantry: true, category: "liquid", hydrationFraction: 1,
     aliases: ["кипяток", "крутой кипяток"],
     description: "Заваривает солод и специи.",
     roleDefault: "Заварка",
     substitutions: [] });
-  ing({ id: "oil", name: "Масло растительное рафинированное", category: "fat", hydrationFraction: 0,
+  ing({ id: "oil", name: "Масло растительное", category: "fat", hydrationFraction: 0,
     aliases: ["растительное масло", "подсолнечное масло"],
     description: "Пластифицирует клейковину, смягчает мякиш.",
     roleDefault: "Пластичность",
@@ -834,36 +835,36 @@
     increaseEffect: "Замедление дрожжей, жёстче вкус.",
     decreaseEffect: "Быстрый подъём, пресный вкус.",
     substitutions: ["Морская мелкого помола"] });
-  ing({ id: "yeast", name: "Дрожжи сухие инстантные", category: "yeast",
+  ing({ id: "yeast", name: "Дрожжи сухие", category: "yeast",
     aliases: ["дрожжи", "сухие дрожжи", "инстантные дрожжи", "саф-момент"],
     description: "Газообразование для подъёма теста.",
     roleDefault: "Подъём",
     increaseEffect: "Быстрый подъём, риск опадения и дрожжевого запаха.",
     decreaseEffect: "Слабый подъём, плотный мякиш.",
     substitutions: ["Свежие дрожжи ×3 по массе (не в диспенсер Panasonic без адаптации)"] });
-  ing({ id: "dry_milk", name: "Сухое обезжиренное молоко", category: "dairy",
+  ing({ id: "dry_milk", name: "Молоко сухое", category: "dairy",
     aliases: ["сухое молоко"],
     description: "Улучшает цвет корочки и мягкость.",
     roleDefault: "Обогащение",
     substitutions: ["Заменить часть воды молоком"] });
-  ing({ id: "gluten", name: "Клейковина сухая пшеничная (глютен)", category: "other",
+  ing({ id: "gluten", name: "Клейковина пшеничная", category: "other",
     aliases: ["глютен", "клейковина"],
     description: "Усиливает каркас при слабой/кукурузной муке.",
     roleDefault: "Усиление структуры",
     increaseEffect: "Жёстче мякиш.",
     decreaseEffect: "Слабее подъём в безглютеновых добавках.",
     substitutions: [] });
-  ing({ id: "malt", name: "Солод ржаной ферментированный", category: "other",
+  ing({ id: "malt", name: "Солод ржаной", category: "other",
     aliases: ["ржаной солод", "солод"],
     description: "Цвет, аромат и ферменты для бородинского профиля.",
     roleDefault: "Цвет и аромат заварки",
     substitutions: ["Солодовый экстракт (осторожно с жидкостью)"] });
-  ing({ id: "coriander", name: "Кориандр молотый", category: "spice",
+  ing({ id: "coriander", name: "Кориандр", category: "spice",
     aliases: ["кориандр"],
     description: "Пряный аромат бородинского хлеба.",
     roleDefault: "Аромат",
     substitutions: ["Семена кориандра дроблёные"] });
-  ing({ id: "caraway", name: "Тмин (семена)", category: "spice",
+  ing({ id: "caraway", name: "Тмин", category: "spice",
     aliases: ["тмин"],
     description: "Посыпка и аромат.",
     roleDefault: "Посыпка / аромат",
@@ -873,38 +874,43 @@
     description: "Подкисление ржаного теста, контроль амилазы.",
     roleDefault: "Кислотность",
     substitutions: ["Лимонный сок"] });
-  ing({ id: "potato_mash", name: "Картофельное пюре (без соли и масла)", category: "other", hydrationFraction: 0.78,
+  ing({ id: "potato_mash", name: "Пюре картофельное", category: "other", hydrationFraction: 0.78,
     aliases: ["пюре", "картофельное пюре"],
     description: "Удерживает влагу, замедляет черствение.",
     roleDefault: "Влага и мягкость",
     substitutions: ["Картофельные хлопья + вода"] });
-  ing({ id: "cheese", name: "Сыр полутвёрдый тёртый", category: "dairy",
+  ing({ id: "cheese", name: "Сыр полутвёрдый", category: "dairy",
     aliases: ["сыр", "тёртый сыр"],
     description: "Вкус и жирность закусочного хлеба. Влажный — в форму, не в диспенсер.",
     roleDefault: "Вкус",
     increaseEffect: "Тяжелее мякиш, жирнее.",
     decreaseEffect: "Слабее сырный вкус.",
     substitutions: ["Гауда", "Российский", "Чеддер"] });
-  ing({ id: "onion_fried", name: "Лук репчатый обжаренный", category: "veg",
+  ing({ id: "onion_fried", name: "Лук репчатый", category: "veg",
     aliases: ["лук", "жареный лук"],
     description: "Сладость и аромат; лучше остудить перед закладкой.",
     roleDefault: "Вкус",
     substitutions: ["Сушёный жареный лук (меньше влаги)"] });
-  ing({ id: "garlic_dry", name: "Чеснок сушёный гранулированный", category: "spice",
+  ing({ id: "garlic_dry", name: "Чеснок сушёный", category: "spice",
     aliases: ["сушёный чеснок", "чеснок гранулированный"],
     description: "Стойкий чесночный аромат без лишней влаги.",
     roleDefault: "Аромат",
     substitutions: ["Свежий чеснок (меньше по массе, в форму)"] });
-  ing({ id: "garlic_fresh", name: "Чеснок свежий (кашица)", category: "veg",
+  ing({ id: "garlic_fresh", name: "Чеснок свежий", category: "veg",
     aliases: ["чеснок", "свежий чеснок"],
     description: "Яркий аромат; влажный — не в диспенсер.",
     roleDefault: "Аромат",
     substitutions: ["Сушёный чеснок"] });
-  ing({ id: "herbs", name: "Зелень укропа и петрушки", category: "veg",
-    aliases: ["укроп", "петрушка", "зелень"],
-    description: "Свежий травяной вкус.",
+  ing({ id: "dill", name: "Укроп", category: "veg",
+    aliases: ["укроп свежий", "зелень укропа"],
+    description: "Свежий укроп для аромата.",
     roleDefault: "Аромат",
-    substitutions: ["Сушёные травы (⅓ массы)"] });
+    substitutions: ["Сушёный укроп (⅓ массы)"] });
+  ing({ id: "parsley", name: "Петрушка", category: "veg",
+    aliases: ["петрушка свежая", "зелень петрушки"],
+    description: "Свежая петрушка для аромата.",
+    roleDefault: "Аромат",
+    substitutions: ["Сушёная петрушка (⅓ массы)"] });
   ing({ id: "eggs", name: "Яйца куриные", category: "dairy", hydrationFraction: 0.75,
     aliases: ["яйца", "яйцо"],
     description: "Структура, цвет и сдобность бриоши.",
@@ -922,7 +928,7 @@
     increaseEffect: "Мыльный привкус.",
     decreaseEffect: "Плотный мякиш.",
     substitutions: ["Разрыхлитель (без реакции с кефиром — другой профиль)"] });
-  ing({ id: "seed_mix", name: "Смесь семян (кунжут, лён, подсолнечник)", category: "seed",
+  ing({ id: "seed_mix", name: "Смесь семян", hideFromPantry: true, category: "seed",
     aliases: ["семена", "кунжут", "лён", "семечки"],
     description: "Хруст и питательность.",
     roleDefault: "Текстура",
@@ -974,14 +980,14 @@
     warnings: [],
     placement: { panasonic: "pan", redmond: "manual" },
     dry: true });
-  addin({ id: "garlic_add", ingredientId: "garlic_dry", name: "Чеснок сушёный (добавка)", category: "spice",
+  addin({ id: "garlic_add", ingredientId: "garlic_dry", name: "Чеснок сушёный дополнительно", category: "spice",
     suggestedBakerPctRange: [0.5, 1.5], defaultPct: 0.8,
     role: "Чесночный акцент",
     effect: "Хорошо сочетается с сыром и травами.",
     warnings: [],
     placement: { panasonic: "pan", redmond: "manual" },
     dry: true });
-  addin({ id: "cheese_add", ingredientId: "cheese", name: "Сыр тёртый (добавка)", category: "dairy",
+  addin({ id: "cheese_add", ingredientId: "cheese", name: "Сыр (добавка)", category: "dairy",
     suggestedBakerPctRange: [8, 20], defaultPct: 12,
     role: "Сырный вкус",
     effect: "Влажный — только в форму, не в диспенсер.",
@@ -1087,11 +1093,14 @@
       panasonic: {
         compatible: true, programNo: "01", programName: "Основной", crust: "Средний", loafSize: "L", totalTimeMin: 240,
         steps: stepTexts([
-          "Засыпьте 5 г сухих дрожжей в верхний дрожжевой диспенсер.",
-          "В чашу просейте муку, добавьте сахар и соль.",
-          "Влейте масло и воду.",
-          "Программа №01 «Основной», размер L, корочка «Средний».",
-          "После сигнала остудите буханку на решётке ≥1 ч."
+          "Подготовьте ингредиенты по таблице выше (масштаб {flour_total} муки). Воду подогрейте до 28–32 °C — не горячее, чтобы не убить дрожжи.",
+          "Отмерьте сухие дрожжи ({yeast}) и засыпьте их только в верхний изолированный диспенсер дрожжей Panasonic. Не кладите дрожжи в чашу вместе с солью.",
+          "В основную чашу просейте пшеничную муку ({wheat_flour}).",
+          "Добавьте к муке сахар ({sugar}) и соль ({salt}). Легко перемешайте сухие компоненты ложкой, чтобы соль не лежала комом.",
+          "Влейте растительное масло ({oil}), затем тёплую воду ({water}).",
+          "Закройте крышку. Выберите программу №01 «Основной», размер L, цвет корочки «Средний».",
+          "Запустите цикл (~4 часа). Не открывайте крышку без необходимости во время расстойки.",
+          "После сигнала извлеките буханку, снимите лопатку и остудите на решётке не менее 1 часа перед нарезкой."
         ]),
         timers: [{ id: "bake", label: "Полный цикл", minutes: 240 }],
         warnings: []
@@ -1102,12 +1111,15 @@
         bake: { program: "BAKE", timeMin: 50, secondBakeMin: 20 },
         flip: { required: false, optional: true, suggestedAtMin: 50, reason: "Для румяной верхней корочки." },
         steps: stepTexts([
-          "Растворите в тёплой воде сахар, соль и дрожжи, добавьте масло.",
-          "Всыпьте муку, вымешивайте ~12 мин до прекращения липкости.",
-          "Шар в смазанную чашу. MULTI COOK 35 °C — 60 мин.",
-          "BAKE ~50 мин.",
-          "По желанию переверните и допекайте ещё ~20 мин.",
-          "Остудите на решётке."
+          "Подготовьте ингредиенты по таблице (мука {flour_total}). Воду нагрейте до 28–32 °C.",
+          "В миске растворите в воде сахар ({sugar}), соль ({salt}) и дрожжи ({yeast}). Оставьте на 5–7 минут до лёгкой пены.",
+          "Добавьте растительное масло ({oil}), затем постепенно всыпьте муку ({wheat_flour}).",
+          "Вымешивайте тесто руками или крюком 10–12 минут, пока оно не станет гладким и почти не липким.",
+          "Смажьте чашу мультиварки тонким слоем масла. Сформируйте гладкий шар и уложите швом вниз.",
+          "Режим MULTI COOK 35 °C на 60 минут (расстойка). Крышку не открывайте.",
+          "Переключите на BAKE примерно на 50 минут.",
+          "По желанию для румяного верха аккуратно переверните буханку и допекайте ещё ~20 минут (рекомендация, не обязательное требование).",
+          "Извлеките хлеб и остудите на решётке ≥1 часа."
         ]),
         timers: [
           { id: "proof", label: "Расстойка 35 °C", minutes: 60 },
@@ -1143,10 +1155,12 @@
       panasonic: {
         compatible: true, programNo: "09", programName: "Французский", crust: "Средний", loafSize: "M/L", totalTimeMin: 340,
         steps: stepTexts([
-          "Дрожжи — в диспенсер.",
-          "В чашу: мука, сухое молоко, масло, соль, вода.",
-          "Программа №09 «Французский», корочка «Средний».",
-          "Остудите на решётке для сохранения хруста корочки."
+          "Ингредиенты по таблице (мука {flour_total}). Вода ~28–30 °C.",
+          "Дрожжи ({yeast}) — только в диспенсер дрожжей.",
+          "В чашу просейте муку ({wheat_flour}), добавьте сухое молоко ({dry_milk}), соль ({salt}).",
+          "Добавьте размягчённое сливочное масло ({butter}) кусочками и влейте воду ({water}).",
+          "Программа №09 «Французский», корочка «Средний» (длинный цикл ферментации).",
+          "После сигнала остудите на решётке без полотенца 30–40 минут, чтобы корочка осталась хрустящей, затем можно накрыть."
         ]),
         timers: [{ id: "fr", label: "Цикл Французский", minutes: 340 }],
         warnings: []
@@ -1157,10 +1171,12 @@
         bake: { program: "BAKE", timeMin: 50, secondBakeMin: 20 },
         flip: { required: false, optional: true, suggestedAtMin: 50, reason: "Румяная верхняя корочка." },
         steps: stepTexts([
-          "Смешайте воду, соль, растопленное масло и сухое молоко.",
-          "Добавьте муку и дрожжи, замес ~15 мин до глютенового окна.",
-          "Расстойка MULTI COOK 35 °C — 90 мин.",
-          "BAKE 50 мин; по желанию переворот + 20 мин."
+          "Смешайте воду ({water}) с солью ({salt}), растопленным сливочным маслом ({butter}) и сухим молоком ({dry_milk}).",
+          "Добавьте муку ({wheat_flour}) и дрожжи ({yeast}). Замешивайте 12–15 минут до «глютенового окна».",
+          "Шар в смазанную чашу. MULTI COOK 35 °C — 90 минут.",
+          "BAKE ~50 минут.",
+          "По желанию переверните и допекайте ~20 минут для верхней корочки.",
+          "Остудите на решётке."
         ]),
         timers: [
           { id: "proof", label: "Расстойка", minutes: 90 },
@@ -1205,12 +1221,15 @@
       panasonic: {
         compatible: true, programNo: "10", programName: "Ржаной", crust: "Авто", loafSize: "M", totalTimeMin: 210,
         steps: stepTexts([
-          "Заварка: солод + кориандр залить кипятком, 15 мин до ~40 °C.",
-          "Установите гребенчатую лопатку для ржаного теста.",
-          "Дрожжи — в диспенсер.",
-          "В чашу: заварка, вода, мёд, уксус, масло, обе муки, соль.",
+          "Заварка: в термостойкой миске смешайте ржаной солод ({malt}) и кориандр ({coriander}).",
+          "Залейте крутым кипятком ({scald_water}), тщательно размешайте и накройте. Выдержите 15 минут, затем остудите до ~35–40 °C.",
+          "Установите в Panasonic гребенчатую лопатку для ржаного теста.",
+          "Дрожжи ({yeast}) — в диспенсер дрожжей.",
+          "В чашу вылейте остывшую заварку, тёплую воду ({water}), мёд ({honey}), яблочный уксус ({vinegar}) и масло ({oil}).",
+          "Просейте ржаную муку ({rye_flour}) и пшеничную ({wheat_flour}), добавьте соль ({salt}).",
           "Программа №10 «Ржаной» (~3 ч 30 мин).",
-          "Перед выпечкой можно присыпать тмином."
+          "Перед фазой выпечки можно присыпать верх тмином ({caraway}).",
+          "Остудите на решётке; ржаной хлеб лучше нарезать через 2–3 часа."
         ]),
         timers: [
           { id: "scald", label: "Заварка", minutes: 15 },
@@ -1224,11 +1243,14 @@
         bake: { program: "BAKE", timeMin: 50, secondBakeMin: 30 },
         flip: { required: false, optional: true, suggestedAtMin: 50, reason: "Равномерная корочка." },
         steps: stepTexts([
-          "Приготовьте и остудите заварку 15 мин.",
-          "Смешайте заварку с водой, мёдом, уксусом, маслом, солью.",
-          "Всыпьте муку и дрожжи; вымешивайте влажными руками ~10 мин.",
-          "В чашу, присыпьте тмином. YOGURT/MULTI COOK 35 °C — 90 мин.",
-          "BAKE 50 мин; по желанию переворот + 30 мин."
+          "Приготовьте заварку: солод ({malt}) + кориандр ({coriander}) + кипяток ({scald_water}), 15 минут, остудить до тёплого.",
+          "Смешайте заварку с водой ({water}), мёдом ({honey}), уксусом ({vinegar}), маслом ({oil}) и солью ({salt}).",
+          "Всыпьте ржаную ({rye_flour}) и пшеничную ({wheat_flour}) муку и дрожжи ({yeast}).",
+          "Вымешивайте влажными руками ~10 минут: тесто будет липким — это нормально для ржаного.",
+          "Сформируйте шар, уложите в смазанную чашу, сверху присыпьте тмином ({caraway}).",
+          "YOGURT или MULTI COOK 35 °C — 90 минут.",
+          "BAKE 50 минут; по желанию переворот + ещё 30 минут.",
+          "Остудите на решётке 2–3 часа."
         ]),
         timers: [
           { id: "scald", label: "Заварка", minutes: 15 },
@@ -1269,9 +1291,11 @@
       panasonic: {
         compatible: true, programNo: "06", programName: "Цельнозерновой", crust: "Средний", loafSize: "XL", totalTimeMin: 300,
         steps: stepTexts([
-          "Дрожжи — в диспенсер.",
-          "В чашу: вода, масло, мёд, обе муки, соль.",
-          "Программа №06 «Цельнозерновой», XL, корочка «Средний» (~5 ч)."
+          "Дрожжи ({yeast}) — в диспенсер.",
+          "В чашу налейте тёплую воду ({water}), оливковое масло ({olive_oil}) и мёд ({honey}).",
+          "Добавьте цельнозерновую муку ({ww_flour}), пшеничную ({wheat_flour}) и соль ({salt}).",
+          "Программа №06 «Цельнозерновой», размер XL, корочка «Средний» (~5 ч) — длинный прогрев нужен для набухания отрубей.",
+          "Остудите на решётке ≥1,5 часа."
         ]),
         timers: [{ id: "ww", label: "Цельнозерновой цикл", minutes: 300 }],
         warnings: ["База 600 г — верхний край лимита муки Panasonic."]
@@ -1282,10 +1306,11 @@
         bake: { program: "BAKE", timeMin: 50, secondBakeMin: 30 },
         flip: { required: false, optional: true, suggestedAtMin: 50, reason: "Корочка." },
         steps: stepTexts([
-          "Автолиз: смешайте муку с водой на 30 мин.",
-          "Добавьте мёд, масло, соль, дрожжи; замес ~12 мин.",
-          "MULTI COOK 35 °C — 70 мин.",
-          "BAKE 50 мин; по желанию переворот + 30 мин."
+          "Автолиз: смешайте обе муки ({ww_flour} + {wheat_flour}) с водой ({water}) и оставьте на 30 минут.",
+          "Добавьте мёд ({honey}), оливковое масло ({olive_oil}), соль ({salt}) и дрожжи ({yeast}). Замес ~12 минут.",
+          "В смазанную чашу. MULTI COOK 35 °C — 70 минут.",
+          "BAKE 50 минут; по желанию переворот + 30 минут.",
+          "Остудите на решётке."
         ]),
         timers: [
           { id: "autolyse", label: "Автолиз", minutes: 30 },
@@ -1328,9 +1353,11 @@
       panasonic: {
         compatible: true, programNo: "01", programName: "Основной", crust: "Светлый", loafSize: "L", totalTimeMin: 240,
         steps: stepTexts([
-          "Дрожжи — в диспенсер.",
-          "В чашу: обе муки, глютен, сухое молоко, сахар, соль, масло, молоко.",
-          "№01 «Основной», L, корочка «Светлый»."
+          "Дрожжи ({yeast}) — в диспенсер.",
+          "В чашу: пшеничная мука ({wheat_flour}), кукурузная ({corn_flour}), клейковина ({gluten}), сухое молоко ({dry_milk}), сахар ({sugar}), соль ({salt}).",
+          "Добавьте размягчённое сливочное масло ({butter}) и тёплое молоко ({milk}, ~35 °C).",
+          "Программа №01 «Основной», L, корочка «Светлый» (кукурузный сахар быстрее темнеет).",
+          "Остудите на решётке."
         ]),
         timers: [{ id: "c", label: "Основной", minutes: 240 }],
         warnings: ["Светлая корочка снижает риск подгорания сахаров кукурузы."]
@@ -1341,9 +1368,11 @@
         bake: { program: "BAKE", timeMin: 50, secondBakeMin: 20 },
         flip: { required: false, optional: true, suggestedAtMin: 50, reason: "Корочка." },
         steps: stepTexts([
-          "В тёплом молоке растворите сахар, соль и масло.",
-          "Смешайте муки, глютен и дрожжи с жидкостью; замес 10–12 мин.",
-          "MULTI COOK 35 °C — 60 мин → BAKE 50 мин (+ переворот 20 мин по желанию)."
+          "В тёплом молоке ({milk}) растворите сахар ({sugar}), соль ({salt}) и сливочное масло ({butter}).",
+          "Смешайте пшеничную ({wheat_flour}) и кукурузную ({corn_flour}) муку с клейковиной ({gluten}) и дрожжами ({yeast}), соедините с жидкостью.",
+          "Замес 10–12 минут. MULTI COOK 35 °C — 60 минут.",
+          "BAKE 50 минут; по желанию переворот + 20 минут.",
+          "Остудите на решётке."
         ]),
         timers: [
           { id: "proof", label: "Расстойка", minutes: 60 },
@@ -1380,9 +1409,11 @@
       panasonic: {
         compatible: true, programNo: "01", programName: "Основной", crust: "Средний", loafSize: "L", totalTimeMin: 240,
         steps: stepTexts([
-          "Дрожжи — в диспенсер.",
-          "В чашу: мука, тёплое пюре, сахар, соль, масло, отвар.",
-          "№01 «Основной», L, средняя корочка."
+          "Подготовьте тёплое картофельное пюре без соли и масла ({potato_mash}) и тёплый отвар или воду ({potato_water}, ~35–40 °C).",
+          "Дрожжи ({yeast}) — в диспенсер.",
+          "В чашу: мука ({wheat_flour}), пюре, сахар ({sugar}), соль ({salt}), масло ({oil}), отвар.",
+          "Программа №01 «Основной», L, корочка «Средний».",
+          "Остудите на решётке."
         ]),
         timers: [{ id: "c", label: "Основной", minutes: 240 }],
         warnings: []
@@ -1393,9 +1424,11 @@
         bake: { program: "BAKE", timeMin: 50, secondBakeMin: 25 },
         flip: { required: false, optional: true, suggestedAtMin: 50, reason: "Корочка." },
         steps: stepTexts([
-          "В тёплом отваре растворите сахар и дрожжи, 10 мин.",
-          "Добавьте пюре, масло, соль, муку; замес ~10 мин.",
-          "MULTI COOK 35 °C — 60 мин → BAKE 50 + optional 25 мин."
+          "В тёплом отваре ({potato_water}) растворите сахар ({sugar}) и дрожжи ({yeast}), выдержите 8–10 минут до пены.",
+          "Добавьте пюре ({potato_mash}), масло ({oil}) и соль ({salt}), перемешайте до однородности.",
+          "Всыпьте муку ({wheat_flour}), замесите мягкое тесто ~10 минут.",
+          "MULTI COOK 35 °C — 60 минут → BAKE 50 минут; по желанию переворот + 25 минут.",
+          "Остудите на решётке."
         ]),
         timers: [
           { id: "yeast", label: "Активация дрожжей", minutes: 10 },
@@ -1422,7 +1455,7 @@
       { ingredientId: "wheat_flour", grams: 400, isFlour: true, stage: "mainMix", role: "Каркас", detailedRole: "Основа.", placement: placePan("pan"), scalable: true },
       { ingredientId: "water", grams: 240, stage: "mainMix", role: "Гидратация", detailedRole: "Тёплая вода.", placement: placePan("pan"), scalable: true, hydrationContributor: true },
       { ingredientId: "cheese", grams: 100, stage: "manual", role: "Вкус", detailedRole: "Тёртый сыр; влажный — только в форму.", placement: placePan("pan", "manual"), scalable: true },
-      { ingredientId: "onion_fried", grams: 50, stage: "manual", role: "Вкус", detailedRole: "Остывший обжаренный лук.", placement: placePan("pan", "manual"), scalable: true },
+      { ingredientId: "onion_fried", grams: 50, stage: "manual", role: "Вкус", detailedRole: "Обжарить до золотистого и остудить перед закладкой (см. инструкцию).", placement: placePan("pan", "manual"), scalable: true },
       { ingredientId: "garlic_dry", grams: 3, stage: "mainMix", role: "Аромат", detailedRole: "Сушёный чеснок в сухую смесь.", placement: placePan("pan"), scalable: true },
       { ingredientId: "oil", grams: 20, stage: "mainMix", role: "Жир", detailedRole: "Масло от обжарки лука или растительное.", placement: placePan("pan"), scalable: true },
       { ingredientId: "sugar", grams: 10, stage: "mainMix", role: "Питание дрожжей", detailedRole: "Небольшая доза.", placement: placePan("pan"), scalable: true },
@@ -1435,10 +1468,13 @@
       panasonic: {
         compatible: true, programNo: "03", programName: "Основной с изюмом", crust: "Средний", loafSize: "L", totalTimeMin: 240,
         steps: stepTexts([
-          "Дрожжи — в дрожжевой диспенсер.",
-          "Сыр и лук положите в форму (не в диспенсер добавок — влажные/плавящиеся).",
-          "В чашу: вода, масло, мука, чеснок, сахар, соль.",
-          "Программа №03 «Основной с изюмом»."
+          "Подготовка лука: мелко нарежьте лук ({onion_fried} в готовом виде), обжарьте на масле до золотистого и полностью остудите.",
+          "Сыр ({cheese}) натрите на крупной тёрке.",
+          "Дрожжи ({yeast}) — в диспенсер дрожжей.",
+          "Сыр и остывший лук положите прямо в форму (влажные/плавящиеся — не в диспенсер добавок).",
+          "В чашу: вода ({water}), масло ({oil}), мука ({wheat_flour}), сушёный чеснок ({garlic_dry}), сахар ({sugar}), соль ({salt}).",
+          "Программа №03 «Основной с изюмом», L, средняя корочка.",
+          "Остудите на решётке."
         ]),
         timers: [{ id: "c", label: "Основной с изюмом", minutes: 240 }],
         warnings: ["Сыр и лук не загружать в диспенсер добавок."]
@@ -1449,9 +1485,11 @@
         bake: { program: "BAKE", timeMin: 50, secondBakeMin: 20 },
         flip: { required: false, optional: true, suggestedAtMin: 50, reason: "Корочка." },
         steps: stepTexts([
-          "Замесите базовое тесто без сыра и лука.",
-          "В конце замеса вмешайте остывший лук и сыр.",
-          "MULTI COOK 35 °C — 60 мин → BAKE 50 (+20 optional)."
+          "Обжарьте мелко нарезанный лук до золотистого, остудите. Сыр ({cheese}) натрите крупно.",
+          "Замесите базовое тесто: мука ({wheat_flour}), вода ({water}), масло ({oil}), сахар ({sugar}), соль ({salt}), сушёный чеснок ({garlic_dry}), дрожжи ({yeast}).",
+          "В конце замеса равномерно вмешайте лук и сыр.",
+          "MULTI COOK 35 °C — 60 минут → BAKE 50 минут; по желанию переворот + 20 минут.",
+          "Остудите на решётке."
         ]),
         timers: [
           { id: "proof", label: "Расстойка", minutes: 60 },
@@ -1477,8 +1515,9 @@
       { ingredientId: "wheat_flour", grams: 450, isFlour: true, stage: "mainMix", role: "Каркас", detailedRole: "Основа.", placement: placePan("pan"), scalable: true },
       { ingredientId: "water", grams: 260, stage: "mainMix", role: "Гидратация", detailedRole: "Вода или кефир 2,5%.", placement: placePan("pan"), scalable: true, hydrationContributor: true },
       { ingredientId: "olive_oil", grams: 30, stage: "mainMix", role: "Аромат / жир", detailedRole: "Часть масла можно смешать с начинкой.", placement: placePan("pan"), scalable: true },
-      { ingredientId: "garlic_fresh", grams: 15, stage: "manual", role: "Аромат", detailedRole: "Кашица; влажная — не в диспенсер.", placement: placePan("pan", "manual"), scalable: true },
-      { ingredientId: "herbs", grams: 15, stage: "manual", role: "Аромат", detailedRole: "Мелко нарезанная зелень.", placement: placePan("pan", "manual"), scalable: true },
+      { ingredientId: "garlic_fresh", grams: 15, stage: "manual", role: "Аромат", detailedRole: "Очистить и раздавить через пресс или мелко порубить — в рецепте, не в имени продукта.", placement: placePan("pan", "manual"), scalable: true },
+      { ingredientId: "dill", grams: 8, stage: "manual", role: "Аромат", detailedRole: "Мелко нарезать перед закладкой.", placement: placePan("pan", "manual"), scalable: true },
+      { ingredientId: "parsley", grams: 7, stage: "manual", role: "Аромат", detailedRole: "Мелко нарезать перед закладкой.", placement: placePan("pan", "manual"), scalable: true },
       { ingredientId: "sugar", grams: 10, stage: "mainMix", role: "Питание дрожжей", detailedRole: "Небольшая доза.", placement: placePan("pan"), scalable: true },
       { ingredientId: "salt", grams: 8, stage: "mainMix", role: "Вкус", detailedRole: "Баланс.", placement: placePan("pan"), scalable: true },
       { ingredientId: "yeast", grams: 6, stage: "dispenser", role: "Подъём", detailedRole: "В диспенсер.", placement: placePan("yeastDispenser", "manual"), scalable: true }
@@ -1489,10 +1528,13 @@
       panasonic: {
         compatible: true, programNo: "03", programName: "Основной с изюмом", crust: "Средний", loafSize: "L", totalTimeMin: 240,
         steps: stepTexts([
-          "Дрожжи — в диспенсер.",
-          "Чеснок и зелень — в форму (влажные).",
-          "В чашу: вода/кефир, масло, мука, сахар, соль.",
-          "№03 «Основной с изюмом»."
+          "Чеснок ({garlic_fresh}): очистите зубчики и продавите через пресс или очень мелко порубите.",
+          "Укроп ({dill}) и петрушку ({parsley}) мелко нарежьте.",
+          "Дрожжи ({yeast}) — в диспенсер.",
+          "Чеснок и зелень положите в форму (влажные — не в диспенсер добавок).",
+          "В чашу: вода или кефир ({water}), оливковое масло ({olive_oil}), мука ({wheat_flour}), сахар ({sugar}), соль ({salt}).",
+          "Программа №03 «Основной с изюмом», L, средняя корочка.",
+          "Остудите на решётке."
         ]),
         timers: [{ id: "c", label: "Цикл", minutes: 240 }],
         warnings: ["Влажную зелень не класть в диспенсер добавок."]
@@ -1503,10 +1545,12 @@
         bake: { program: "BAKE", timeMin: 50, secondBakeMin: 20 },
         flip: { required: false, optional: true, suggestedAtMin: 50, reason: "Корочка." },
         steps: stepTexts([
-          "Замесите тесто из муки, воды, части масла, сахара, соли, дрожжей.",
-          "Смешайте оставшееся масло с чесноком и зеленью.",
-          "Раскатайте, смажьте, сверните рулетом, разрежьте вдоль (косичка).",
-          "MULTI COOK 35 °C — 45 мин → BAKE 50 (+20 optional)."
+          "Замесите тесто из муки ({wheat_flour}), воды/кефира ({water}), половины оливкового масла, сахара ({sugar}), соли ({salt}) и дрожжей ({yeast}).",
+          "Оставшееся масло смешайте с измельчённым чесноком ({garlic_fresh}), укропом ({dill}) и петрушкой ({parsley}).",
+          "Раскатайте пласт, смажьте чесночно-зелёной смесью, сверните рулетом, разрежьте вдоль и слегка переплетите («косичка»).",
+          "Уложите в смазанную чашу. MULTI COOK 35 °C — 45 минут.",
+          "BAKE 50 минут; по желанию переворот + 20 минут.",
+          "Остудите на решётке."
         ]),
         timers: [
           { id: "proof", label: "Расстойка", minutes: 45 },
@@ -1544,11 +1588,12 @@
       panasonic: {
         compatible: true, programNo: "04", programName: "Основной с начинкой", crust: "Светлый", loafSize: "L", totalTimeMin: 240,
         steps: stepTexts([
-          "Дрожжи — в диспенсер.",
-          "Взбейте яйца с молоком и сахаром, влейте в чашу.",
-          "Добавьте ванилин, соль, муку.",
-          "Масло кубиками — по звуковому сигналу.",
-          "№04 «Основной с начинкой», светлая корочка."
+          "Дрожжи ({yeast}) — в диспенсер.",
+          "Взбейте яйца ({eggs}) с тёплым молоком ({milk}) и сахаром ({sugar}), перелейте в чашу.",
+          "Добавьте ванилин ({vanilla}), соль ({salt}) и просеянную муку ({wheat_flour}).",
+          "Сливочное масло ({butter}) нарежьте кубиками комнатной температуры. Добавляйте порциями по звуковому сигналу программы.",
+          "Программа №04 «Основной с начинкой», корочка «Светлый».",
+          "Остудите на решётке; сдобу лучше нарезать полностью остывшей."
         ]),
         timers: [{ id: "c", label: "Сдобный цикл", minutes: 240 }],
         warnings: ["Не пропускайте сигнал добавления масла."]
@@ -1559,10 +1604,11 @@
         bake: { program: "BAKE", timeMin: 45, secondBakeMin: 20 },
         flip: { required: false, optional: true, suggestedAtMin: 45, reason: "Корочка." },
         steps: stepTexts([
-          "Опара: молоко, сахар, дрожжи, 2 ст. л. муки — 15 мин.",
-          "Введите яйца, ванилин, соль, остаток муки.",
-          "Порционно вмешайте масло (~15 мин замеса).",
-          "MULTI COOK 35 °C — 90 мин → BAKE 45 (+20 optional)."
+          "Опара: тёплое молоко ({milk}), часть сахара, дрожжи ({yeast}) и 2 ст. л. муки — 15 минут до пены.",
+          "Введите взбитые яйца ({eggs}), остаток сахара, ванилин ({vanilla}), соль ({salt}) и остаток муки ({wheat_flour}).",
+          "Порционно вмешайте размягчённое сливочное масло ({butter}), вымешивая ~15 минут.",
+          "MULTI COOK 35 °C — 90 минут → BAKE 45 минут; по желанию переворот + 20 минут.",
+          "Остудите на решётке."
         ]),
         timers: [
           { id: "preferment", label: "Опара", minutes: 15 },
@@ -1596,7 +1642,9 @@
       { ingredientId: "soda", grams: 6, stage: "mainMix", role: "Разрыхление", detailedRole: "Смешать с кефиром на 5 мин до пены.", placement: placePan("pan"), scalable: true },
       { ingredientId: "salt", grams: 5, stage: "mainMix", role: "Вкус", detailedRole: "Баланс.", placement: placePan("pan"), scalable: true },
       { ingredientId: "sugar", grams: 10, stage: "mainMix", role: "Вкус", detailedRole: "Лёгкая сладость.", placement: placePan("pan"), scalable: true },
-      { ingredientId: "seed_mix", grams: 30, stage: "mainMix", role: "Текстура", detailedRole: "Кунжут, лён, подсолнечник.", placement: placePan("pan"), scalable: true }
+      { ingredientId: "sunflower", grams: 15, stage: "mainMix", role: "Текстура", detailedRole: "Семечки подсолнечника.", placement: placePan("pan"), scalable: true },
+      { ingredientId: "sesame", grams: 10, stage: "mainMix", role: "Текстура", detailedRole: "Кунжут.", placement: placePan("pan"), scalable: true },
+      { ingredientId: "flax", grams: 5, stage: "mainMix", role: "Текстура", detailedRole: "Семена льна.", placement: placePan("pan"), scalable: true }
     ],
     tasteAddinIds: ["sesame", "flax"],
     physics: { bakeLossRange: [0.10, 0.14], doughDensityGPerMl: 1.1, proofExpansionRange: [1.1, 1.3], headroomFactor: 1.15, confidence: "medium" },
@@ -1604,11 +1652,13 @@
       panasonic: {
         compatible: true, programNo: "13", programName: "Выпечка", crust: "—", loafSize: "—", totalTimeMin: 55,
         steps: stepTexts([
-          "Кефир + сода — 5 мин до пены.",
-          "Смешайте муку, соль, сахар, семена, масло; соедините с кефиром (1–2 мин).",
-          "Снимите лопатку замеса.",
-          "Выложите тесто, разровняйте.",
-          "Программа №13 «Выпечка» — 55 мин."
+          "Подогрейте кефир ({kefir}) до тёплого (~30–35 °C). Добавьте соду ({soda}), перемешайте и выдержите 5 минут до пены.",
+          "В миске смешайте пшеничную муку ({wheat_flour}), ржаную ({rye_flour}), соль ({salt}), сахар ({sugar}), семечки ({sunflower}), кунжут ({sesame}) и лён ({flax}).",
+          "Влейте растопленное сливочное масло ({butter}) и пенящийся кефир. Быстро перемешайте лопаткой 1–2 минуты — не забивайте тесто.",
+          "Извлеките лопатку замеса из чаши Panasonic.",
+          "Выложите тесто, разровняйте поверхность.",
+          "Программа №13 «Выпечка» — 55 минут.",
+          "Остудите на решётке."
         ]),
         timers: [
           { id: "soda", label: "Реакция соды", minutes: 5 },
@@ -1622,10 +1672,12 @@
         bake: { program: "BAKE", timeMin: 45, secondBakeMin: 20 },
         flip: { required: false, optional: true, suggestedAtMin: 45, reason: "Корочка." },
         steps: stepTexts([
-          "Активируйте соду в тёплом кефире 5 мин.",
-          "Быстро смешайте сухие и жидкие (1–2 мин).",
-          "Смажьте чашу, выложите тесто — без расстойки.",
-          "BAKE 45 мин; по желанию переворот + 20 мин."
+          "Тёплый кефир ({kefir}) + сода ({soda}) — 5 минут до пены.",
+          "Смешайте муку ({wheat_flour} + {rye_flour}), соль ({salt}), сахар ({sugar}), семечки ({sunflower}), кунжут ({sesame}), лён ({flax}) и растопленное масло ({butter}).",
+          "Соедините с кефиром, быстро перемешайте 1–2 минуты.",
+          "Смажьте чашу, выложите тесто — без расстойки сразу BAKE 45 минут.",
+          "По желанию переверните и допекайте ещё 20 минут.",
+          "Остудите на решётке."
         ]),
         timers: [
           { id: "soda", label: "Реакция соды", minutes: 5 },
@@ -1825,11 +1877,17 @@
     return null;
   }
 
-  function recipeRequiredIds(recipe, staplesOn) {
+  function isAlwaysAvailable(id) {
+    var ingr = DB.ingredients[id];
+    if (ingr && ingr.hideFromPantry) return true;
+    return (DB.alwaysAvailable || []).indexOf(id) !== -1;
+  }
+
+  function recipeRequiredIds(recipe) {
     var req = [];
     recipe.ingredients.forEach(function (row) {
       if (row.optional) return;
-      if (staplesOn && DB.staples.indexOf(row.ingredientId) !== -1) return;
+      if (isAlwaysAvailable(row.ingredientId)) return;
       if (req.indexOf(row.ingredientId) === -1) req.push(row.ingredientId);
     });
     return req;
@@ -1837,12 +1895,11 @@
 
   function matchRecipes(pantrySet, opts) {
     opts = opts || {};
-    var staplesOn = !!opts.staplesOn;
     var near = opts.nearMatch !== false;
     var results = [];
     Object.keys(DB.recipes).forEach(function (rid) {
       var recipe = DB.recipes[rid];
-      var req = recipeRequiredIds(recipe, staplesOn);
+      var req = recipeRequiredIds(recipe);
       var missing = req.filter(function (id) { return !pantrySet.has(id); });
       var status = "unavailable";
       if (missing.length === 0) status = "exact";
@@ -2075,6 +2132,7 @@
     });
     ids.forEach(function (id) {
       var ingr = DB.ingredients[id];
+      if (ingr.hideFromPantry) return;
       if (state.pantryCategory !== "all" && ingr.category !== state.pantryCategory) return;
       if (q) {
         var hay = normalizeName(ingr.name + " " + (ingr.aliases || []).join(" "));
@@ -2098,8 +2156,8 @@
       row.appendChild(textWrap);
       list.appendChild(row);
     });
-    $("#opt-staples").checked = state.staplesOn;
-    $("#opt-near").checked = state.nearMatchOn;
+    var nearEl = $("#opt-near");
+    if (nearEl) nearEl.checked = state.nearMatchOn;
     updatePantryStat();
   }
 
@@ -2118,7 +2176,6 @@
    * ========================================================= */
   function runSearch() {
     state.results = matchRecipes(pantrySet(), {
-      staplesOn: state.staplesOn,
       nearMatch: state.nearMatchOn
     });
     var sec = $("#search-results");
@@ -2131,8 +2188,9 @@
     var pan = state.results.filter(function (r) { return r.machineKey === "panasonic"; });
     var red = state.results.filter(function (r) { return r.machineKey === "redmond"; });
     $("#results-summary").textContent =
-      "Найдено: " + pan.length + " для Panasonic, " + red.length + " для REDMOND" +
-      (state.staplesOn ? " (вода/соль/сахар считаются имеющимися)" : "");
+      "Найдено: " + pan.length + " для Panasonic, " + red.length + " для REDMOND";
+    var nearEl = $("#opt-near");
+    if (nearEl) nearEl.checked = state.nearMatchOn;
     fillResults($("#results-panasonic"), pan);
     fillResults($("#results-redmond"), red);
     var tab = state.resultsTab;
@@ -2280,18 +2338,15 @@
     range.value = String(state.targetFlourG);
     input.value = String(state.targetFlourG);
     display.textContent = String(state.targetFlourG);
+  }
 
-    var presets = $("#flour-presets");
-    presets.textContent = "";
-    [350, 400, 450, 500, 550, 600].forEach(function (v) {
-      var b = el("button", {
-        type: "button",
-        className: "preset" + (state.targetFlourG === v ? " active" : ""),
-        text: String(v)
-      });
-      b.addEventListener("click", function () { setFlour(v); });
-      presets.appendChild(b);
-    });
+  function missingForCurrentRecipe() {
+    var recipe = currentRecipe();
+    if (!recipe) return [];
+    var pantry = pantrySet();
+    return recipeRequiredIds(recipe).filter(function (id) { return !pantry.has(id); })
+      .map(function (id) { return DB.ingredients[id] ? DB.ingredients[id].name : id; })
+      .sort(function (a, b) { return a.localeCompare(b, "ru"); });
   }
 
   function setFlour(v) {
@@ -2483,16 +2538,27 @@
     });
   }
 
+  function fillStepText(text, scaled) {
+    var map = {};
+    (scaled.all || []).forEach(function (row) {
+      map[row.ingredientId] = formatGrams(row.ingredientId, row.grams) + " г";
+    });
+    map.flour_total = Math.round(scaled.targetFlourG) + " г";
+    return String(text).replace(/\{([a-z0-9_]+)\}/g, function (_, key) {
+      return map[key] != null ? map[key] : "{" + key + "}";
+    });
+  }
+
   function renderSteps(recipe) {
     var key = state.selectedMachineId === "panasonic_sd_yr2540hts" ? "panasonic" : "redmond";
     var mp = recipe.machineProfiles[key];
+    var scaled = scaleRecipe(recipe, state.targetFlourG, enabledAddinList());
     var ol = $("#steps-list");
     ol.textContent = "";
     (mp.steps || []).forEach(function (s) {
       var li = el("li", {});
-      li.style.marginBottom = "0.45rem";
-      // Replace placeholders roughly with current flour scale note
-      li.textContent = s.text;
+      li.style.marginBottom = "0.55rem";
+      li.textContent = fillStepText(s.text, scaled);
       ol.appendChild(li);
     });
     (mp.warnings || []).forEach(function (w) {
@@ -2584,7 +2650,7 @@
       body.appendChild(el("strong", { text: "Шаг " + (i + 1) + ". " }));
       // inject scaled amounts hint
       var scaled = scaleRecipe(recipe, state.targetFlourG, enabledAddinList());
-      var text = s.text.replace(/(\d+)\s*г/g, function (match) { return match; });
+      var text = fillStepText(s.text, scaled);
       body.appendChild(document.createTextNode(text));
       if (i === 0) {
         body.appendChild(el("div", {
@@ -2778,7 +2844,7 @@
     assert("dispenser >150 danger", wd.some(function (x) { return x.code === "dispenser"; }));
 
     var pantry = new Set(["wheat_flour", "yeast", "oil"]);
-    var matches = matchRecipes(pantry, { staplesOn: true, nearMatch: true });
+    var matches = matchRecipes(pantry, { nearMatch: true });
     assert("match finds some", matches.length > 0);
     assert("alias wheat", resolveIngredientId("хлебопекарная мука") === "wheat_flour");
     assert("no NaN mass", isFinite(mass) && mass > 0);
@@ -2803,20 +2869,13 @@
       state.pantryQuery = e.target.value;
       renderPantry();
     });
-    $("#opt-staples").addEventListener("change", function (e) {
-      state.staplesOn = e.target.checked;
-      persist();
-    });
     $("#opt-near").addEventListener("change", function (e) {
       state.nearMatchOn = e.target.checked;
       persist();
+      if (!$("#search-results").classList.contains("hidden")) runSearch();
     });
     $("#btn-select-staples").addEventListener("click", function () {
-      DB.staples.forEach(function (id) { state.pantry[id] = true; });
-      // also common flours/yeast helpful defaults? only staples per plan
-      Object.keys(DB.ingredients).forEach(function (id) {
-        if (DB.ingredients[id].defaultPantryStaple) state.pantry[id] = true;
-      });
+      ["salt", "sugar"].forEach(function (id) { state.pantry[id] = true; });
       persist();
       renderPantry();
     });
@@ -2835,9 +2894,10 @@
     });
 
     $("#btn-shopping").addEventListener("click", function () {
-      var list = buildShoppingList(state.results);
-      if (!list.length) { toast("Недостающих ингредиентов нет"); return; }
-      copyText(list.join("\n"));
+      var list = missingForCurrentRecipe();
+      if (!list.length) { toast("Для этого рецепта всё есть"); return; }
+      var title = currentRecipe() ? currentRecipe().title : "Рецепт";
+      copyText("Не хватает для «" + title + "»:\n" + list.join("\n"));
     });
 
     $("#flour-range").addEventListener("input", function (e) { setFlour(e.target.value); });
