@@ -872,11 +872,13 @@
     description: "Подкисление ржаного теста, контроль амилазы.",
     roleDefault: "Кислотность",
     substitutions: ["Лимонный сок"] });
-  ing({ id: "potato_mash", name: "Пюре картофельное", category: "other", hydrationFraction: 0.78,
-    aliases: ["пюре", "картофельное пюре"],
-    description: "Удерживает влагу, замедляет черствение.",
-    roleDefault: "Влага и мягкость",
-    substitutions: ["Картофельные хлопья + вода"] });
+  ing({ id: "potato", name: "Картофель", category: "veg", hydrationFraction: 0.78,
+    aliases: ["картошка", "картофель красный", "картофель ранний", "батат", "сладкий картофель", "пюре", "картофельное пюре"],
+    description: "Обычный, красный, ранний картофель или батат — вид на ваш вкус. В рецепте из него делают пюре.",
+    roleDefault: "Влага и мягкость мякиша",
+    increaseEffect: "Мягче и влажнее мякиш; тесто может стать слабее.",
+    decreaseEffect: "Суше мякиш, быстрее черствение.",
+    substitutions: ["Батат", "Картофельные хлопья + вода (по инструкции на упаковке)"] });
   ing({ id: "cheese", name: "Сыр полутвёрдый", category: "dairy",
     aliases: ["сыр", "тёртый сыр"],
     description: "Вкус и жирность закусочного хлеба. Влажный — в форму, не в диспенсер.",
@@ -1398,13 +1400,13 @@
     tags: ["картофельный"],
     difficulty: "средний",
     sourceConfidence: "verified-adaptation",
-    sourceNotes: "Пюре без соли и масла.",
+    sourceNotes: "Из картофеля готовят пюре без соли и масла; граммовка — масса готового тёплого пюре.",
     baseTotalFlourG: 450,
     flourComponents: [{ ingredientId: "wheat_flour", grams: 450 }],
     ingredients: [
       { ingredientId: "wheat_flour", grams: 450, isFlour: true, stage: "mainMix", role: "Каркас", detailedRole: "Пшеничная основа.", placement: placePan("pan"), scalable: true },
-      { ingredientId: "potato_mash", grams: 200, stage: "mainMix", role: "Мягкость", detailedRole: "Тёплое пюре без соли/масла.", placement: placePan("pan"), scalable: true, hydrationContributor: true },
-      { ingredientId: "potato_water", grams: 180, stage: "mainMix", role: "Гидратация", detailedRole: "Отвар или вода ~35–40 °C.", placement: placePan("pan"), scalable: true, hydrationContributor: true },
+      { ingredientId: "potato", grams: 200, stage: "mainMix", role: "Мягкость", detailedRole: "Картофель (любой привычный вид или батат). В инструкции из него делают тёплое пюре без соли и масла; указана масса готового пюре.", placement: placePan("pan"), scalable: true, hydrationContributor: true },
+      { ingredientId: "potato_water", grams: 180, stage: "mainMix", role: "Гидратация", detailedRole: "Отвар от варки картофеля или вода ~35–40 °C.", placement: placePan("pan"), scalable: true, hydrationContributor: true },
       { ingredientId: "oil", grams: 30, stage: "mainMix", role: "Пластичность", detailedRole: "Подсолнечное масло.", placement: placePan("pan"), scalable: true },
       { ingredientId: "sugar", grams: 15, stage: "mainMix", role: "Питание дрожжей", detailedRole: "Старт брожения.", placement: placePan("pan"), scalable: true },
       { ingredientId: "salt", grams: 8, stage: "mainMix", role: "Вкус", detailedRole: "Баланс.", placement: placePan("pan"), scalable: true },
@@ -1416,9 +1418,11 @@
       panasonic: {
         compatible: true, programNo: "01", programName: "Основной", crust: "Средний", loafSize: "L", totalTimeMin: 240,
         steps: stepTexts([
-          "Подготовьте тёплое картофельное пюре без соли и масла ({potato_mash}) и тёплый отвар или воду ({potato_water}, ~35–40 °C).",
+          "Картофель: очистите клубни (обычный, красный, ранний или батат — на ваш вкус), нарежьте и отварите в воде до мягкости. Отвар сохраните.",
+          "Слейте большую часть жидкости, разомните картофель в пюре без соли, масла и молока. Нужно тёплое пюре массой {potato}. Остудите до ~35–40 °C.",
+          "Отмерьте тёплый картофельный отвар или воду ({potato_water}, ~35–40 °C).",
           "Дрожжи ({yeast}) — в диспенсер.",
-          "В чашу: мука ({wheat_flour}), пюре, сахар ({sugar}), соль ({salt}), масло ({oil}), отвар.",
+          "В чашу: мука ({wheat_flour}), тёплое пюре, сахар ({sugar}), соль ({salt}), масло ({oil}), отвар.",
           "Программа №01 «Основной», L, корочка «Средний».",
           "Остудите на решётке."
         ]),
@@ -1431,8 +1435,10 @@
         bake: { program: "BAKE", timeMin: 50, secondBakeMin: 25 },
         flip: { required: false, optional: true, suggestedAtMin: 50, reason: "Корочка." },
         steps: stepTexts([
+          "Картофель: очистите, отварите до мягкости (подойдёт обычный, красный, ранний или батат). Отвар сохраните.",
+          "Разомните в пюре без соли и масла; нужно {potato} тёплого пюре (~35–40 °C).",
           "В тёплом отваре ({potato_water}) растворите сахар ({sugar}) и дрожжи ({yeast}), выдержите 8–10 минут до пены.",
-          "Добавьте пюре ({potato_mash}), масло ({oil}) и соль ({salt}), перемешайте до однородности.",
+          "Добавьте пюре, масло ({oil}) и соль ({salt}), перемешайте до однородности.",
           "Всыпьте муку ({wheat_flour}), замесите мягкое тесто ~10 минут.",
           "MULTI COOK 35 °C — 60 минут → BAKE 50 минут; по желанию переворот + 25 минут.",
           "Остудите на решётке."
