@@ -1,0 +1,3004 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="BreadLab — автономная лаборатория выпечки хлеба для Panasonic SD-YR2540HTS и REDMOND SkyCooker RMC-M92S">
+  <title>BreadLab — лаборатория хлеба</title>
+  <style>
+    :root {
+      --bg: #FDFBF7;
+      --surface: #FFFFFF;
+      --text: #2C221E;
+      --text-muted: #65534A;
+      --text-soft: #8C7A70;
+      --primary: #8C5A32;
+      --primary-hover: #734826;
+      --border: #EFE8DE;
+      --border-accent: #D4B28C;
+      --green: #587B53;
+      --green-dark: #3B6032;
+      --green-bg: #E8F0E6;
+      --green-border: #C4DCBF;
+      --gold: #D99B26;
+      --gold-bg: #FBF3E0;
+      --danger: #A94442;
+      --danger-bg: #F8E8E8;
+      --warn: #B8860B;
+      --warn-bg: #FBF3E0;
+      --radius-sm: 10px;
+      --radius-md: 14px;
+      --radius-lg: 20px;
+      --shadow-card: 0 6px 24px rgba(44, 34, 30, 0.06);
+      --max: 1120px;
+      --header-h: 64px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      font-family: Inter, "Segoe UI", Roboto, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+      min-height: 100vh;
+    }
+    h1, h2, h3, h4, .serif {
+      font-family: Georgia, "Times New Roman", serif;
+      font-weight: 700;
+      line-height: 1.25;
+      margin: 0 0 0.4em;
+    }
+    p { margin: 0 0 0.75em; }
+    a { color: var(--primary); }
+    button, input, select, textarea { font: inherit; }
+    button {
+      cursor: pointer;
+      border: none;
+      background: none;
+      color: inherit;
+    }
+    button:focus-visible,
+    input:focus-visible,
+    a:focus-visible,
+    summary:focus-visible {
+      outline: 2px solid var(--primary);
+      outline-offset: 2px;
+    }
+    .sr-only {
+      position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+      overflow: hidden; clip: rect(0,0,0,0); border: 0;
+    }
+    .hidden { display: none !important; }
+
+    /* Header */
+    .app-header {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(255,255,255,0.92);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--border);
+    }
+    .app-header-inner {
+      max-width: var(--max); margin: 0 auto;
+      padding: 0.75rem 1rem;
+      display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.75rem;
+    }
+    .brand {
+      display: flex; align-items: center; gap: 0.5rem;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 1.25rem; font-weight: 700; color: var(--primary);
+      text-decoration: none;
+    }
+    .brand-emoji { font-size: 1.5rem; }
+    .nav { display: flex; flex-wrap: wrap; gap: 0.35rem 0.85rem; align-items: center; }
+    .nav a {
+      color: var(--text-muted); text-decoration: none; font-size: 0.875rem; font-weight: 500;
+      min-height: 44px; display: inline-flex; align-items: center;
+    }
+    .nav a:hover { color: var(--primary); }
+    .header-actions { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+
+    /* Layout */
+    main { max-width: var(--max); margin: 0 auto; padding: 1.25rem 1rem 3rem; }
+    .section { margin-bottom: 2.5rem; }
+    .section-head {
+      border-left: 4px solid var(--primary);
+      padding-left: 0.85rem;
+      margin-bottom: 1rem;
+    }
+    .section-head p { color: var(--text-muted); font-size: 0.9rem; margin: 0; }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-card);
+      padding: 1.25rem 1.35rem;
+    }
+    .card-sm { border-radius: var(--radius-md); padding: 1rem; }
+    .grid-2 { display: grid; grid-template-columns: 1fr; gap: 1rem; }
+    .grid-3 { display: grid; grid-template-columns: 1fr; gap: 0.85rem; }
+    .grid-kpi { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.75rem; }
+    @media (min-width: 640px) {
+      .grid-2 { grid-template-columns: 1fr 1fr; }
+      .grid-kpi { grid-template-columns: repeat(3, 1fr); }
+    }
+    @media (min-width: 900px) {
+      .grid-3 { grid-template-columns: repeat(3, 1fr); }
+      .grid-kpi { grid-template-columns: repeat(3, 1fr); }
+    }
+
+    /* Buttons */
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: 0.4rem;
+      min-height: 44px; padding: 0.55rem 1.1rem;
+      border-radius: var(--radius-sm);
+      font-size: 0.9rem; font-weight: 600;
+      border: 1px solid transparent;
+      transition: background 0.15s, border-color 0.15s, color 0.15s;
+    }
+    .btn-primary { background: var(--primary); color: #fff; }
+    .btn-primary:hover { background: var(--primary-hover); }
+    .btn-secondary {
+      background: var(--surface); color: var(--text-muted);
+      border-color: var(--border);
+    }
+    .btn-secondary:hover { border-color: var(--border-accent); color: var(--primary); }
+    .btn-ghost { color: var(--text-muted); }
+    .btn-ghost:hover { color: var(--primary); background: var(--bg); }
+    .btn-lg { min-height: 52px; padding: 0.75rem 1.5rem; font-size: 1rem; }
+    .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+    .btn-block { width: 100%; }
+
+    /* Badges */
+    .badge {
+      display: inline-flex; align-items: center; gap: 0.25rem;
+      padding: 0.2rem 0.55rem; border-radius: 999px;
+      font-size: 0.72rem; font-weight: 700;
+      border: 1px solid transparent;
+    }
+    .badge-green { background: var(--green-bg); color: var(--green-dark); border-color: var(--green-border); }
+    .badge-gold { background: var(--gold-bg); color: #8A6500; border-color: #E8D4A0; }
+    .badge-muted { background: var(--bg); color: var(--text-soft); border-color: var(--border); }
+    .badge-danger { background: var(--danger-bg); color: var(--danger); border-color: #E8C0C0; }
+
+    /* Hero */
+    .hero-card {
+      background:
+        radial-gradient(ellipse at 100% 0%, rgba(217,155,38,0.12), transparent 45%),
+        radial-gradient(ellipse at 0% 100%, rgba(88,123,83,0.1), transparent 40%),
+        var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.75rem 1.5rem;
+      box-shadow: var(--shadow-card);
+    }
+    @media (min-width: 768px) { .hero-card { padding: 2.25rem 2rem; } }
+    .hero-card h1 { font-size: clamp(1.75rem, 4vw, 2.75rem); color: var(--text); }
+    .hero-card .lead { color: var(--text-muted); font-size: 1.05rem; max-width: 42rem; }
+    .machine-mini {
+      background: var(--bg); border: 1px solid var(--border);
+      border-radius: var(--radius-md); padding: 0.85rem 1rem;
+    }
+    .machine-mini strong { display: block; color: var(--primary); font-size: 0.9rem; }
+    .machine-mini span { font-size: 0.78rem; color: var(--text-soft); }
+
+    /* Forms */
+    .field { display: flex; flex-direction: column; gap: 0.35rem; }
+    .field label { font-size: 0.85rem; font-weight: 600; color: var(--text); }
+    .input, .select {
+      min-height: 44px; padding: 0.5rem 0.75rem;
+      border: 1px solid var(--border); border-radius: var(--radius-sm);
+      background: var(--surface); color: var(--text); width: 100%;
+    }
+    .input:focus, .select:focus { border-color: var(--border-accent); }
+    .check-row {
+      display: flex; align-items: flex-start; gap: 0.65rem;
+      padding: 0.65rem 0.75rem;
+      border: 1px solid var(--border); border-radius: var(--radius-sm);
+      background: var(--surface); cursor: pointer;
+      min-height: 44px;
+    }
+    .check-row:hover { border-color: var(--border-accent); }
+    .check-row.checked { border-color: var(--green-border); background: rgba(232,240,230,0.45); }
+    .check-row input { width: 1.15rem; height: 1.15rem; margin-top: 0.1rem; accent-color: var(--primary); flex-shrink: 0; }
+    .check-row .name { font-size: 0.9rem; font-weight: 600; }
+    .check-row .meta { font-size: 0.75rem; color: var(--text-soft); }
+
+    .chips { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-bottom: 0.85rem; }
+    .chip {
+      min-height: 36px; padding: 0.3rem 0.75rem;
+      border-radius: 999px; border: 1px solid var(--border);
+      background: var(--surface); color: var(--text-muted);
+      font-size: 0.8rem; font-weight: 600;
+    }
+    .chip.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+
+    .pantry-grid {
+      display: grid; grid-template-columns: 1fr; gap: 0.5rem;
+      max-height: 420px; overflow: auto; padding-right: 0.25rem;
+    }
+    @media (min-width: 640px) {
+      .pantry-grid { grid-template-columns: 1fr 1fr; }
+    }
+    @media (min-width: 900px) {
+      .pantry-grid { grid-template-columns: 1fr 1fr 1fr; }
+    }
+
+    .toolbar {
+      display: flex; flex-wrap: wrap; gap: 0.75rem; align-items: center;
+      justify-content: space-between; margin-top: 1rem;
+    }
+    .stat-line { font-size: 0.85rem; color: var(--text-muted); }
+
+    /* Results */
+    .tabs { display: flex; gap: 0.4rem; flex-wrap: wrap; margin-bottom: 1rem; }
+    .tab {
+      min-height: 44px; padding: 0.45rem 1rem;
+      border-radius: var(--radius-sm); border: 1px solid var(--border);
+      background: var(--surface); color: var(--text-muted); font-weight: 600; font-size: 0.85rem;
+    }
+    .tab.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+    .recipe-card {
+      border: 1px solid var(--border); border-radius: var(--radius-md);
+      padding: 1rem; background: var(--surface);
+      display: flex; flex-direction: column; gap: 0.6rem;
+    }
+    .recipe-card h3 { font-size: 1.1rem; margin: 0; }
+    .recipe-meta { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+    .missing { font-size: 0.8rem; color: var(--warn); }
+
+    /* Workspace */
+    .machine-pick {
+      border: 2px solid var(--border); border-radius: var(--radius-md);
+      padding: 1rem; background: var(--bg); text-align: left; width: 100%;
+      transition: border-color 0.15s, background 0.15s;
+    }
+    .machine-pick:hover:not(:disabled) { border-color: var(--border-accent); }
+    .machine-pick.selected { border-color: var(--green); background: var(--green-bg); }
+    .machine-pick:disabled { opacity: 0.55; }
+    .machine-pick strong { display: block; margin-bottom: 0.25rem; }
+    .machine-pick small { color: var(--text-soft); font-size: 0.8rem; }
+
+    .scale-box {
+      background: var(--bg); border: 1px solid var(--border);
+      border-radius: var(--radius-md); padding: 1rem;
+    }
+    .scale-row { display: flex; flex-wrap: wrap; gap: 0.75rem; align-items: center; justify-content: space-between; }
+    .flour-value { font-size: 1.5rem; color: var(--primary); font-weight: 800; font-family: Georgia, serif; }
+    input[type="range"] {
+      width: 100%; height: 8px; border-radius: 999px;
+      appearance: none; background: var(--border); accent-color: var(--primary); margin: 0.75rem 0;
+    }
+    .presets { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+    .preset {
+      min-width: 52px; min-height: 36px; padding: 0.3rem 0.55rem;
+      border-radius: var(--radius-sm); border: 1px solid var(--border);
+      background: var(--surface); font-size: 0.8rem; font-weight: 600; color: var(--text-muted);
+    }
+    .preset.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+
+    .kpi {
+      background: var(--bg); border: 1px solid var(--border);
+      border-radius: var(--radius-md); padding: 0.85rem;
+    }
+    .kpi .label { font-size: 0.72rem; color: var(--text-soft); text-transform: uppercase; letter-spacing: 0.03em; font-weight: 700; }
+    .kpi .value { font-size: 1.15rem; font-weight: 700; color: var(--primary); margin-top: 0.2rem; }
+    .kpi .hint { font-size: 0.72rem; color: var(--text-soft); margin-top: 0.2rem; }
+    .kpi.warn { border-color: #E8D4A0; background: var(--warn-bg); }
+    .kpi.danger { border-color: #E8C0C0; background: var(--danger-bg); }
+    .kpi.ok { border-color: var(--green-border); background: rgba(232,240,230,0.5); }
+
+    .fill-bar {
+      height: 10px; border-radius: 999px; background: var(--border); overflow: hidden; margin-top: 0.4rem;
+    }
+    .fill-bar > span { display: block; height: 100%; border-radius: 999px; transition: width 0.2s; }
+
+    /* Ingredient table */
+    .table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+    table.ing-table {
+      width: 100%; border-collapse: collapse; font-size: 0.875rem; min-width: 640px;
+    }
+    .ing-table th {
+      text-align: left; padding: 0.65rem 0.5rem;
+      font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.04em;
+      color: var(--text-soft); border-bottom: 1px solid var(--border); font-weight: 700;
+    }
+    .ing-table td {
+      padding: 0.7rem 0.5rem; border-bottom: 1px solid var(--border); vertical-align: top;
+    }
+    .ing-table tr.expandable { cursor: pointer; }
+    .ing-table tr.expandable:hover td { background: var(--bg); }
+    .ing-detail {
+      background: var(--bg); border-radius: var(--radius-sm);
+      padding: 0.75rem; margin-top: 0.35rem; font-size: 0.8rem; color: var(--text-muted);
+    }
+    .ing-detail dt { font-weight: 700; color: var(--text); margin-top: 0.4rem; }
+    .ing-detail dd { margin: 0.15rem 0 0; }
+    .desktop-table { display: block; }
+    .mobile-cards { display: none; }
+    @media (max-width: 639px) {
+      .desktop-table { display: none; }
+      .mobile-cards { display: block; }
+      .mobile-cards .ing-card {
+        border: 1px solid var(--border); border-radius: var(--radius-md);
+        padding: 0.85rem; margin-bottom: 0.65rem; background: var(--surface);
+      }
+      .mobile-cards .ing-card h4 { margin: 0 0 0.35rem; font-size: 0.95rem; }
+      .mobile-cards .row-meta { display: flex; flex-wrap: wrap; gap: 0.5rem; font-size: 0.8rem; color: var(--text-muted); }
+    }
+
+    /* Add-ins */
+    .addin-card {
+      border: 1px solid var(--border); border-radius: var(--radius-md);
+      padding: 0.85rem; background: var(--surface);
+    }
+    .addin-card.enabled { border-color: var(--green-border); background: rgba(232,240,230,0.35); }
+    .addin-card label { display: flex; gap: 0.6rem; align-items: flex-start; cursor: pointer; }
+    .addin-card input { margin-top: 0.2rem; accent-color: var(--primary); width: 1.15rem; height: 1.15rem; }
+
+    /* Alerts */
+    .alert {
+      border-radius: var(--radius-md); padding: 0.85rem 1rem;
+      font-size: 0.85rem; border: 1px solid; margin: 0.75rem 0;
+    }
+    .alert-warn { background: var(--warn-bg); border-color: #E8D4A0; color: #6B5200; }
+    .alert-danger { background: var(--danger-bg); border-color: #E8C0C0; color: var(--danger); }
+    .alert-ok { background: var(--green-bg); border-color: var(--green-border); color: var(--green-dark); }
+    .alert-info { background: var(--bg); border-color: var(--border); color: var(--text-muted); }
+
+    /* Cook mode */
+    .cook-overlay {
+      position: fixed; inset: 0; z-index: 200;
+      background: var(--bg); overflow: auto;
+      padding: 1rem;
+    }
+    .cook-inner { max-width: 720px; margin: 0 auto; padding-bottom: 3rem; }
+    .progress-track {
+      height: 12px; background: var(--border); border-radius: 999px; overflow: hidden; margin: 0.75rem 0 1.25rem;
+    }
+    .progress-fill { height: 100%; background: var(--primary); width: 0; transition: width 0.25s; }
+    .cook-step {
+      border: 1px solid var(--border); border-radius: var(--radius-md);
+      padding: 1rem; background: var(--surface); margin-bottom: 0.65rem;
+      display: flex; gap: 0.75rem; align-items: flex-start;
+    }
+    .cook-step.done { opacity: 0.65; }
+    .cook-step.current { border-color: var(--border-accent); box-shadow: var(--shadow-card); }
+    .cook-step input { width: 1.25rem; height: 1.25rem; margin-top: 0.15rem; accent-color: var(--primary); }
+    .timer-box {
+      background: var(--bg); border: 1px solid var(--border);
+      border-radius: var(--radius-md); padding: 1rem;
+      display: flex; flex-wrap: wrap; gap: 0.75rem; align-items: center; justify-content: space-between;
+      margin-bottom: 1rem;
+    }
+    .timer-display {
+      font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
+      font-size: 2rem; font-weight: 700; color: var(--primary);
+    }
+
+    /* Toast */
+    .toast-wrap {
+      position: fixed; bottom: 1rem; left: 50%; transform: translateX(-50%);
+      z-index: 300; display: flex; flex-direction: column; gap: 0.5rem; width: min(92vw, 420px);
+    }
+    .toast {
+      background: var(--text); color: #fff; padding: 0.75rem 1rem;
+      border-radius: var(--radius-sm); font-size: 0.85rem; box-shadow: var(--shadow-card);
+    }
+
+    /* Dialog */
+    dialog {
+      border: 1px solid var(--border); border-radius: var(--radius-lg);
+      padding: 0; max-width: 480px; width: calc(100% - 2rem);
+      box-shadow: var(--shadow-card);
+    }
+    dialog::backdrop { background: rgba(44,34,30,0.35); }
+    .dialog-body { padding: 1.25rem; }
+    .dialog-actions { display: flex; gap: 0.5rem; justify-content: flex-end; margin-top: 1rem; }
+
+    footer.app-footer {
+      border-top: 1px solid var(--border); background: var(--surface);
+      padding: 1.5rem 1rem; text-align: center; color: var(--text-soft); font-size: 0.8rem;
+    }
+
+    .storage-banner {
+      background: var(--gold-bg); border-bottom: 1px solid #E8D4A0;
+      padding: 0.55rem 1rem; font-size: 0.8rem; color: #6B5200; text-align: center;
+    }
+
+    #debug-panel {
+      margin-top: 2rem; background: #1e1a18; color: #e8e0d8;
+      border-radius: var(--radius-md); padding: 1rem; font-family: ui-monospace, Consolas, monospace;
+      font-size: 0.78rem; white-space: pre-wrap;
+    }
+    #debug-panel .pass { color: #8fdf8a; }
+    #debug-panel .fail { color: #ff8a80; }
+
+    /* Print */
+    @media print {
+      .app-header, .header-actions, .nav, #pantry, #search-results,
+      .no-print, .toast-wrap, #debug-panel, .storage-banner,
+      .btn, .tabs, .presets, input[type="range"], .cook-overlay {
+        display: none !important;
+      }
+      body { background: #fff; }
+      #recipe-workspace { display: block !important; }
+      .card, .recipe-card { box-shadow: none; break-inside: avoid; }
+      a { color: #000; text-decoration: none; }
+    }
+  </style>
+</head>
+<body>
+  <div id="storage-banner" class="storage-banner hidden" role="status">
+    Автосохранение недоступно в этом браузере. Для резервной копии используйте «Экспорт JSON».
+  </div>
+
+  <header class="app-header">
+    <div class="app-header-inner">
+      <a class="brand" href="#hero"><span class="brand-emoji" aria-hidden="true">🍞</span> BreadLab</a>
+      <nav class="nav" aria-label="Основная навигация">
+        <a href="#pantry">Ингредиенты</a>
+        <a href="#search-results">Рецепты</a>
+        <a href="#recipe-workspace">Калькулятор</a>
+        <a href="#cook-mode-anchor">Готовим</a>
+        <a href="#sources">Справка</a>
+      </nav>
+      <div class="header-actions no-print">
+        <button type="button" class="btn btn-secondary" id="btn-export" title="Экспорт данных">Экспорт</button>
+        <button type="button" class="btn btn-secondary" id="btn-import" title="Импорт JSON">Импорт</button>
+        <input type="file" id="import-file" accept="application/json,.json" class="hidden" aria-hidden="true">
+      </div>
+    </div>
+  </header>
+
+  <main id="app">
+    <!-- HERO -->
+    <section id="hero" class="section">
+      <div class="hero-card">
+        <span class="badge badge-green">Offline · без сервера · file://</span>
+        <h1>Отметьте, что есть дома — BreadLab подскажет, какой хлеб испечь</h1>
+        <p class="lead">
+          Локальный поиск по верифицированным рецептам для Panasonic SD-YR2540HTS и REDMOND SkyCooker RMC-M92S.
+          Масштабирование по пекарским процентам, расчёт массы теста, оценка подъёма и пошаговый режим готовки.
+        </p>
+        <div class="grid-2" style="margin-top:1.25rem">
+          <div class="machine-mini">
+            <strong>Panasonic SD-YR2540HTS</strong>
+            <span>Автоцикл · диспенсер дрожжей и добавок · программы 01–13, 27–28</span>
+          </div>
+          <div class="machine-mini">
+            <strong>REDMOND SkyCooker RMC-M92S</strong>
+            <span>MULTI COOK 35 °C · BAKE · BREAD · переворот — рекомендация</span>
+          </div>
+        </div>
+        <div style="margin-top:1.25rem">
+          <a class="btn btn-primary btn-lg" href="#pantry">Выбрать продукты</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- PANTRY -->
+    <section id="pantry" class="section">
+      <div class="section-head">
+        <h2>Что есть дома</h2>
+        <p>Отметьте продукты — приложение сопоставит их с каталогом рецептов (не генерирует новые).</p>
+      </div>
+      <div class="card">
+        <div class="field" style="margin-bottom:0.85rem">
+          <label for="pantry-search">Найти ингредиент</label>
+          <input type="search" id="pantry-search" class="input" placeholder="Например: ржаная, дрожжи, сыр…" autocomplete="off">
+        </div>
+        <div class="chips" id="pantry-cats" role="tablist" aria-label="Категории"></div>
+        <div class="pantry-grid" id="pantry-list" role="group" aria-label="Список продуктов"></div>
+        <div class="toolbar">
+          <div style="display:flex;flex-direction:column;gap:0.5rem;flex:1">
+            <label class="check-row" style="max-width:520px">
+              <input type="checkbox" id="opt-staples" checked>
+              <span><span class="name">Считать воду, соль и сахар всегда имеющимися</span></span>
+            </label>
+            <label class="check-row" style="max-width:520px">
+              <input type="checkbox" id="opt-near" checked>
+              <span><span class="name">Показывать рецепты, где не хватает ≤ 2 ингредиентов</span></span>
+            </label>
+          </div>
+          <div style="display:flex;flex-wrap:wrap;gap:0.5rem;align-items:center">
+            <button type="button" class="btn btn-secondary" id="btn-select-staples">Базовые</button>
+            <button type="button" class="btn btn-ghost" id="btn-clear-pantry">Очистить</button>
+            <button type="button" class="btn btn-primary btn-lg" id="btn-search">Найти, что можно испечь</button>
+          </div>
+        </div>
+        <p class="stat-line" id="pantry-stat" aria-live="polite">Выбрано: 0</p>
+      </div>
+    </section>
+
+    <!-- RESULTS -->
+    <section id="search-results" class="section hidden">
+      <div class="section-head">
+        <h2>Что можно испечь</h2>
+        <p id="results-summary" aria-live="polite">Результаты поиска</p>
+      </div>
+      <div class="tabs" role="tablist">
+        <button type="button" class="tab active" data-tab="panasonic" id="tab-panasonic">Panasonic SD-YR2540HTS</button>
+        <button type="button" class="tab" data-tab="redmond" id="tab-redmond">REDMOND SkyCooker</button>
+      </div>
+      <div id="results-panasonic" class="grid-2" role="tabpanel"></div>
+      <div id="results-redmond" class="grid-2 hidden" role="tabpanel"></div>
+      <div class="toolbar">
+        <button type="button" class="btn btn-secondary" id="btn-shopping">Скопировать список покупок (чего не хватает)</button>
+      </div>
+    </section>
+
+    <!-- WORKSPACE -->
+    <section id="recipe-workspace" class="section hidden">
+      <div class="section-head">
+        <h2 id="ws-title">Рецепт</h2>
+        <p id="ws-desc"></p>
+      </div>
+
+      <div class="card" style="margin-bottom:1rem">
+        <h3 style="font-size:1.05rem;margin-bottom:0.75rem">Где будем готовить?</h3>
+        <div class="grid-2" id="machine-picker"></div>
+      </div>
+
+      <div class="card" style="margin-bottom:1rem">
+        <div class="scale-box">
+          <div class="scale-row">
+            <label for="flour-range"><strong>Количество общей муки</strong></label>
+            <div style="display:flex;align-items:center;gap:0.5rem">
+              <button type="button" class="btn btn-secondary" id="flour-minus" aria-label="Уменьшить">−</button>
+              <input type="number" id="flour-input" class="input" style="width:6rem;text-align:center" min="250" max="650" step="1">
+              <button type="button" class="btn btn-secondary" id="flour-plus" aria-label="Увеличить">+</button>
+              <span class="flour-value"><span id="flour-display">450</span> г</span>
+            </div>
+          </div>
+          <input type="range" id="flour-range" min="300" max="600" step="5" value="450">
+          <div class="presets" id="flour-presets"></div>
+          <div id="scale-warnings"></div>
+        </div>
+      </div>
+
+      <div class="grid-kpi" id="kpi-grid" style="margin-bottom:1rem"></div>
+
+      <div class="card" style="margin-bottom:1rem">
+        <div style="display:flex;flex-wrap:wrap;justify-content:space-between;gap:0.5rem;align-items:center;margin-bottom:0.75rem">
+          <h3 style="font-size:1.05rem;margin:0">Ингредиенты</h3>
+          <button type="button" class="btn btn-secondary" id="btn-copy-ings">Скопировать список</button>
+        </div>
+        <div class="table-wrap desktop-table">
+          <table class="ing-table">
+            <thead>
+              <tr>
+                <th>Ингредиент</th>
+                <th>Граммы</th>
+                <th>% пекаря</th>
+                <th>Роль</th>
+                <th>Куда</th>
+                <th>Когда</th>
+              </tr>
+            </thead>
+            <tbody id="ing-tbody"></tbody>
+          </table>
+        </div>
+        <div class="mobile-cards" id="ing-mobile"></div>
+      </div>
+
+      <div class="card" style="margin-bottom:1rem">
+        <h3 style="font-size:1.05rem;margin-bottom:0.35rem">Добавить по вкусу</h3>
+        <p style="font-size:0.85rem;color:var(--text-muted);margin-bottom:0.85rem">
+          Добавки масштабируются с мукой, входят в массу теста, прогноз буханки и лимит диспенсера.
+        </p>
+        <div class="grid-2" id="addins-grid"></div>
+      </div>
+
+      <div class="card" style="margin-bottom:1rem" id="machine-instructions">
+        <h3 style="font-size:1.05rem;margin-bottom:0.75rem">Инструкция для выбранной техники</h3>
+        <ol id="steps-list" style="margin:0;padding-left:1.25rem;color:var(--text-muted);font-size:0.9rem"></ol>
+      </div>
+
+      <div id="cook-mode-anchor" class="toolbar" style="justify-content:flex-start;gap:0.75rem">
+        <button type="button" class="btn btn-primary btn-lg" id="btn-cook">🍞 Начать приготовление</button>
+        <button type="button" class="btn btn-secondary" id="btn-favorite">☆ В избранное</button>
+        <button type="button" class="btn btn-ghost" id="btn-reset-addins">Сбросить добавки</button>
+      </div>
+    </section>
+
+    <!-- CALIBRATION -->
+    <section id="calibration" class="section hidden">
+      <div class="section-head">
+        <h2>Что получилось?</h2>
+        <p>Сохраните фактический вес буханки — следующая оценка станет точнее для вашей кухни.</p>
+      </div>
+      <div class="card" style="max-width:480px">
+        <div class="field" style="margin-bottom:0.75rem">
+          <label for="calib-weight">Фактическая масса хлеба, г</label>
+          <input type="number" id="calib-weight" class="input" min="100" max="2000" step="1" placeholder="например 680">
+        </div>
+        <div class="field" style="margin-bottom:0.75rem">
+          <label for="calib-fill">Пиковое заполнение чаши, % (оценка)</label>
+          <input type="number" id="calib-fill" class="input" min="10" max="100" step="1" placeholder="например 65">
+        </div>
+        <button type="button" class="btn btn-primary" id="btn-save-calib">Сохранить калибровку</button>
+        <p class="stat-line" id="calib-status" style="margin-top:0.75rem"></p>
+      </div>
+    </section>
+
+    <!-- SOURCES -->
+    <section id="sources" class="section">
+      <div class="section-head">
+        <h2>Методология и источники</h2>
+        <p>Как считаем и откуда данные.</p>
+      </div>
+      <div class="card">
+        <ul style="margin:0;padding-left:1.2rem;color:var(--text-muted);font-size:0.9rem">
+          <li><strong>Пекарский %</strong> — суммарная мука = 100%; остальные ингредиенты масштабируются пропорционально.</li>
+          <li><strong>Гидратация</strong> — только водосодержащие жидкости (вода, молоко, кефир, отвар). Масла не входят.</li>
+          <li><strong>Вес буханки</strong> — диапазон с упёком 11–16%: оценка, не лабораторное измерение.</li>
+          <li><strong>Объём теста</strong> — эвристика (плотность ≈1.05 г/мл × коэффициент расширения × запас 25%).</li>
+          <li><strong>Panasonic SD-YR2540HTS</strong> — программы по ТЗ: 01 Основной, 03 с изюмом, 04 с начинкой, 06 цельнозерновой, 08 ЦЗ с изюмом, 09 французский, 10 ржаной, 13 выпечка, 27/28 ручной замес/подъём. Лимиты муки 350–600 г (хлеб), диспенсер добавок ≤150 г.</li>
+          <li><strong>REDMOND</strong> — переворот не обязателен производителем; предлагается для румяной верхней корочки.</li>
+          <li>Рецептуры 1–10 — из технологического справочника; номера программ исправлены по таблице модели.</li>
+          <li>Индикаторы: 🟢 проверенная адаптация · 🟡 расчётная оценка · 🟠 экспериментальная добавка.</li>
+        </ul>
+      </div>
+    </section>
+
+    <div id="debug-panel" class="hidden" aria-live="polite"></div>
+  </main>
+
+  <footer class="app-footer">
+    BreadLab · автономная лаборатория хлеба · работает offline через file://
+  </footer>
+
+  <!-- Cook Mode Overlay -->
+  <div id="cook-overlay" class="cook-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="cook-heading">
+    <div class="cook-inner">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:0.75rem;flex-wrap:wrap">
+        <h2 id="cook-heading" style="margin:0">Режим готовки</h2>
+        <button type="button" class="btn btn-secondary" id="btn-close-cook">Закрыть</button>
+      </div>
+      <p id="cook-sub" style="color:var(--text-muted);font-size:0.9rem"></p>
+      <div class="progress-track"><div class="progress-fill" id="cook-progress"></div></div>
+      <p class="stat-line" id="cook-progress-label">Шаг 0 из 0</p>
+
+      <div class="timer-box" id="timer-box">
+        <div>
+          <div style="font-size:0.8rem;color:var(--text-soft)" id="timer-label">Таймер</div>
+          <div class="timer-display" id="timer-display">00:00</div>
+        </div>
+        <div style="display:flex;gap:0.4rem;flex-wrap:wrap">
+          <button type="button" class="btn btn-primary" id="timer-start">Старт</button>
+          <button type="button" class="btn btn-secondary" id="timer-pause">Пауза</button>
+          <button type="button" class="btn btn-ghost" id="timer-reset">Сброс</button>
+        </div>
+      </div>
+
+      <div id="cook-steps"></div>
+      <div style="display:flex;gap:0.5rem;margin-top:1rem;flex-wrap:wrap">
+        <button type="button" class="btn btn-secondary" id="cook-prev">← Назад</button>
+        <button type="button" class="btn btn-primary" id="cook-next">Готово →</button>
+        <button type="button" class="btn btn-ghost" id="cook-reset-all">Сбросить процесс</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast-wrap" id="toasts" aria-live="polite"></div>
+
+  <noscript>
+    <p style="padding:2rem;text-align:center">Для работы BreadLab необходим JavaScript.</p>
+  </noscript>
+
+  <script>
+(function () {
+  "use strict";
+
+  /* =========================================================
+   * DataDB
+   * ========================================================= */
+  const DB = {
+    version: "1.0.0",
+    staples: ["water", "salt", "sugar"],
+    categories: [
+      { id: "all", name: "Все" },
+      { id: "flour", name: "Мука" },
+      { id: "yeast", name: "Дрожжи" },
+      { id: "liquid", name: "Жидкости" },
+      { id: "fat", name: "Масла" },
+      { id: "sweetener", name: "Сладости" },
+      { id: "salt", name: "Соль" },
+      { id: "dairy", name: "Молочное" },
+      { id: "seed", name: "Семена" },
+      { id: "nut", name: "Орехи" },
+      { id: "spice", name: "Специи" },
+      { id: "veg", name: "Овощи/зелень" },
+      { id: "other", name: "Прочее" }
+    ],
+    ingredients: {},
+    machines: {},
+    recipes: {},
+    tasteAddins: {}
+  };
+
+  function ing(def) {
+    DB.ingredients[def.id] = Object.assign({
+      aliases: [],
+      defaultPantryStaple: false,
+      hydrationFraction: 0,
+      densityGPerMl: 1,
+      unitDefault: "g",
+      description: "",
+      roleDefault: "",
+      increaseEffect: "Усиление соответствующей функции ингредиента.",
+      decreaseEffect: "Ослабление соответствующей функции ингредиента.",
+      substitutions: []
+    }, def);
+  }
+
+  ing({ id: "wheat_flour", name: "Мука пшеничная высшего / 1 сорта", category: "flour",
+    aliases: ["пшеничная мука", "хлебопекарная мука", "белая мука", "мука в/с"],
+    description: "Основной клейковинный каркас теста.",
+    roleDefault: "Структура и объём",
+    increaseEffect: "Плотнее тесто, может потребоваться больше воды.",
+    decreaseEffect: "Слабее каркас, меньший объём буханки.",
+    substitutions: ["Мука 1 сорта", "Смесь в/с + цельнозерновая (до 20%)"] });
+  ing({ id: "ww_flour", name: "Мука пшеничная цельнозерновая", category: "flour",
+    aliases: ["цельнозерновая мука", "обойная пшеничная"],
+    description: "Содержит отруби; даёт плотный полезный хлеб.",
+    roleDefault: "Клетчатка и вкус зерна",
+    increaseEffect: "Ниже подъём, грубее мякиш.",
+    decreaseEffect: "Более лёгкий мякиш.",
+    substitutions: ["Смесь пшеничной + отрубей"] });
+  ing({ id: "rye_flour", name: "Мука ржаная обдирная", category: "flour",
+    aliases: ["ржаная мука", "обдирная ржаная"],
+    description: "Мало глютена; структура за счёт слизей и кислотности.",
+    roleDefault: "Ржаной вкус и плотность",
+    increaseEffect: "Плотнее и кислее мякиш.",
+    decreaseEffect: "Ближе к пшеничному характеру.",
+    substitutions: ["Обойная ржаная (чуть грубее)"] });
+  ing({ id: "corn_flour", name: "Мука кукурузная тонкого помола", category: "flour",
+    aliases: ["кукурузная мука"],
+    description: "Цвет и рассыпчатость; ослабляет глютен.",
+    roleDefault: "Цвет и текстура",
+    increaseEffect: "Крошливее мякиш — нужен глютен.",
+    decreaseEffect: "Менее выраженный кукурузный вкус.",
+    substitutions: ["Кукурузная крупа мелкого помола"] });
+  ing({ id: "water", name: "Вода питьевая", category: "liquid", hydrationFraction: 1,
+    aliases: ["вода", "тёплая вода"], defaultPantryStaple: true,
+    description: "Гидратация белков и крахмала.",
+    roleDefault: "Гидратация",
+    increaseEffect: "Липкое слабое тесто, риск опадения.",
+    decreaseEffect: "Плотный мякиш, слабый подъём.",
+    substitutions: ["Слабый картофельный отвар"] });
+  ing({ id: "milk", name: "Молоко цельное", category: "liquid", hydrationFraction: 0.87,
+    aliases: ["молоко", "тёплое молоко"], category_note: "dairy",
+    description: "Смягчает мякиш, даёт лёгкую сладость.",
+    roleDefault: "Нежность мякиша",
+    increaseEffect: "Мягче, быстрее черствение корочки.",
+    decreaseEffect: "Суше мякиш.",
+    substitutions: ["Вода + сухое молоко"] });
+  // fix milk category
+  DB.ingredients.milk.category = "dairy";
+  ing({ id: "kefir", name: "Кефир 2,5–3,2%", category: "dairy", hydrationFraction: 0.88,
+    aliases: ["кефир"],
+    description: "Кисломолочная среда; активирует соду или смягчает клейковину.",
+    roleDefault: "Кислотность / разрыхление",
+    increaseEffect: "Кислее вкус, мягче тесто.",
+    decreaseEffect: "Слабее реакция с содой.",
+    substitutions: ["Простокваша", "Натуральный йогурт (разбавить водой)"] });
+  ing({ id: "potato_water", name: "Отвар картофельный", category: "liquid", hydrationFraction: 1,
+    aliases: ["картофельный отвар"],
+    description: "Крахмалистая жидкость для мягкости.",
+    roleDefault: "Гидратация + крахмал",
+    substitutions: ["Вода"] });
+  ing({ id: "scald_water", name: "Кипяток для заварки", category: "liquid", hydrationFraction: 1,
+    aliases: ["кипяток", "крутой кипяток"],
+    description: "Заваривает солод и специи.",
+    roleDefault: "Заварка",
+    substitutions: [] });
+  ing({ id: "oil", name: "Масло растительное рафинированное", category: "fat", hydrationFraction: 0,
+    aliases: ["растительное масло", "подсолнечное масло"],
+    description: "Пластифицирует клейковину, смягчает мякиш.",
+    roleDefault: "Пластичность",
+    increaseEffect: "Тяжелее подъём, маслянистее мякиш.",
+    decreaseEffect: "Суше корочка.",
+    substitutions: ["Оливковое", "Горчичное"] });
+  ing({ id: "olive_oil", name: "Масло оливковое", category: "fat", hydrationFraction: 0,
+    aliases: ["оливковое масло"],
+    description: "Аромат и пластичность.",
+    roleDefault: "Жир / аромат",
+    substitutions: ["Подсолнечное"] });
+  ing({ id: "butter", name: "Масло сливочное", category: "fat", hydrationFraction: 0.16,
+    aliases: ["сливочное масло"],
+    description: "Сдобность и слоистость мякиша.",
+    roleDefault: "Сдобность",
+    increaseEffect: "Тяжелее подъём, богаче вкус.",
+    decreaseEffect: "Менее сдобный мякиш.",
+    substitutions: ["Маргарин для выпечки (хуже вкус)"] });
+  ing({ id: "sugar", name: "Сахар-песок", category: "sweetener",
+    aliases: ["сахар"], defaultPantryStaple: true,
+    description: "Питание дрожжей и карамелизация корочки.",
+    roleDefault: "Питание дрожжей / цвет",
+    increaseEffect: "Быстрее брожение, темнее корочка.",
+    decreaseEffect: "Бледнее корочка, медленнее подъём.",
+    substitutions: ["Мёд (уменьшить жидкость)", "Патока"] });
+  ing({ id: "honey", name: "Мёд натуральный", category: "sweetener", hydrationFraction: 0.18,
+    aliases: ["мёд", "патока"],
+    description: "Сладость, цвет и удержание влаги.",
+    roleDefault: "Сладость / влага",
+    substitutions: ["Тёмная патока", "Сахар + чуть воды"] });
+  ing({ id: "salt", name: "Соль поваренная мелкая", category: "salt",
+    aliases: ["соль"], defaultPantryStaple: true,
+    description: "Вкус, контроль ферментации, укрепление клейковины.",
+    roleDefault: "Вкус и структура",
+    increaseEffect: "Замедление дрожжей, жёстче вкус.",
+    decreaseEffect: "Быстрый подъём, пресный вкус.",
+    substitutions: ["Морская мелкого помола"] });
+  ing({ id: "yeast", name: "Дрожжи сухие инстантные", category: "yeast",
+    aliases: ["дрожжи", "сухие дрожжи", "инстантные дрожжи", "саф-момент"],
+    description: "Газообразование для подъёма теста.",
+    roleDefault: "Подъём",
+    increaseEffect: "Быстрый подъём, риск опадения и дрожжевого запаха.",
+    decreaseEffect: "Слабый подъём, плотный мякиш.",
+    substitutions: ["Свежие дрожжи ×3 по массе (не в диспенсер Panasonic без адаптации)"] });
+  ing({ id: "dry_milk", name: "Сухое обезжиренное молоко", category: "dairy",
+    aliases: ["сухое молоко"],
+    description: "Улучшает цвет корочки и мягкость.",
+    roleDefault: "Обогащение",
+    substitutions: ["Заменить часть воды молоком"] });
+  ing({ id: "gluten", name: "Клейковина сухая пшеничная (глютен)", category: "other",
+    aliases: ["глютен", "клейковина"],
+    description: "Усиливает каркас при слабой/кукурузной муке.",
+    roleDefault: "Усиление структуры",
+    increaseEffect: "Жёстче мякиш.",
+    decreaseEffect: "Слабее подъём в безглютеновых добавках.",
+    substitutions: [] });
+  ing({ id: "malt", name: "Солод ржаной ферментированный", category: "other",
+    aliases: ["ржаной солод", "солод"],
+    description: "Цвет, аромат и ферменты для бородинского профиля.",
+    roleDefault: "Цвет и аромат заварки",
+    substitutions: ["Солодовый экстракт (осторожно с жидкостью)"] });
+  ing({ id: "coriander", name: "Кориандр молотый", category: "spice",
+    aliases: ["кориандр"],
+    description: "Пряный аромат бородинского хлеба.",
+    roleDefault: "Аромат",
+    substitutions: ["Семена кориандра дроблёные"] });
+  ing({ id: "caraway", name: "Тмин (семена)", category: "spice",
+    aliases: ["тмин"],
+    description: "Посыпка и аромат.",
+    roleDefault: "Посыпка / аромат",
+    substitutions: ["Семена фенхеля"] });
+  ing({ id: "vinegar", name: "Уксус яблочный 6%", category: "other", hydrationFraction: 0.94,
+    aliases: ["уксус", "яблочный уксус"],
+    description: "Подкисление ржаного теста, контроль амилазы.",
+    roleDefault: "Кислотность",
+    substitutions: ["Лимонный сок"] });
+  ing({ id: "potato_mash", name: "Картофельное пюре (без соли и масла)", category: "other", hydrationFraction: 0.78,
+    aliases: ["пюре", "картофельное пюре"],
+    description: "Удерживает влагу, замедляет черствение.",
+    roleDefault: "Влага и мягкость",
+    substitutions: ["Картофельные хлопья + вода"] });
+  ing({ id: "cheese", name: "Сыр полутвёрдый тёртый", category: "dairy",
+    aliases: ["сыр", "тёртый сыр"],
+    description: "Вкус и жирность закусочного хлеба. Влажный — в форму, не в диспенсер.",
+    roleDefault: "Вкус",
+    increaseEffect: "Тяжелее мякиш, жирнее.",
+    decreaseEffect: "Слабее сырный вкус.",
+    substitutions: ["Гауда", "Российский", "Чеддер"] });
+  ing({ id: "onion_fried", name: "Лук репчатый обжаренный", category: "veg",
+    aliases: ["лук", "жареный лук"],
+    description: "Сладость и аромат; лучше остудить перед закладкой.",
+    roleDefault: "Вкус",
+    substitutions: ["Сушёный жареный лук (меньше влаги)"] });
+  ing({ id: "garlic_dry", name: "Чеснок сушёный гранулированный", category: "spice",
+    aliases: ["сушёный чеснок", "чеснок гранулированный"],
+    description: "Стойкий чесночный аромат без лишней влаги.",
+    roleDefault: "Аромат",
+    substitutions: ["Свежий чеснок (меньше по массе, в форму)"] });
+  ing({ id: "garlic_fresh", name: "Чеснок свежий (кашица)", category: "veg",
+    aliases: ["чеснок", "свежий чеснок"],
+    description: "Яркий аромат; влажный — не в диспенсер.",
+    roleDefault: "Аромат",
+    substitutions: ["Сушёный чеснок"] });
+  ing({ id: "herbs", name: "Зелень укропа и петрушки", category: "veg",
+    aliases: ["укроп", "петрушка", "зелень"],
+    description: "Свежий травяной вкус.",
+    roleDefault: "Аромат",
+    substitutions: ["Сушёные травы (⅓ массы)"] });
+  ing({ id: "eggs", name: "Яйца куриные", category: "dairy", hydrationFraction: 0.75,
+    aliases: ["яйца", "яйцо"],
+    description: "Структура, цвет и сдобность бриоши.",
+    roleDefault: "Связывание / сдобность",
+    substitutions: [] });
+  ing({ id: "vanilla", name: "Ванилин", category: "spice",
+    aliases: ["ваниль", "ванилин"],
+    description: "Аромат сдобы.",
+    roleDefault: "Аромат",
+    substitutions: ["Ванильный сахар"] });
+  ing({ id: "soda", name: "Сода пищевая", category: "other",
+    aliases: ["сода"],
+    description: "Химический разрыхлитель с кислотой кефира.",
+    roleDefault: "Разрыхление",
+    increaseEffect: "Мыльный привкус.",
+    decreaseEffect: "Плотный мякиш.",
+    substitutions: ["Разрыхлитель (без реакции с кефиром — другой профиль)"] });
+  ing({ id: "seed_mix", name: "Смесь семян (кунжут, лён, подсолнечник)", category: "seed",
+    aliases: ["семена", "кунжут", "лён", "семечки"],
+    description: "Хруст и питательность.",
+    roleDefault: "Текстура",
+    substitutions: ["Любые сухие семена"] });
+
+  // Taste add-ins catalog
+  function addin(def) {
+    DB.tasteAddins[def.id] = def;
+  }
+  addin({ id: "walnut", ingredientId: "walnut", name: "Грецкий орех", category: "nut",
+    suggestedBakerPctRange: [5, 12], defaultPct: 8,
+    role: "Хруст и ореховый вкус",
+    effect: "Большое количество ослабляет клейковину.",
+    warnings: ["Крупные куски могут мешать подъёму"],
+    placement: { panasonic: "raisinNutDispenser", redmond: "manual" },
+    dry: true });
+  addin({ id: "raisin", ingredientId: "raisin", name: "Изюм", category: "other",
+    suggestedBakerPctRange: [8, 20], defaultPct: 12,
+    role: "Сладость и сочность",
+    effect: "Предварительно обсушить; липкий изюм — риск залипания диспенсера.",
+    warnings: [],
+    placement: { panasonic: "raisinNutDispenser", redmond: "manual" },
+    dry: true });
+  addin({ id: "sunflower", ingredientId: "sunflower", name: "Семечки подсолнечника", category: "seed",
+    suggestedBakerPctRange: [5, 12], defaultPct: 8,
+    role: "Хруст и вкус",
+    effect: "Подсушить на сухой сковороде.",
+    warnings: [],
+    placement: { panasonic: "raisinNutDispenser", redmond: "manual" },
+    dry: true });
+  addin({ id: "sesame", ingredientId: "sesame", name: "Кунжут", category: "seed",
+    suggestedBakerPctRange: [2, 6], defaultPct: 3,
+    role: "Аромат и посыпка",
+    effect: "Можно частью посыпать верх перед выпечкой.",
+    warnings: [],
+    placement: { panasonic: "raisinNutDispenser", redmond: "manual" },
+    dry: true });
+  addin({ id: "flax", ingredientId: "flax", name: "Семена льна", category: "seed",
+    suggestedBakerPctRange: [2, 8], defaultPct: 4,
+    role: "Клетчатка и ореховый тон",
+    effect: "Впитывает влагу — можно слегка увеличить воду.",
+    warnings: [],
+    placement: { panasonic: "raisinNutDispenser", redmond: "manual" },
+    dry: true });
+  addin({ id: "rosemary", ingredientId: "rosemary", name: "Розмарин сушёный", category: "spice",
+    suggestedBakerPctRange: [0.3, 1], defaultPct: 0.6,
+    role: "Травяной аромат",
+    effect: "Сильный аромат — не переборщите.",
+    warnings: [],
+    placement: { panasonic: "pan", redmond: "manual" },
+    dry: true });
+  addin({ id: "garlic_add", ingredientId: "garlic_dry", name: "Чеснок сушёный (добавка)", category: "spice",
+    suggestedBakerPctRange: [0.5, 1.5], defaultPct: 0.8,
+    role: "Чесночный акцент",
+    effect: "Хорошо сочетается с сыром и травами.",
+    warnings: [],
+    placement: { panasonic: "pan", redmond: "manual" },
+    dry: true });
+  addin({ id: "cheese_add", ingredientId: "cheese", name: "Сыр тёртый (добавка)", category: "dairy",
+    suggestedBakerPctRange: [8, 20], defaultPct: 12,
+    role: "Сырный вкус",
+    effect: "Влажный — только в форму, не в диспенсер.",
+    warnings: ["Не класть в диспенсер добавок Panasonic"],
+    placement: { panasonic: "pan", redmond: "manual" },
+    dry: false });
+  addin({ id: "dried_cranberry", ingredientId: "dried_cranberry", name: "Клюква сушёная", category: "other",
+    suggestedBakerPctRange: [6, 15], defaultPct: 10,
+    role: "Кисло-сладкий акцент",
+    effect: "Обвалять в муке перед добавлением.",
+    warnings: [],
+    placement: { panasonic: "raisinNutDispenser", redmond: "manual" },
+    dry: true });
+
+  // Pseudo-ingredients for add-ins not in main list
+  ["walnut", "raisin", "sunflower", "sesame", "flax", "rosemary", "dried_cranberry"].forEach(function (id) {
+    if (!DB.ingredients[id]) {
+      var names = {
+        walnut: "Грецкий орех", raisin: "Изюм", sunflower: "Семечки подсолнечника",
+        sesame: "Кунжут", flax: "Семена льна", rosemary: "Розмарин сушёный",
+        dried_cranberry: "Клюква сушёная"
+      };
+      var cats = {
+        walnut: "nut", raisin: "other", sunflower: "seed", sesame: "seed",
+        flax: "seed", rosemary: "spice", dried_cranberry: "other"
+      };
+      ing({ id: id, name: names[id], category: cats[id], aliases: [names[id].toLowerCase()] });
+    }
+  });
+
+  DB.machines = {
+    panasonic_sd_yr2540hts: {
+      id: "panasonic_sd_yr2540hts",
+      shortName: "Panasonic",
+      name: "Panasonic SD-YR2540HTS",
+      programs: {
+        "01": "Основной",
+        "03": "Основной с изюмом",
+        "04": "Основной с начинкой",
+        "06": "Цельнозерновой",
+        "08": "Цельнозерновой с изюмом",
+        "09": "Французский",
+        "10": "Ржаной",
+        "13": "Выпечка",
+        "27": "Ручной замес хлебного теста",
+        "28": "Подъём теста"
+      },
+      constraints: {
+        breadFlour: [350, 600],
+        doughFlour: [250, 600],
+        yeastG: [1.4, 11.2],
+        dispenserAddinsMaxG: 150
+      },
+      bowlVolumeMl: null,
+      notes: "Диспенсер дрожжей изолированный; диспенсер добавок до ~150 г сухих."
+    },
+    redmond_rmc_m92s: {
+      id: "redmond_rmc_m92s",
+      shortName: "REDMOND",
+      name: "REDMOND SkyCooker RMC-M92S",
+      modes: ["BREAD", "MULTI_COOK", "BAKE", "YOGURT_DOUGH"],
+      multiCookTempC: [35, 170],
+      breadDefaultMin: 180,
+      breadRangeMin: [60, 360],
+      bowlVolumeMl: 5000,
+      flipDefault: { required: false, optional: true, reason: "Для румяной верхней корочки (донный нагрев)." },
+      notes: "Переворот — рекомендация, не заводская обязательность для всех рецептов."
+    }
+  };
+
+  function placePan(p, r) {
+    return { panasonic: p, redmond: r || "bowl" };
+  }
+
+  function stepTexts(lines) {
+    return lines.map(function (t, i) {
+      return { id: "s" + (i + 1), text: t, timerMin: null };
+    });
+  }
+
+  /* ---- Recipes r01–r10 ---- */
+  DB.recipes.r01 = {
+    id: "r01",
+    title: "Классический белый пшеничный",
+    description: "Равномерный мелкопористый мякиш и хрустящая корочка.",
+    tags: ["пшеничный", "базовый"],
+    difficulty: "лёгкий",
+    sourceConfidence: "verified-adaptation",
+    sourceNotes: "Граммовки из технологического справочника; программа Panasonic №01.",
+    baseTotalFlourG: 450,
+    flourComponents: [{ ingredientId: "wheat_flour", grams: 450 }],
+    ingredients: [
+      { ingredientId: "wheat_flour", grams: 450, isFlour: true, stage: "mainMix", role: "Каркас", detailedRole: "Формирует глютеновую сетку и объём буханки.", placement: placePan("pan"), scalable: true, hydrationContributor: false },
+      { ingredientId: "water", grams: 270, stage: "mainMix", role: "Гидратация", detailedRole: "Растворяет соль/сахар и гидратирует белки муки.", placement: placePan("pan"), scalable: true, hydrationContributor: true },
+      { ingredientId: "oil", grams: 20, stage: "mainMix", role: "Пластичность", detailedRole: "Смягчает мякиш и корочку.", placement: placePan("pan"), scalable: true, hydrationContributor: false },
+      { ingredientId: "sugar", grams: 15, stage: "mainMix", role: "Питание дрожжей", detailedRole: "Ускоряет старт брожения и цвет корочки.", placement: placePan("pan"), scalable: true, hydrationContributor: false },
+      { ingredientId: "salt", grams: 8, stage: "mainMix", role: "Вкус и контроль", detailedRole: "Укрепляет клейковину и регулирует скорость ферментации.", placement: placePan("pan"), scalable: true, hydrationContributor: false },
+      { ingredientId: "yeast", grams: 5, stage: "dispenser", role: "Подъём", detailedRole: "Инстантные дрожжи; в Panasonic — только в дрожжевой диспенсер.", placement: placePan("yeastDispenser", "manual"), scalable: true, hydrationContributor: false }
+    ],
+    tasteAddinIds: ["walnut", "raisin", "sesame", "sunflower", "rosemary"],
+    physics: { bakeLossRange: [0.11, 0.15], doughDensityGPerMl: 1.05, proofExpansionRange: [1.9, 2.2], headroomFactor: 1.25, confidence: "medium" },
+    machineProfiles: {
+      panasonic: {
+        compatible: true, programNo: "01", programName: "Основной", crust: "Средний", loafSize: "L", totalTimeMin: 240,
+        steps: stepTexts([
+          "Засыпьте 5 г сухих дрожжей в верхний дрожжевой диспенсер.",
+          "В чашу просейте муку, добавьте сахар и соль.",
+          "Влейте масло и воду.",
+          "Программа №01 «Основной», размер L, корочка «Средний».",
+          "После сигнала остудите буханку на решётке ≥1 ч."
+        ]),
+        timers: [{ id: "bake", label: "Полный цикл", minutes: 240 }],
+        warnings: []
+      },
+      redmond: {
+        compatible: true, workflow: "manual-proof-bake",
+        proof: { program: "MULTI_COOK", temperatureC: 35, timeMin: 60 },
+        bake: { program: "BAKE", timeMin: 50, secondBakeMin: 20 },
+        flip: { required: false, optional: true, suggestedAtMin: 50, reason: "Для румяной верхней корочки." },
+        steps: stepTexts([
+          "Растворите в тёплой воде сахар, соль и дрожжи, добавьте масло.",
+          "Всыпьте муку, вымешивайте ~12 мин до прекращения липкости.",
+          "Шар в смазанную чашу. MULTI COOK 35 °C — 60 мин.",
+          "BAKE ~50 мин.",
+          "По желанию переверните и допекайте ещё ~20 мин.",
+          "Остудите на решётке."
+        ]),
+        timers: [
+          { id: "proof", label: "Расстойка 35 °C", minutes: 60 },
+          { id: "bake1", label: "Выпечка 1", minutes: 50 },
+          { id: "bake2", label: "Допекание после переворота", minutes: 20 }
+        ],
+        warnings: ["Переворот — рекомендация для корочки, не обязательное требование производителя."]
+      }
+    }
+  };
+
+  DB.recipes.r02 = {
+    id: "r02",
+    title: "Французский с хрустящей корочкой",
+    description: "Высокая гидратация и длительная ферментация, крупнопористый мякиш.",
+    tags: ["французский", "хрустящий"],
+    difficulty: "средний",
+    sourceConfidence: "verified-adaptation",
+    sourceNotes: "Программа исправлена на №09 «Французский» (в исходном docx ошибочно стояло №08).",
+    baseTotalFlourG: 400,
+    flourComponents: [{ ingredientId: "wheat_flour", grams: 400 }],
+    ingredients: [
+      { ingredientId: "wheat_flour", grams: 400, isFlour: true, stage: "mainMix", role: "Каркас", detailedRole: "Хлебопекарная мука для развитого глютена.", placement: placePan("pan"), scalable: true },
+      { ingredientId: "water", grams: 280, stage: "mainMix", role: "Гидратация", detailedRole: "Высокая гидратация (~70%) для открытой пористости.", placement: placePan("pan"), scalable: true, hydrationContributor: true },
+      { ingredientId: "dry_milk", grams: 15, stage: "mainMix", role: "Обогащение", detailedRole: "Улучшает цвет и мягкость мякиша.", placement: placePan("pan"), scalable: true },
+      { ingredientId: "butter", grams: 15, stage: "mainMix", role: "Сдобность", detailedRole: "Небольшое количество жира для пластичности.", placement: placePan("pan"), scalable: true },
+      { ingredientId: "salt", grams: 7, stage: "mainMix", role: "Вкус", detailedRole: "Баланс вкуса при длинной ферментации.", placement: placePan("pan"), scalable: true },
+      { ingredientId: "yeast", grams: 4, stage: "dispenser", role: "Подъём", detailedRole: "Умеренная доза для длинного цикла.", placement: placePan("yeastDispenser", "manual"), scalable: true }
+    ],
+    tasteAddinIds: ["sesame", "rosemary"],
+    physics: { bakeLossRange: [0.12, 0.16], doughDensityGPerMl: 1.04, proofExpansionRange: [2.0, 2.4], headroomFactor: 1.25, confidence: "medium" },
+    machineProfiles: {
+      panasonic: {
+        compatible: true, programNo: "09", programName: "Французский", crust: "Средний", loafSize: "M/L", totalTimeMin: 340,
+        steps: stepTexts([
+          "Дрожжи — в диспенсер.",
+          "В чашу: мука, сухое молоко, масло, соль, вода.",
+          "Программа №09 «Французский», корочка «Средний».",
+          "Остудите на решётке для сохранения хруста корочки."
+        ]),
+        timers: [{ id: "fr", label: "Цикл Французский", minutes: 340 }],
+        warnings: []
+      },
+      redmond: {
+        compatible: true, workflow: "manual-proof-bake",
+        proof: { program: "MULTI_COOK", temperatureC: 35, timeMin: 90 },
+        bake: { program: "BAKE", timeMin: 50, secondBakeMin: 20 },
+        flip: { required: false, optional: true, suggestedAtMin: 50, reason: "Румяная верхняя корочка." },
+        steps: stepTexts([
+          "Смешайте воду, соль, растопленное масло и сухое молоко.",
+          "Добавьте муку и дрожжи, замес ~15 мин до глютенового окна.",
+          "Расстойка MULTI COOK 35 °C — 90 мин.",
+          "BAKE 50 мин; по желанию переворот + 20 мин."
+        ]),
+        timers: [
+          { id: "proof", label: "Расстойка", minutes: 90 },
+          { id: "bake1", label: "Выпечка", minutes: 50 },
+          { id: "bake2", label: "После переворота", minutes: 20 }
+        ],
+        warnings: []
+      }
+    }
+  };
+
+  DB.recipes.r03 = {
+    id: "r03",
+    title: "Заварной ржано-пшеничный «Бородинский»",
+    description: "Плотный тёмный мякиш на ферментированном солоде с кориандром.",
+    tags: ["ржаной", "заварка", "бородинский"],
+    difficulty: "сложный",
+    sourceConfidence: "verified-adaptation",
+    sourceNotes: "Программа Panasonic исправлена на №10 «Ржаной».",
+    baseTotalFlourG: 420,
+    flourComponents: [
+      { ingredientId: "rye_flour", grams: 210 },
+      { ingredientId: "wheat_flour", grams: 210 }
+    ],
+    ingredients: [
+      { ingredientId: "rye_flour", grams: 210, isFlour: true, stage: "mainMix", role: "Ржаная основа", detailedRole: "Даёт плотность и ржаной вкус; мало глютена.", placement: placePan("pan"), scalable: true },
+      { ingredientId: "wheat_flour", grams: 210, isFlour: true, stage: "mainMix", role: "Каркас", detailedRole: "Добавляет глютен к ржаной смеси.", placement: placePan("pan"), scalable: true },
+      { ingredientId: "malt", grams: 35, stage: "scald", role: "Цвет и аромат", detailedRole: "Ферментированный солод для бородинского профиля.", placement: placePan("pan"), scalable: true },
+      { ingredientId: "coriander", grams: 4, stage: "scald", role: "Пряность", detailedRole: "В заварку с солодом.", placement: placePan("pan"), scalable: true },
+      { ingredientId: "scald_water", grams: 80, stage: "scald", role: "Заварка", detailedRole: "Кипяток для заваривания солода и кориандра (15 мин).", placement: placePan("pan"), scalable: true, hydrationContributor: true },
+      { ingredientId: "water", grams: 200, stage: "mainMix", role: "Гидратация", detailedRole: "Тёплая вода в основное тесто.", placement: placePan("pan"), scalable: true, hydrationContributor: true },
+      { ingredientId: "honey", grams: 40, stage: "mainMix", role: "Сладость", detailedRole: "Характерная сладость бородинского.", placement: placePan("pan"), scalable: true, hydrationContributor: true },
+      { ingredientId: "vinegar", grams: 15, stage: "mainMix", role: "Кислотность", detailedRole: "Подкисление против липкого мякиша.", placement: placePan("pan"), scalable: true, hydrationContributor: true },
+      { ingredientId: "oil", grams: 20, stage: "mainMix", role: "Пластичность", detailedRole: "Смягчает плотное ржаное тесто.", placement: placePan("pan"), scalable: true },
+      { ingredientId: "salt", grams: 7, stage: "mainMix", role: "Вкус", detailedRole: "Баланс вкуса.", placement: placePan("pan"), scalable: true },
+      { ingredientId: "caraway", grams: 2, stage: "topping", role: "Посыпка", detailedRole: "Посыпать верх перед выпечкой.", placement: placePan("manualAdd", "manual"), scalable: true },
+      { ingredientId: "yeast", grams: 6, stage: "dispenser", role: "Подъём", detailedRole: "В диспенсер Panasonic.", placement: placePan("yeastDispenser", "manual"), scalable: true }
+    ],
+    tasteAddinIds: ["flax", "sunflower"],
+    physics: { bakeLossRange: [0.10, 0.14], doughDensityGPerMl: 1.08, proofExpansionRange: [1.5, 1.8], headroomFactor: 1.25, confidence: "medium" },
+    machineProfiles: {
+      panasonic: {
+        compatible: true, programNo: "10", programName: "Ржаной", crust: "Авто", loafSize: "M", totalTimeMin: 210,
+        steps: stepTexts([
+          "Заварка: солод + кориандр залить кипятком, 15 мин до ~40 °C.",
+          "Установите гребенчатую лопатку для ржаного теста.",
+          "Дрожжи — в диспенсер.",
+          "В чашу: заварка, вода, мёд, уксус, масло, обе муки, соль.",
+          "Программа №10 «Ржаной» (~3 ч 30 мин).",
+          "Перед выпечкой можно присыпать тмином."
+        ]),
+        timers: [
+          { id: "scald", label: "Заварка", minutes: 15 },
+          { id: "cycle", label: "Ржаной цикл", minutes: 210 }
+        ],
+        warnings: ["Используйте лопатку для ржаного теста."]
+      },
+      redmond: {
+        compatible: true, workflow: "manual-proof-bake",
+        proof: { program: "YOGURT_DOUGH", temperatureC: 35, timeMin: 90 },
+        bake: { program: "BAKE", timeMin: 50, secondBakeMin: 30 },
+        flip: { required: false, optional: true, suggestedAtMin: 50, reason: "Равномерная корочка." },
+        steps: stepTexts([
+          "Приготовьте и остудите заварку 15 мин.",
+          "Смешайте заварку с водой, мёдом, уксусом, маслом, солью.",
+          "Всыпьте муку и дрожжи; вымешивайте влажными руками ~10 мин.",
+          "В чашу, присыпьте тмином. YOGURT/MULTI COOK 35 °C — 90 мин.",
+          "BAKE 50 мин; по желанию переворот + 30 мин."
+        ]),
+        timers: [
+          { id: "scald", label: "Заварка", minutes: 15 },
+          { id: "proof", label: "Расстойка", minutes: 90 },
+          { id: "bake1", label: "Выпечка", minutes: 50 },
+          { id: "bake2", label: "После переворота", minutes: 30 }
+        ],
+        warnings: []
+      }
+    }
+  };
+
+  DB.recipes.r04 = {
+    id: "r04",
+    title: "Цельнозерновой «Фитнес»",
+    description: "Высокое содержание клетчатки; нужен длинный цикл набухания отрубей.",
+    tags: ["цельнозерновой", "фитнес"],
+    difficulty: "средний",
+    sourceConfidence: "verified-adaptation",
+    sourceNotes: "Программа исправлена на №06 «Цельнозерновой».",
+    baseTotalFlourG: 600,
+    flourComponents: [
+      { ingredientId: "ww_flour", grams: 450 },
+      { ingredientId: "wheat_flour", grams: 150 }
+    ],
+    ingredients: [
+      { ingredientId: "ww_flour", grams: 450, isFlour: true, stage: "mainMix", role: "Отруби и вкус", detailedRole: "Основная цельнозерновая доля.", placement: placePan("pan"), scalable: true },
+      { ingredientId: "wheat_flour", grams: 150, isFlour: true, stage: "mainMix", role: "Каркас", detailedRole: "Поддерживает подъём.", placement: placePan("pan"), scalable: true },
+      { ingredientId: "water", grams: 380, stage: "mainMix", role: "Гидратация", detailedRole: "Отруби впитывают много воды.", placement: placePan("pan"), scalable: true, hydrationContributor: true },
+      { ingredientId: "honey", grams: 25, stage: "mainMix", role: "Сладость", detailedRole: "Питание дрожжей и мягкость.", placement: placePan("pan"), scalable: true, hydrationContributor: true },
+      { ingredientId: "olive_oil", grams: 30, stage: "mainMix", role: "Пластичность", detailedRole: "Смягчает плотное ЦЗ-тесто.", placement: placePan("pan"), scalable: true },
+      { ingredientId: "salt", grams: 9, stage: "mainMix", role: "Вкус", detailedRole: "Баланс.", placement: placePan("pan"), scalable: true },
+      { ingredientId: "yeast", grams: 6, stage: "dispenser", role: "Подъём", detailedRole: "В диспенсер.", placement: placePan("yeastDispenser", "manual"), scalable: true }
+    ],
+    tasteAddinIds: ["flax", "sunflower", "sesame", "walnut"],
+    physics: { bakeLossRange: [0.11, 0.15], doughDensityGPerMl: 1.07, proofExpansionRange: [1.6, 1.9], headroomFactor: 1.25, confidence: "medium" },
+    machineProfiles: {
+      panasonic: {
+        compatible: true, programNo: "06", programName: "Цельнозерновой", crust: "Средний", loafSize: "XL", totalTimeMin: 300,
+        steps: stepTexts([
+          "Дрожжи — в диспенсер.",
+          "В чашу: вода, масло, мёд, обе муки, соль.",
+          "Программа №06 «Цельнозерновой», XL, корочка «Средний» (~5 ч)."
+        ]),
+        timers: [{ id: "ww", label: "Цельнозерновой цикл", minutes: 300 }],
+        warnings: ["База 600 г — верхний край лимита муки Panasonic."]
+      },
+      redmond: {
+        compatible: true, workflow: "manual-proof-bake",
+        proof: { program: "MULTI_COOK", temperatureC: 35, timeMin: 70 },
+        bake: { program: "BAKE", timeMin: 50, secondBakeMin: 30 },
+        flip: { required: false, optional: true, suggestedAtMin: 50, reason: "Корочка." },
+        steps: stepTexts([
+          "Автолиз: смешайте муку с водой на 30 мин.",
+          "Добавьте мёд, масло, соль, дрожжи; замес ~12 мин.",
+          "MULTI COOK 35 °C — 70 мин.",
+          "BAKE 50 мин; по желанию переворот + 30 мин."
+        ]),
+        timers: [
+          { id: "autolyse", label: "Автолиз", minutes: 30 },
+          { id: "proof", label: "Расстойка", minutes: 70 },
+          { id: "bake1", label: "Выпечка", minutes: 50 },
+          { id: "bake2", label: "После переворота", minutes: 30 }
+        ],
+        warnings: ["При 600 г муки следите за заполнением чаши."]
+      }
+    }
+  };
+
+  DB.recipes.r05 = {
+    id: "r05",
+    title: "Кукурузный с золотистой корочкой",
+    description: "Солнечный цвет и слегка рассыпчатая текстура; нужен глютен.",
+    tags: ["кукурузный"],
+    difficulty: "средний",
+    sourceConfidence: "verified-adaptation",
+    sourceNotes: "Программа №01, светлая корочка.",
+    baseTotalFlourG: 450,
+    flourComponents: [
+      { ingredientId: "wheat_flour", grams: 350 },
+      { ingredientId: "corn_flour", grams: 100 }
+    ],
+    ingredients: [
+      { ingredientId: "wheat_flour", grams: 350, isFlour: true, stage: "mainMix", role: "Каркас", detailedRole: "Глютеновая основа.", placement: placePan("pan"), scalable: true },
+      { ingredientId: "corn_flour", grams: 100, isFlour: true, stage: "mainMix", role: "Цвет и вкус", detailedRole: "Ослабляет тесто — компенсируется глютеном.", placement: placePan("pan"), scalable: true },
+      { ingredientId: "milk", grams: 280, stage: "mainMix", role: "Гидратация", detailedRole: "Тёплое молоко для нежности.", placement: placePan("pan"), scalable: true, hydrationContributor: true },
+      { ingredientId: "butter", grams: 25, stage: "mainMix", role: "Сдобность", detailedRole: "Размягчённое сливочное масло.", placement: placePan("pan"), scalable: true },
+      { ingredientId: "dry_milk", grams: 15, stage: "mainMix", role: "Обогащение", detailedRole: "Усиливает молочный профиль.", placement: placePan("pan"), scalable: true },
+      { ingredientId: "sugar", grams: 25, stage: "mainMix", role: "Сладость", detailedRole: "Цвет корочки; риск подгорания — светлая корочка.", placement: placePan("pan"), scalable: true },
+      { ingredientId: "salt", grams: 7, stage: "mainMix", role: "Вкус", detailedRole: "Баланс.", placement: placePan("pan"), scalable: true },
+      { ingredientId: "gluten", grams: 10, stage: "mainMix", role: "Усиление", detailedRole: "Компенсирует кукурузную долю.", placement: placePan("pan"), scalable: true },
+      { ingredientId: "yeast", grams: 5, stage: "dispenser", role: "Подъём", detailedRole: "В диспенсер.", placement: placePan("yeastDispenser", "manual"), scalable: true }
+    ],
+    tasteAddinIds: ["sesame", "sunflower"],
+    physics: { bakeLossRange: [0.11, 0.15], doughDensityGPerMl: 1.05, proofExpansionRange: [1.8, 2.1], headroomFactor: 1.25, confidence: "medium" },
+    machineProfiles: {
+      panasonic: {
+        compatible: true, programNo: "01", programName: "Основной", crust: "Светлый", loafSize: "L", totalTimeMin: 240,
+        steps: stepTexts([
+          "Дрожжи — в диспенсер.",
+          "В чашу: обе муки, глютен, сухое молоко, сахар, соль, масло, молоко.",
+          "№01 «Основной», L, корочка «Светлый»."
+        ]),
+        timers: [{ id: "c", label: "Основной", minutes: 240 }],
+        warnings: ["Светлая корочка снижает риск подгорания сахаров кукурузы."]
+      },
+      redmond: {
+        compatible: true, workflow: "manual-proof-bake",
+        proof: { program: "MULTI_COOK", temperatureC: 35, timeMin: 60 },
+        bake: { program: "BAKE", timeMin: 50, secondBakeMin: 20 },
+        flip: { required: false, optional: true, suggestedAtMin: 50, reason: "Корочка." },
+        steps: stepTexts([
+          "В тёплом молоке растворите сахар, соль и масло.",
+          "Смешайте муки, глютен и дрожжи с жидкостью; замес 10–12 мин.",
+          "MULTI COOK 35 °C — 60 мин → BAKE 50 мин (+ переворот 20 мин по желанию)."
+        ]),
+        timers: [
+          { id: "proof", label: "Расстойка", minutes: 60 },
+          { id: "bake1", label: "Выпечка", minutes: 50 },
+          { id: "bake2", label: "После переворота", minutes: 20 }
+        ],
+        warnings: []
+      }
+    }
+  };
+
+  DB.recipes.r06 = {
+    id: "r06",
+    title: "Картофельный по-старославянски",
+    description: "Мягкий эластичный мякиш; картофельный крахмал замедляет черствение.",
+    tags: ["картофельный"],
+    difficulty: "средний",
+    sourceConfidence: "verified-adaptation",
+    sourceNotes: "Пюре без соли и масла.",
+    baseTotalFlourG: 450,
+    flourComponents: [{ ingredientId: "wheat_flour", grams: 450 }],
+    ingredients: [
+      { ingredientId: "wheat_flour", grams: 450, isFlour: true, stage: "mainMix", role: "Каркас", detailedRole: "Пшеничная основа.", placement: placePan("pan"), scalable: true },
+      { ingredientId: "potato_mash", grams: 200, stage: "mainMix", role: "Мягкость", detailedRole: "Тёплое пюре без соли/масла.", placement: placePan("pan"), scalable: true, hydrationContributor: true },
+      { ingredientId: "potato_water", grams: 180, stage: "mainMix", role: "Гидратация", detailedRole: "Отвар или вода ~35–40 °C.", placement: placePan("pan"), scalable: true, hydrationContributor: true },
+      { ingredientId: "oil", grams: 30, stage: "mainMix", role: "Пластичность", detailedRole: "Подсолнечное масло.", placement: placePan("pan"), scalable: true },
+      { ingredientId: "sugar", grams: 15, stage: "mainMix", role: "Питание дрожжей", detailedRole: "Старт брожения.", placement: placePan("pan"), scalable: true },
+      { ingredientId: "salt", grams: 8, stage: "mainMix", role: "Вкус", detailedRole: "Баланс.", placement: placePan("pan"), scalable: true },
+      { ingredientId: "yeast", grams: 6, stage: "dispenser", role: "Подъём", detailedRole: "В диспенсер.", placement: placePan("yeastDispenser", "manual"), scalable: true }
+    ],
+    tasteAddinIds: ["sunflower", "sesame", "rosemary"],
+    physics: { bakeLossRange: [0.12, 0.16], doughDensityGPerMl: 1.06, proofExpansionRange: [1.8, 2.1], headroomFactor: 1.25, confidence: "medium" },
+    machineProfiles: {
+      panasonic: {
+        compatible: true, programNo: "01", programName: "Основной", crust: "Средний", loafSize: "L", totalTimeMin: 240,
+        steps: stepTexts([
+          "Дрожжи — в диспенсер.",
+          "В чашу: мука, тёплое пюре, сахар, соль, масло, отвар.",
+          "№01 «Основной», L, средняя корочка."
+        ]),
+        timers: [{ id: "c", label: "Основной", minutes: 240 }],
+        warnings: []
+      },
+      redmond: {
+        compatible: true, workflow: "manual-proof-bake",
+        proof: { program: "MULTI_COOK", temperatureC: 35, timeMin: 60 },
+        bake: { program: "BAKE", timeMin: 50, secondBakeMin: 25 },
+        flip: { required: false, optional: true, suggestedAtMin: 50, reason: "Корочка." },
+        steps: stepTexts([
+          "В тёплом отваре растворите сахар и дрожжи, 10 мин.",
+          "Добавьте пюре, масло, соль, муку; замес ~10 мин.",
+          "MULTI COOK 35 °C — 60 мин → BAKE 50 + optional 25 мин."
+        ]),
+        timers: [
+          { id: "yeast", label: "Активация дрожжей", minutes: 10 },
+          { id: "proof", label: "Расстойка", minutes: 60 },
+          { id: "bake1", label: "Выпечка", minutes: 50 },
+          { id: "bake2", label: "После переворота", minutes: 25 }
+        ],
+        warnings: []
+      }
+    }
+  };
+
+  DB.recipes.r07 = {
+    id: "r07",
+    title: "Пикантный сырно-луковый",
+    description: "Закусочный хлеб с обжаренным луком и полутвёрдым сыром.",
+    tags: ["сыр", "лук", "закуска"],
+    difficulty: "средний",
+    sourceConfidence: "verified-adaptation",
+    sourceNotes: "Программа №03; сыр и лук — в форму (влажные), не в диспенсер.",
+    baseTotalFlourG: 400,
+    flourComponents: [{ ingredientId: "wheat_flour", grams: 400 }],
+    ingredients: [
+      { ingredientId: "wheat_flour", grams: 400, isFlour: true, stage: "mainMix", role: "Каркас", detailedRole: "Основа.", placement: placePan("pan"), scalable: true },
+      { ingredientId: "water", grams: 240, stage: "mainMix", role: "Гидратация", detailedRole: "Тёплая вода.", placement: placePan("pan"), scalable: true, hydrationContributor: true },
+      { ingredientId: "cheese", grams: 100, stage: "manual", role: "Вкус", detailedRole: "Тёртый сыр; влажный — только в форму.", placement: placePan("pan", "manual"), scalable: true },
+      { ingredientId: "onion_fried", grams: 50, stage: "manual", role: "Вкус", detailedRole: "Остывший обжаренный лук.", placement: placePan("pan", "manual"), scalable: true },
+      { ingredientId: "garlic_dry", grams: 3, stage: "mainMix", role: "Аромат", detailedRole: "Сушёный чеснок в сухую смесь.", placement: placePan("pan"), scalable: true },
+      { ingredientId: "oil", grams: 20, stage: "mainMix", role: "Жир", detailedRole: "Масло от обжарки лука или растительное.", placement: placePan("pan"), scalable: true },
+      { ingredientId: "sugar", grams: 10, stage: "mainMix", role: "Питание дрожжей", detailedRole: "Небольшая доза.", placement: placePan("pan"), scalable: true },
+      { ingredientId: "salt", grams: 7, stage: "mainMix", role: "Вкус", detailedRole: "Учесть солёность сыра.", placement: placePan("pan"), scalable: true },
+      { ingredientId: "yeast", grams: 5, stage: "dispenser", role: "Подъём", detailedRole: "В диспенсер.", placement: placePan("yeastDispenser", "manual"), scalable: true }
+    ],
+    tasteAddinIds: ["rosemary", "sesame"],
+    physics: { bakeLossRange: [0.10, 0.14], doughDensityGPerMl: 1.06, proofExpansionRange: [1.7, 2.0], headroomFactor: 1.25, confidence: "medium" },
+    machineProfiles: {
+      panasonic: {
+        compatible: true, programNo: "03", programName: "Основной с изюмом", crust: "Средний", loafSize: "L", totalTimeMin: 240,
+        steps: stepTexts([
+          "Дрожжи — в дрожжевой диспенсер.",
+          "Сыр и лук положите в форму (не в диспенсер добавок — влажные/плавящиеся).",
+          "В чашу: вода, масло, мука, чеснок, сахар, соль.",
+          "Программа №03 «Основной с изюмом»."
+        ]),
+        timers: [{ id: "c", label: "Основной с изюмом", minutes: 240 }],
+        warnings: ["Сыр и лук не загружать в диспенсер добавок."]
+      },
+      redmond: {
+        compatible: true, workflow: "manual-proof-bake",
+        proof: { program: "MULTI_COOK", temperatureC: 35, timeMin: 60 },
+        bake: { program: "BAKE", timeMin: 50, secondBakeMin: 20 },
+        flip: { required: false, optional: true, suggestedAtMin: 50, reason: "Корочка." },
+        steps: stepTexts([
+          "Замесите базовое тесто без сыра и лука.",
+          "В конце замеса вмешайте остывший лук и сыр.",
+          "MULTI COOK 35 °C — 60 мин → BAKE 50 (+20 optional)."
+        ]),
+        timers: [
+          { id: "proof", label: "Расстойка", minutes: 60 },
+          { id: "bake1", label: "Выпечка", minutes: 50 },
+          { id: "bake2", label: "После переворота", minutes: 20 }
+        ],
+        warnings: []
+      }
+    }
+  };
+
+  DB.recipes.r08 = {
+    id: "r08",
+    title: "Чесночно-зелёный закусочный",
+    description: "Ароматный хлеб с чесноком, укропом и оливковым маслом.",
+    tags: ["чеснок", "зелень"],
+    difficulty: "средний",
+    sourceConfidence: "verified-adaptation",
+    sourceNotes: "Программа №03; влажная зелень — в форму.",
+    baseTotalFlourG: 450,
+    flourComponents: [{ ingredientId: "wheat_flour", grams: 450 }],
+    ingredients: [
+      { ingredientId: "wheat_flour", grams: 450, isFlour: true, stage: "mainMix", role: "Каркас", detailedRole: "Основа.", placement: placePan("pan"), scalable: true },
+      { ingredientId: "water", grams: 260, stage: "mainMix", role: "Гидратация", detailedRole: "Вода или кефир 2,5%.", placement: placePan("pan"), scalable: true, hydrationContributor: true },
+      { ingredientId: "olive_oil", grams: 30, stage: "mainMix", role: "Аромат / жир", detailedRole: "Часть масла можно смешать с начинкой.", placement: placePan("pan"), scalable: true },
+      { ingredientId: "garlic_fresh", grams: 15, stage: "manual", role: "Аромат", detailedRole: "Кашица; влажная — не в диспенсер.", placement: placePan("pan", "manual"), scalable: true },
+      { ingredientId: "herbs", grams: 15, stage: "manual", role: "Аромат", detailedRole: "Мелко нарезанная зелень.", placement: placePan("pan", "manual"), scalable: true },
+      { ingredientId: "sugar", grams: 10, stage: "mainMix", role: "Питание дрожжей", detailedRole: "Небольшая доза.", placement: placePan("pan"), scalable: true },
+      { ingredientId: "salt", grams: 8, stage: "mainMix", role: "Вкус", detailedRole: "Баланс.", placement: placePan("pan"), scalable: true },
+      { ingredientId: "yeast", grams: 6, stage: "dispenser", role: "Подъём", detailedRole: "В диспенсер.", placement: placePan("yeastDispenser", "manual"), scalable: true }
+    ],
+    tasteAddinIds: ["cheese_add", "sesame"],
+    physics: { bakeLossRange: [0.11, 0.15], doughDensityGPerMl: 1.05, proofExpansionRange: [1.8, 2.1], headroomFactor: 1.25, confidence: "medium" },
+    machineProfiles: {
+      panasonic: {
+        compatible: true, programNo: "03", programName: "Основной с изюмом", crust: "Средний", loafSize: "L", totalTimeMin: 240,
+        steps: stepTexts([
+          "Дрожжи — в диспенсер.",
+          "Чеснок и зелень — в форму (влажные).",
+          "В чашу: вода/кефир, масло, мука, сахар, соль.",
+          "№03 «Основной с изюмом»."
+        ]),
+        timers: [{ id: "c", label: "Цикл", minutes: 240 }],
+        warnings: ["Влажную зелень не класть в диспенсер добавок."]
+      },
+      redmond: {
+        compatible: true, workflow: "manual-proof-bake",
+        proof: { program: "MULTI_COOK", temperatureC: 35, timeMin: 45 },
+        bake: { program: "BAKE", timeMin: 50, secondBakeMin: 20 },
+        flip: { required: false, optional: true, suggestedAtMin: 50, reason: "Корочка." },
+        steps: stepTexts([
+          "Замесите тесто из муки, воды, части масла, сахара, соли, дрожжей.",
+          "Смешайте оставшееся масло с чесноком и зеленью.",
+          "Раскатайте, смажьте, сверните рулетом, разрежьте вдоль (косичка).",
+          "MULTI COOK 35 °C — 45 мин → BAKE 50 (+20 optional)."
+        ]),
+        timers: [
+          { id: "proof", label: "Расстойка", minutes: 45 },
+          { id: "bake1", label: "Выпечка", minutes: 50 },
+          { id: "bake2", label: "После переворота", minutes: 20 }
+        ],
+        warnings: []
+      }
+    }
+  };
+
+  DB.recipes.r09 = {
+    id: "r09",
+    title: "Сдобная бриошь с ванилью",
+    description: "Богатое сливочное тесто с яйцами и волокнистым мякишем.",
+    tags: ["сдоба", "бриошь"],
+    difficulty: "сложный",
+    sourceConfidence: "verified-adaptation",
+    sourceNotes: "Программа №04 «Основной с начинкой»; масло — по сигналу.",
+    baseTotalFlourG: 500,
+    flourComponents: [{ ingredientId: "wheat_flour", grams: 500 }],
+    ingredients: [
+      { ingredientId: "wheat_flour", grams: 500, isFlour: true, stage: "mainMix", role: "Каркас", detailedRole: "Сильная мука для сдобы.", placement: placePan("pan"), scalable: true },
+      { ingredientId: "eggs", grams: 150, stage: "mainMix", role: "Сдобность", detailedRole: "~3 яйца C0.", placement: placePan("pan"), scalable: true, hydrationContributor: true },
+      { ingredientId: "milk", grams: 100, stage: "mainMix", role: "Гидратация", detailedRole: "Тёплое молоко.", placement: placePan("pan"), scalable: true, hydrationContributor: true },
+      { ingredientId: "butter", grams: 120, stage: "manual", role: "Сдобность", detailedRole: "Кубики по сигналу программы.", placement: placePan("manualAdd", "manual"), scalable: true },
+      { ingredientId: "sugar", grams: 85, stage: "mainMix", role: "Сладость", detailedRole: "Высокая доля сахара.", placement: placePan("pan"), scalable: true },
+      { ingredientId: "salt", grams: 4, stage: "mainMix", role: "Вкус", detailedRole: "Умеренно для сдобы.", placement: placePan("pan"), scalable: true },
+      { ingredientId: "vanilla", grams: 1, stage: "mainMix", role: "Аромат", detailedRole: "Ванилин.", placement: placePan("pan"), scalable: true },
+      { ingredientId: "yeast", grams: 7, stage: "dispenser", role: "Подъём", detailedRole: "В диспенсер.", placement: placePan("yeastDispenser", "manual"), scalable: true }
+    ],
+    tasteAddinIds: ["raisin", "dried_cranberry"],
+    physics: { bakeLossRange: [0.09, 0.13], doughDensityGPerMl: 1.08, proofExpansionRange: [1.7, 2.0], headroomFactor: 1.25, confidence: "medium" },
+    machineProfiles: {
+      panasonic: {
+        compatible: true, programNo: "04", programName: "Основной с начинкой", crust: "Светлый", loafSize: "L", totalTimeMin: 240,
+        steps: stepTexts([
+          "Дрожжи — в диспенсер.",
+          "Взбейте яйца с молоком и сахаром, влейте в чашу.",
+          "Добавьте ванилин, соль, муку.",
+          "Масло кубиками — по звуковому сигналу.",
+          "№04 «Основной с начинкой», светлая корочка."
+        ]),
+        timers: [{ id: "c", label: "Сдобный цикл", minutes: 240 }],
+        warnings: ["Не пропускайте сигнал добавления масла."]
+      },
+      redmond: {
+        compatible: true, workflow: "manual-proof-bake",
+        proof: { program: "MULTI_COOK", temperatureC: 35, timeMin: 90 },
+        bake: { program: "BAKE", timeMin: 45, secondBakeMin: 20 },
+        flip: { required: false, optional: true, suggestedAtMin: 45, reason: "Корочка." },
+        steps: stepTexts([
+          "Опара: молоко, сахар, дрожжи, 2 ст. л. муки — 15 мин.",
+          "Введите яйца, ванилин, соль, остаток муки.",
+          "Порционно вмешайте масло (~15 мин замеса).",
+          "MULTI COOK 35 °C — 90 мин → BAKE 45 (+20 optional)."
+        ]),
+        timers: [
+          { id: "preferment", label: "Опара", minutes: 15 },
+          { id: "proof", label: "Расстойка", minutes: 90 },
+          { id: "bake1", label: "Выпечка", minutes: 45 },
+          { id: "bake2", label: "После переворота", minutes: 20 }
+        ],
+        warnings: []
+      }
+    }
+  };
+
+  DB.recipes.r10 = {
+    id: "r10",
+    title: "Экспресс на кефире и соде",
+    description: "Бездрожжевой быстрый хлеб: сода + кислота кефира.",
+    tags: ["бездрожжевой", "быстрый", "кефир"],
+    difficulty: "лёгкий",
+    sourceConfidence: "verified-adaptation",
+    sourceNotes: "Программа №13 «Выпечка»; лопатку снять.",
+    baseTotalFlourG: 280,
+    flourComponents: [
+      { ingredientId: "wheat_flour", grams: 210 },
+      { ingredientId: "rye_flour", grams: 70 }
+    ],
+    ingredients: [
+      { ingredientId: "wheat_flour", grams: 210, isFlour: true, stage: "mainMix", role: "Каркас", detailedRole: "Основная мука.", placement: placePan("pan"), scalable: true },
+      { ingredientId: "rye_flour", grams: 70, isFlour: true, stage: "mainMix", role: "Вкус", detailedRole: "Можно заменить на цельнозерновую.", placement: placePan("pan"), scalable: true },
+      { ingredientId: "kefir", grams: 250, stage: "mainMix", role: "Кислота + влага", detailedRole: "Тёплый кефир активирует соду.", placement: placePan("pan"), scalable: true, hydrationContributor: true },
+      { ingredientId: "butter", grams: 40, stage: "mainMix", role: "Сдобность", detailedRole: "Растопленное.", placement: placePan("pan"), scalable: true },
+      { ingredientId: "soda", grams: 6, stage: "mainMix", role: "Разрыхление", detailedRole: "Смешать с кефиром на 5 мин до пены.", placement: placePan("pan"), scalable: true },
+      { ingredientId: "salt", grams: 5, stage: "mainMix", role: "Вкус", detailedRole: "Баланс.", placement: placePan("pan"), scalable: true },
+      { ingredientId: "sugar", grams: 10, stage: "mainMix", role: "Вкус", detailedRole: "Лёгкая сладость.", placement: placePan("pan"), scalable: true },
+      { ingredientId: "seed_mix", grams: 30, stage: "mainMix", role: "Текстура", detailedRole: "Кунжут, лён, подсолнечник.", placement: placePan("pan"), scalable: true }
+    ],
+    tasteAddinIds: ["sesame", "flax"],
+    physics: { bakeLossRange: [0.10, 0.14], doughDensityGPerMl: 1.1, proofExpansionRange: [1.1, 1.3], headroomFactor: 1.15, confidence: "medium" },
+    machineProfiles: {
+      panasonic: {
+        compatible: true, programNo: "13", programName: "Выпечка", crust: "—", loafSize: "—", totalTimeMin: 55,
+        steps: stepTexts([
+          "Кефир + сода — 5 мин до пены.",
+          "Смешайте муку, соль, сахар, семена, масло; соедините с кефиром (1–2 мин).",
+          "Снимите лопатку замеса.",
+          "Выложите тесто, разровняйте.",
+          "Программа №13 «Выпечка» — 55 мин."
+        ]),
+        timers: [
+          { id: "soda", label: "Реакция соды", minutes: 5 },
+          { id: "bake", label: "Выпечка", minutes: 55 }
+        ],
+        warnings: ["Обязательно извлеките лопатку.", "База 280 г муки — ниже лимита «хлеба» 350 г: допустимо для режима Выпечка/тесто, будет предупреждение."]
+      },
+      redmond: {
+        compatible: true, workflow: "bake-only",
+        proof: null,
+        bake: { program: "BAKE", timeMin: 45, secondBakeMin: 20 },
+        flip: { required: false, optional: true, suggestedAtMin: 45, reason: "Корочка." },
+        steps: stepTexts([
+          "Активируйте соду в тёплом кефире 5 мин.",
+          "Быстро смешайте сухие и жидкие (1–2 мин).",
+          "Смажьте чашу, выложите тесто — без расстойки.",
+          "BAKE 45 мин; по желанию переворот + 20 мин."
+        ]),
+        timers: [
+          { id: "soda", label: "Реакция соды", minutes: 5 },
+          { id: "bake1", label: "Выпечка", minutes: 45 },
+          { id: "bake2", label: "После переворота", minutes: 20 }
+        ],
+        warnings: []
+      }
+    }
+  };
+
+  /* Enrich ingredient rows with defaults from DB.ingredients */
+  Object.keys(DB.recipes).forEach(function (rid) {
+    DB.recipes[rid].ingredients.forEach(function (row) {
+      var meta = DB.ingredients[row.ingredientId];
+      if (!meta) return;
+      if (!row.detailedRole) row.detailedRole = meta.description || meta.roleDefault;
+      if (!row.increaseEffect) row.increaseEffect = meta.increaseEffect;
+      if (!row.decreaseEffect) row.decreaseEffect = meta.decreaseEffect;
+      if (!row.substitutions) row.substitutions = meta.substitutions || [];
+      if (row.hydrationContributor == null) {
+        row.hydrationContributor = (meta.hydrationFraction || 0) > 0;
+      }
+      if (row.scalable == null) row.scalable = true;
+      if (!row.unit) row.unit = meta.unitDefault || "g";
+    });
+  });
+
+  /* =========================================================
+   * Pure calculation layer
+   * ========================================================= */
+  function getTotalFlourG(recipe) {
+    return recipe.flourComponents.reduce(function (s, f) { return s + f.grams; }, 0);
+  }
+
+  function roundPresent(ingredientId, value) {
+    var fine = { salt: 1, yeast: 1, coriander: 1, caraway: 1, garlic_dry: 1, vanilla: 1, soda: 1, rosemary: 1 };
+    if (fine[ingredientId] || (DB.tasteAddins[ingredientId] && DB.tasteAddins[ingredientId].suggestedBakerPctRange[1] < 2)) {
+      return Math.round(value * 10) / 10;
+    }
+    return Math.round(value);
+  }
+
+  function formatGrams(ingredientId, value) {
+    var r = roundPresent(ingredientId, value);
+    return (Math.abs(r - Math.round(r)) < 1e-9) ? String(Math.round(r)) : r.toFixed(1);
+  }
+
+  function scaleRecipe(recipe, targetFlourG, enabledAddins) {
+    var base = getTotalFlourG(recipe) || recipe.baseTotalFlourG;
+    var factor = targetFlourG / base;
+    var items = recipe.ingredients.map(function (row) {
+      var grams = row.scalable === false ? row.grams : row.grams * factor;
+      return Object.assign({}, row, {
+        grams: grams,
+        bakerPct: (grams / targetFlourG) * 100,
+        scaled: true
+      });
+    });
+    var addins = [];
+    (enabledAddins || []).forEach(function (aid) {
+      var a = DB.tasteAddins[aid];
+      if (!a) return;
+      var pct = a.defaultPct;
+      var grams = targetFlourG * (pct / 100);
+      addins.push({
+        addinId: aid,
+        ingredientId: a.ingredientId,
+        name: a.name,
+        grams: grams,
+        bakerPct: pct,
+        pctRange: a.suggestedBakerPctRange,
+        gramsRange: [
+          targetFlourG * a.suggestedBakerPctRange[0] / 100,
+          targetFlourG * a.suggestedBakerPctRange[1] / 100
+        ],
+        role: a.role,
+        effect: a.effect,
+        warnings: a.warnings || [],
+        placement: a.placement,
+        dry: a.dry,
+        isAddin: true,
+        scalable: true,
+        hydrationContributor: false
+      });
+    });
+    return {
+      targetFlourG: targetFlourG,
+      factor: factor,
+      items: items,
+      addins: addins,
+      all: items.concat(addins)
+    };
+  }
+
+  function calculateHydration(scaled, recipe) {
+    var water = 0;
+    scaled.items.forEach(function (row) {
+      var meta = DB.ingredients[row.ingredientId] || {};
+      var frac = meta.hydrationFraction || 0;
+      if (row.hydrationContributor || frac > 0) {
+        // oils explicitly 0
+        if ((meta.category === "fat") && frac === 0) return;
+        water += row.grams * frac;
+      }
+    });
+    return (water / scaled.targetFlourG) * 100;
+  }
+
+  function calculateDoughMass(scaled) {
+    return scaled.all.reduce(function (s, r) { return s + r.grams; }, 0);
+  }
+
+  function estimateFinishedWeight(doughMass, bakeLossRange, calibration) {
+    var minL = bakeLossRange[0], maxL = bakeLossRange[1];
+    var finishedMin = doughMass * (1 - maxL);
+    var finishedMax = doughMass * (1 - minL);
+    if (calibration && calibration.actualFinishedWeightG && calibration.predictedMid) {
+      var bias = calibration.actualFinishedWeightG / calibration.predictedMid;
+      finishedMin *= bias;
+      finishedMax *= bias;
+    }
+    return { min: finishedMin, max: finishedMax };
+  }
+
+  function estimateProofVolume(doughMass, physics) {
+    var dens = physics.doughDensityGPerMl || 1.05;
+    var initial = doughMass / dens;
+    var pMin = initial * physics.proofExpansionRange[0];
+    var pMax = initial * physics.proofExpansionRange[1];
+    var bowl = pMax * (physics.headroomFactor || 1.25);
+    return { initialMl: initial, proofedMinMl: pMin, proofedMaxMl: pMax, recommendedBowlMl: bowl };
+  }
+
+  function calculateDispenserLoad(scaled) {
+    var total = 0;
+    scaled.all.forEach(function (row) {
+      var place = row.placement && row.placement.panasonic;
+      if (place === "raisinNutDispenser") total += row.grams;
+    });
+    return total;
+  }
+
+  function validateMachineLimits(machineId, recipe, scaled) {
+    var warnings = [];
+    var machine = DB.machines[machineId];
+    if (!machine) return warnings;
+    var flour = scaled.targetFlourG;
+    var yeastRow = scaled.items.find(function (r) { return r.ingredientId === "yeast"; });
+    var yeastG = yeastRow ? yeastRow.grams : 0;
+
+    if (machineId === "panasonic_sd_yr2540hts") {
+      var bf = machine.constraints.breadFlour;
+      var mode = recipe.machineProfiles.panasonic.programNo === "13" ? "bake" : "bread";
+      if (mode === "bread") {
+        if (flour < bf[0]) warnings.push({ level: "warn", code: "flour_low", message: "Мука " + Math.round(flour) + " г ниже рекомендованного для хлеба (" + bf[0] + "–" + bf[1] + " г)." });
+        if (flour > bf[1]) warnings.push({ level: "danger", code: "flour_high", message: "Мука " + Math.round(flour) + " г выше лимита хлеба Panasonic (" + bf[1] + " г)." });
+      } else {
+        var df = machine.constraints.doughFlour;
+        if (flour < df[0]) warnings.push({ level: "warn", code: "flour_low_dough", message: "Мука ниже диапазона для теста (" + df[0] + "–" + df[1] + " г)." });
+        if (flour > df[1]) warnings.push({ level: "danger", code: "flour_high_dough", message: "Мука выше лимита для теста (" + df[1] + " г)." });
+      }
+      var y = machine.constraints.yeastG;
+      if (yeastG > 0 && yeastG < y[0]) warnings.push({ level: "warn", code: "yeast_low", message: "Дрожжи " + formatGrams("yeast", yeastG) + " г ниже обычного диапазона (" + y[0] + "–" + y[1] + " г)." });
+      if (yeastG > y[1]) warnings.push({ level: "danger", code: "yeast_high", message: "Дрожжи " + formatGrams("yeast", yeastG) + " г выше лимита (" + y[1] + " г)." });
+      var disp = calculateDispenserLoad(scaled);
+      if (disp > machine.constraints.dispenserAddinsMaxG) {
+        warnings.push({ level: "danger", code: "dispenser", message: "Добавки в диспенсер ≈" + Math.round(disp) + " г > лимита " + machine.constraints.dispenserAddinsMaxG + " г. Уменьшите добавки или кладите часть вручную." });
+      } else if (disp > machine.constraints.dispenserAddinsMaxG * 0.9) {
+        warnings.push({ level: "warn", code: "dispenser_near", message: "Добавки в диспенсер ≈" + Math.round(disp) + " г — близко к лимиту 150 г." });
+      }
+    }
+
+    if (machineId === "redmond_rmc_m92s") {
+      var vol = estimateProofVolume(calculateDoughMass(scaled), recipe.physics);
+      var fill = vol.proofedMaxMl / machine.bowlVolumeMl;
+      if (fill > 0.9) warnings.push({ level: "danger", code: "bowl_red", message: "Риск побега теста: расчётный пик >90% объёма чаши (~5 л). Уменьшите муку." });
+      else if (fill > 0.7) warnings.push({ level: "warn", code: "bowl_yellow", message: "Заполнение чаши впритык (70–90% расчётного пика). Следите за подъёмом." });
+      else warnings.push({ level: "ok", code: "bowl_green", message: "Комфортный запас объёма чаши REDMOND." });
+    }
+    return warnings;
+  }
+
+  function normalizeName(s) {
+    return String(s || "").toLowerCase().replace(/ё/g, "е").trim();
+  }
+
+  function resolveIngredientId(token) {
+    var t = normalizeName(token);
+    if (DB.ingredients[t]) return t;
+    var ids = Object.keys(DB.ingredients);
+    for (var i = 0; i < ids.length; i++) {
+      var ingr = DB.ingredients[ids[i]];
+      if (normalizeName(ingr.name) === t) return ids[i];
+      if ((ingr.aliases || []).some(function (a) { return normalizeName(a) === t; })) return ids[i];
+    }
+    return null;
+  }
+
+  function recipeRequiredIds(recipe, staplesOn) {
+    var req = [];
+    recipe.ingredients.forEach(function (row) {
+      if (row.optional) return;
+      if (staplesOn && DB.staples.indexOf(row.ingredientId) !== -1) return;
+      if (req.indexOf(row.ingredientId) === -1) req.push(row.ingredientId);
+    });
+    return req;
+  }
+
+  function matchRecipes(pantrySet, opts) {
+    opts = opts || {};
+    var staplesOn = !!opts.staplesOn;
+    var near = opts.nearMatch !== false;
+    var results = [];
+    Object.keys(DB.recipes).forEach(function (rid) {
+      var recipe = DB.recipes[rid];
+      var req = recipeRequiredIds(recipe, staplesOn);
+      var missing = req.filter(function (id) { return !pantrySet.has(id); });
+      var status = "unavailable";
+      if (missing.length === 0) status = "exact";
+      else if (near && missing.length <= 2) status = "near";
+      if (status === "unavailable") return;
+      var score = status === "exact" ? 1000 - req.length : 500 - missing.length * 10;
+      ["panasonic", "redmond"].forEach(function (mkey) {
+        var mp = recipe.machineProfiles[mkey];
+        if (!mp || !mp.compatible) return;
+        results.push({
+          recipeId: rid,
+          recipe: recipe,
+          machineKey: mkey,
+          machineId: mkey === "panasonic" ? "panasonic_sd_yr2540hts" : "redmond_rmc_m92s",
+          status: status,
+          missing: missing,
+          score: score,
+          programLabel: mkey === "panasonic"
+            ? ("№" + mp.programNo + " «" + mp.programName + "»")
+            : (mp.workflow === "bake-only" ? "BAKE" : mp.workflow === "bread-auto" ? "BREAD" : "MULTI COOK + BAKE"),
+          timeMin: mkey === "panasonic" ? mp.totalTimeMin : (
+            (mp.proof && mp.proof.timeMin || 0) + (mp.bake && mp.bake.timeMin || 0) + (mp.bake && mp.bake.secondBakeMin || 0)
+          )
+        });
+      });
+    });
+    results.sort(function (a, b) {
+      if (b.score !== a.score) return b.score - a.score;
+      return a.recipe.title.localeCompare(b.recipe.title, "ru");
+    });
+    return results;
+  }
+
+  function buildShoppingList(matches) {
+    var set = {};
+    matches.forEach(function (m) {
+      m.missing.forEach(function (id) {
+        set[id] = DB.ingredients[id] ? DB.ingredients[id].name : id;
+      });
+    });
+    return Object.keys(set).map(function (k) { return set[k]; }).sort(function (a, b) {
+      return a.localeCompare(b, "ru");
+    });
+  }
+
+  function placementLabel(code, machineKey) {
+    var mapP = {
+      pan: "В чашу",
+      yeastDispenser: "Диспенсер дрожжей",
+      raisinNutDispenser: "Диспенсер добавок",
+      manualAdd: "Вручную / по сигналу",
+      notApplicable: "—"
+    };
+    var mapR = { bowl: "В чашу", manual: "Вручную при замесе" };
+    if (machineKey === "redmond") return mapR[code] || code || "Вручную";
+    return mapP[code] || code || "—";
+  }
+
+  function stageLabel(stage) {
+    var m = {
+      preferment: "Опара",
+      scald: "Заварка",
+      mainMix: "Основной замес",
+      dispenser: "Диспенсер",
+      manual: "Вручную",
+      topping: "Посыпка"
+    };
+    return m[stage] || stage || "—";
+  }
+
+  /* =========================================================
+   * State & persistence
+   * ========================================================= */
+  var STORAGE_KEY = "breadlab_v1";
+
+  var state = {
+    pantry: {},
+    staplesOn: true,
+    nearMatchOn: true,
+    pantryCategory: "all",
+    pantryQuery: "",
+    results: [],
+    resultsTab: "panasonic",
+    selectedRecipeId: null,
+    selectedMachineId: null,
+    targetFlourG: 450,
+    enabledTasteAddins: {},
+    favorites: [],
+    recent: [],
+    checklist: {},
+    cookStepIndex: 0,
+    timers: {},
+    calibrations: [],
+    expandedIng: null,
+    activeTimerId: null
+  };
+
+  var StorageAdapter = {
+    available: false,
+    check: function () {
+      try {
+        var k = "__bl_test__";
+        localStorage.setItem(k, "1");
+        localStorage.removeItem(k);
+        this.available = true;
+      } catch (e) {
+        this.available = false;
+      }
+      return this.available;
+    },
+    load: function () {
+      if (!this.available) return null;
+      try {
+        var raw = localStorage.getItem(STORAGE_KEY);
+        return raw ? JSON.parse(raw) : null;
+      } catch (e) { return null; }
+    },
+    save: function (data) {
+      if (!this.available) return false;
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+        return true;
+      } catch (e) { return false; }
+    }
+  };
+
+  function persist() {
+    StorageAdapter.save({
+      pantry: state.pantry,
+      staplesOn: state.staplesOn,
+      nearMatchOn: state.nearMatchOn,
+      favorites: state.favorites,
+      recent: state.recent,
+      calibrations: state.calibrations,
+      enabledTasteAddins: state.enabledTasteAddins,
+      selectedRecipeId: state.selectedRecipeId,
+      selectedMachineId: state.selectedMachineId,
+      targetFlourG: state.targetFlourG,
+      checklist: state.checklist
+    });
+  }
+
+  function restore() {
+    var data = StorageAdapter.load();
+    if (!data) return;
+    if (data.pantry) state.pantry = data.pantry;
+    if (typeof data.staplesOn === "boolean") state.staplesOn = data.staplesOn;
+    if (typeof data.nearMatchOn === "boolean") state.nearMatchOn = data.nearMatchOn;
+    if (data.favorites) state.favorites = data.favorites;
+    if (data.recent) state.recent = data.recent;
+    if (data.calibrations) state.calibrations = data.calibrations;
+    if (data.enabledTasteAddins) state.enabledTasteAddins = data.enabledTasteAddins;
+    if (data.selectedRecipeId) state.selectedRecipeId = data.selectedRecipeId;
+    if (data.selectedMachineId) state.selectedMachineId = data.selectedMachineId;
+    if (data.targetFlourG) state.targetFlourG = data.targetFlourG;
+    if (data.checklist) state.checklist = data.checklist;
+  }
+
+  /* =========================================================
+   * DOM helpers
+   * ========================================================= */
+  function $(sel, root) { return (root || document).querySelector(sel); }
+  function $all(sel, root) { return Array.prototype.slice.call((root || document).querySelectorAll(sel)); }
+
+  function el(tag, attrs, children) {
+    var node = document.createElement(tag);
+    if (attrs) {
+      Object.keys(attrs).forEach(function (k) {
+        if (k === "className") node.className = attrs[k];
+        else if (k === "text") node.textContent = attrs[k];
+        else if (k.slice(0, 2) === "on" && typeof attrs[k] === "function") node.addEventListener(k.slice(2).toLowerCase(), attrs[k]);
+        else if (k === "checked" || k === "disabled" || k === "selected") { if (attrs[k]) node.setAttribute(k, ""); node[k] = !!attrs[k]; }
+        else if (attrs[k] != null) node.setAttribute(k, attrs[k]);
+      });
+    }
+    (children || []).forEach(function (c) {
+      if (c == null) return;
+      if (typeof c === "string") node.appendChild(document.createTextNode(c));
+      else node.appendChild(c);
+    });
+    return node;
+  }
+
+  function toast(msg) {
+    var wrap = $("#toasts");
+    var t = el("div", { className: "toast", text: msg });
+    wrap.appendChild(t);
+    setTimeout(function () { if (t.parentNode) t.parentNode.removeChild(t); }, 3200);
+  }
+
+  function pantrySet() {
+    var s = new Set();
+    Object.keys(state.pantry).forEach(function (id) { if (state.pantry[id]) s.add(id); });
+    return s;
+  }
+
+  function confidenceBadge(c) {
+    if (c === "official") return el("span", { className: "badge badge-green", text: "🟢 Официально" });
+    if (c === "verified-adaptation") return el("span", { className: "badge badge-green", text: "🟢 Проверенная адаптация" });
+    return el("span", { className: "badge badge-gold", text: "🟠 Экспериментально" });
+  }
+
+  /* =========================================================
+   * Render: Pantry
+   * ========================================================= */
+  function renderPantryCats() {
+    var wrap = $("#pantry-cats");
+    wrap.textContent = "";
+    DB.categories.forEach(function (c) {
+      var b = el("button", {
+        type: "button",
+        className: "chip" + (state.pantryCategory === c.id ? " active" : ""),
+        text: c.name
+      });
+      b.addEventListener("click", function () {
+        state.pantryCategory = c.id;
+        renderPantry();
+      });
+      wrap.appendChild(b);
+    });
+  }
+
+  function renderPantry() {
+    renderPantryCats();
+    var list = $("#pantry-list");
+    list.textContent = "";
+    var q = normalizeName(state.pantryQuery);
+    var ids = Object.keys(DB.ingredients).sort(function (a, b) {
+      return DB.ingredients[a].name.localeCompare(DB.ingredients[b].name, "ru");
+    });
+    ids.forEach(function (id) {
+      var ingr = DB.ingredients[id];
+      if (state.pantryCategory !== "all" && ingr.category !== state.pantryCategory) return;
+      if (q) {
+        var hay = normalizeName(ingr.name + " " + (ingr.aliases || []).join(" "));
+        if (hay.indexOf(q) === -1) return;
+      }
+      var checked = !!state.pantry[id];
+      var row = el("label", { className: "check-row" + (checked ? " checked" : "") });
+      var cb = el("input", { type: "checkbox" });
+      cb.checked = checked;
+      cb.addEventListener("change", function () {
+        state.pantry[id] = cb.checked;
+        persist();
+        renderPantry();
+        updatePantryStat();
+      });
+      var textWrap = el("span", {}, [
+        el("span", { className: "name", text: ingr.name }),
+        el("span", { className: "meta", text: " · " + categoryName(ingr.category) })
+      ]);
+      row.appendChild(cb);
+      row.appendChild(textWrap);
+      list.appendChild(row);
+    });
+    $("#opt-staples").checked = state.staplesOn;
+    $("#opt-near").checked = state.nearMatchOn;
+    updatePantryStat();
+  }
+
+  function categoryName(id) {
+    var c = DB.categories.find(function (x) { return x.id === id; });
+    return c ? c.name : id;
+  }
+
+  function updatePantryStat() {
+    var n = Object.keys(state.pantry).filter(function (k) { return state.pantry[k]; }).length;
+    $("#pantry-stat").textContent = "Выбрано: " + n + " ингредиентов";
+  }
+
+  /* =========================================================
+   * Render: Results
+   * ========================================================= */
+  function runSearch() {
+    state.results = matchRecipes(pantrySet(), {
+      staplesOn: state.staplesOn,
+      nearMatch: state.nearMatchOn
+    });
+    var sec = $("#search-results");
+    sec.classList.remove("hidden");
+    renderResults();
+    sec.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+
+  function renderResults() {
+    var pan = state.results.filter(function (r) { return r.machineKey === "panasonic"; });
+    var red = state.results.filter(function (r) { return r.machineKey === "redmond"; });
+    $("#results-summary").textContent =
+      "Найдено: " + pan.length + " для Panasonic, " + red.length + " для REDMOND" +
+      (state.staplesOn ? " (вода/соль/сахар считаются имеющимися)" : "");
+    fillResults($("#results-panasonic"), pan);
+    fillResults($("#results-redmond"), red);
+    var tab = state.resultsTab;
+    $("#results-panasonic").classList.toggle("hidden", tab !== "panasonic");
+    $("#results-redmond").classList.toggle("hidden", tab !== "redmond");
+    $all(".tab").forEach(function (t) {
+      t.classList.toggle("active", t.getAttribute("data-tab") === tab);
+    });
+  }
+
+  function fillResults(container, items) {
+    container.textContent = "";
+    if (!items.length) {
+      container.appendChild(el("div", { className: "alert alert-info", text: "Нет подходящих рецептов для этой техники. Добавьте продукты или включите «не хватает ≤2»." }));
+      return;
+    }
+    items.forEach(function (m) {
+      var card = el("div", { className: "recipe-card" });
+      card.appendChild(el("h3", { text: m.recipe.title }));
+      var meta = el("div", { className: "recipe-meta" });
+      meta.appendChild(el("span", {
+        className: "badge " + (m.status === "exact" ? "badge-green" : "badge-gold"),
+        text: m.status === "exact" ? "Точное совпадение" : ("Не хватает " + m.missing.length)
+      }));
+      meta.appendChild(confidenceBadge(m.recipe.sourceConfidence));
+      meta.appendChild(el("span", { className: "badge badge-muted", text: m.programLabel }));
+      meta.appendChild(el("span", { className: "badge badge-muted", text: "~" + m.timeMin + " мин" }));
+      meta.appendChild(el("span", { className: "badge badge-muted", text: m.recipe.difficulty }));
+      card.appendChild(meta);
+      if (m.missing.length) {
+        card.appendChild(el("div", {
+          className: "missing",
+          text: "Не хватает: " + m.missing.map(function (id) {
+            return DB.ingredients[id] ? DB.ingredients[id].name : id;
+          }).join(", ")
+        }));
+      }
+      card.appendChild(el("p", {
+        text: m.recipe.description,
+        // style via attr not supported easily
+      }));
+      card.lastChild.style.fontSize = "0.85rem";
+      card.lastChild.style.color = "var(--text-muted)";
+      card.lastChild.style.margin = "0";
+
+      var btn = el("button", { type: "button", className: "btn btn-primary", text: "Открыть рецепт" });
+      btn.addEventListener("click", function () {
+        openRecipe(m.recipeId, m.machineId);
+      });
+      card.appendChild(btn);
+      container.appendChild(card);
+    });
+  }
+
+  /* =========================================================
+   * Workspace
+   * ========================================================= */
+  function openRecipe(recipeId, machineId) {
+    var recipe = DB.recipes[recipeId];
+    if (!recipe) return;
+    state.selectedRecipeId = recipeId;
+    state.selectedMachineId = machineId || "panasonic_sd_yr2540hts";
+    state.targetFlourG = Math.min(600, Math.max(300, recipe.baseTotalFlourG));
+    state.enabledTasteAddins = {};
+    state.expandedIng = null;
+    if (state.recent.indexOf(recipeId) === -1) state.recent.unshift(recipeId);
+    state.recent = state.recent.slice(0, 10);
+    persist();
+    $("#recipe-workspace").classList.remove("hidden");
+    $("#calibration").classList.remove("hidden");
+    renderWorkspace();
+    $("#recipe-workspace").scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+
+  function currentRecipe() {
+    return DB.recipes[state.selectedRecipeId];
+  }
+
+  function enabledAddinList() {
+    return Object.keys(state.enabledTasteAddins).filter(function (k) { return state.enabledTasteAddins[k]; });
+  }
+
+  function getCalibrationForCurrent() {
+    var rid = state.selectedRecipeId;
+    var mid = state.selectedMachineId;
+    var list = state.calibrations.filter(function (c) {
+      return c.recipeId === rid && c.machineId === mid;
+    });
+    return list.length ? list[list.length - 1] : null;
+  }
+
+  function renderWorkspace() {
+    var recipe = currentRecipe();
+    if (!recipe) return;
+    $("#ws-title").textContent = recipe.title;
+    $("#ws-desc").textContent = recipe.description + " · " + (recipe.sourceNotes || "");
+
+    renderMachinePicker(recipe);
+    renderScaleControls();
+    var scaled = scaleRecipe(recipe, state.targetFlourG, enabledAddinList());
+    renderKPIs(recipe, scaled);
+    renderIngredientTable(recipe, scaled);
+    renderAddins(recipe, scaled);
+    renderSteps(recipe);
+    updateFavoriteBtn();
+  }
+
+  function renderMachinePicker(recipe) {
+    var wrap = $("#machine-picker");
+    wrap.textContent = "";
+    [
+      { key: "panasonic", id: "panasonic_sd_yr2540hts" },
+      { key: "redmond", id: "redmond_rmc_m92s" }
+    ].forEach(function (m) {
+      var mp = recipe.machineProfiles[m.key];
+      var machine = DB.machines[m.id];
+      var btn = el("button", {
+        type: "button",
+        className: "machine-pick" + (state.selectedMachineId === m.id ? " selected" : ""),
+        disabled: !mp || !mp.compatible
+      });
+      var line2 = "";
+      if (m.key === "panasonic" && mp) {
+        line2 = "Программа №" + mp.programNo + " «" + mp.programName + "» · " + (mp.totalTimeMin || "?") + " мин";
+      } else if (mp) {
+        line2 = (mp.workflow || "") + (mp.flip && mp.flip.optional ? " · переворот по желанию" : "");
+      }
+      btn.appendChild(el("strong", { text: machine.name }));
+      btn.appendChild(el("small", { text: line2 || "Несовместим" }));
+      if (mp && mp.compatible) {
+        btn.addEventListener("click", function () {
+          state.selectedMachineId = m.id;
+          persist();
+          renderWorkspace();
+        });
+      }
+      wrap.appendChild(btn);
+    });
+  }
+
+  function renderScaleControls() {
+    var range = $("#flour-range");
+    var input = $("#flour-input");
+    var display = $("#flour-display");
+    range.value = String(state.targetFlourG);
+    input.value = String(state.targetFlourG);
+    display.textContent = String(state.targetFlourG);
+
+    var presets = $("#flour-presets");
+    presets.textContent = "";
+    [350, 400, 450, 500, 550, 600].forEach(function (v) {
+      var b = el("button", {
+        type: "button",
+        className: "preset" + (state.targetFlourG === v ? " active" : ""),
+        text: String(v)
+      });
+      b.addEventListener("click", function () { setFlour(v); });
+      presets.appendChild(b);
+    });
+  }
+
+  function setFlour(v) {
+    v = Math.round(Number(v));
+    if (!isFinite(v)) return;
+    v = Math.max(250, Math.min(650, v));
+    state.targetFlourG = v;
+    persist();
+    renderWorkspace();
+  }
+
+  function renderKPIs(recipe, scaled) {
+    var grid = $("#kpi-grid");
+    grid.textContent = "";
+    var hyd = calculateHydration(scaled, recipe);
+    var mass = calculateDoughMass(scaled);
+    var vol = estimateProofVolume(mass, recipe.physics);
+    var calib = getCalibrationForCurrent();
+    var midPred = (mass * (1 - recipe.physics.bakeLossRange[0]) + mass * (1 - recipe.physics.bakeLossRange[1])) / 2;
+    if (calib) calib = Object.assign({}, calib, { predictedMid: calib.predictedMid || midPred });
+    var fin = estimateFinishedWeight(mass, recipe.physics.bakeLossRange, calib);
+    var warnings = validateMachineLimits(state.selectedMachineId, recipe, scaled);
+    var warnBox = $("#scale-warnings");
+    warnBox.textContent = "";
+    warnings.forEach(function (w) {
+      if (w.code.indexOf("bowl_") === 0 && w.level === "ok") return; // show in KPI
+      var cls = w.level === "danger" ? "alert-danger" : w.level === "ok" ? "alert-ok" : "alert-warn";
+      warnBox.appendChild(el("div", { className: "alert " + cls, text: w.message }));
+    });
+
+    var fillPct = 0;
+    var fillLevel = "ok";
+    if (state.selectedMachineId === "redmond_rmc_m92s") {
+      fillPct = Math.min(100, (vol.proofedMaxMl / DB.machines.redmond_rmc_m92s.bowlVolumeMl) * 100);
+      if (fillPct > 90) fillLevel = "danger";
+      else if (fillPct > 70) fillLevel = "warn";
+    }
+
+    function kpi(label, value, hint, level) {
+      var d = el("div", { className: "kpi" + (level ? " " + level : "") });
+      d.appendChild(el("div", { className: "label", text: label }));
+      d.appendChild(el("div", { className: "value", text: value }));
+      if (hint) d.appendChild(el("div", { className: "hint", text: hint }));
+      grid.appendChild(d);
+      return d;
+    }
+
+    kpi("Масса муки", Math.round(scaled.targetFlourG) + " г", "База рецепта " + recipe.baseTotalFlourG + " г");
+    kpi("Гидратация", hyd.toFixed(1) + " %", "Без учёта масел · оценка");
+    kpi("Вес теста", Math.round(mass) + " г", "Включая добавки по вкусу");
+    kpi("Пиковый объём", Math.round(vol.proofedMinMl) + "–" + Math.round(vol.proofedMaxMl) + " мл", "Расчётный · " + recipe.physics.confidence);
+    kpi("Мин. объём чаши", "≥ " + Math.round(vol.recommendedBowlMl) + " мл", "Пик × " + recipe.physics.headroomFactor);
+    var loafKpi = kpi(
+      "Вес буханки",
+      "≈ " + Math.round(fin.min) + "–" + Math.round(fin.max) + " г",
+      "Упёк " + Math.round(recipe.physics.bakeLossRange[0] * 100) + "–" + Math.round(recipe.physics.bakeLossRange[1] * 100) + "%",
+      calib ? "ok" : ""
+    );
+
+    if (state.selectedMachineId === "redmond_rmc_m92s") {
+      var fill = kpi("Заполнение чаши", Math.round(fillPct) + " %", fillLevel === "ok" ? "Комфортно" : fillLevel === "warn" ? "Впритык" : "Риск побега", fillLevel);
+      var bar = el("div", { className: "fill-bar" });
+      var span = el("span", {});
+      span.style.width = fillPct + "%";
+      span.style.background = fillLevel === "danger" ? "var(--danger)" : fillLevel === "warn" ? "var(--gold)" : "var(--green)";
+      bar.appendChild(span);
+      fill.appendChild(bar);
+    } else {
+      var disp = calculateDispenserLoad(scaled);
+      kpi("Диспенсер добавок", Math.round(disp) + " / 150 г", disp > 150 ? "Превышен лимит" : "Сухие добавки", disp > 150 ? "danger" : disp > 135 ? "warn" : "ok");
+    }
+  }
+
+  function renderIngredientTable(recipe, scaled) {
+    var tbody = $("#ing-tbody");
+    tbody.textContent = "";
+    var mobile = $("#ing-mobile");
+    mobile.textContent = "";
+    var machineKey = state.selectedMachineId === "panasonic_sd_yr2540hts" ? "panasonic" : "redmond";
+
+    scaled.all.forEach(function (row, idx) {
+      var name = row.name || (DB.ingredients[row.ingredientId] && DB.ingredients[row.ingredientId].name) || row.ingredientId;
+      var placeCode = row.placement ? row.placement[machineKey === "panasonic" ? "panasonic" : "redmond"] : "";
+      var tr = el("tr", { className: "expandable" });
+      tr.appendChild(el("td", { text: name + (row.isAddin ? " (по вкусу)" : "") }));
+      tr.appendChild(el("td", { text: formatGrams(row.ingredientId, row.grams) + " г" }));
+      tr.appendChild(el("td", { text: row.bakerPct.toFixed(1) + "%" }));
+      tr.appendChild(el("td", { text: row.role || "—" }));
+      tr.appendChild(el("td", { text: placementLabel(placeCode, machineKey) }));
+      tr.appendChild(el("td", { text: stageLabel(row.stage) }));
+      var detailId = "d-" + idx;
+      tr.addEventListener("click", function () {
+        state.expandedIng = state.expandedIng === detailId ? null : detailId;
+        renderIngredientTable(recipe, scaleRecipe(recipe, state.targetFlourG, enabledAddinList()));
+      });
+      tbody.appendChild(tr);
+      if (state.expandedIng === detailId) {
+        var trd = el("tr", {});
+        var td = el("td", { colspan: "6" });
+        td.appendChild(buildIngDetail(row, machineKey));
+        trd.appendChild(td);
+        tbody.appendChild(trd);
+      }
+
+      // mobile card
+      var card = el("div", { className: "ing-card" });
+      card.appendChild(el("h4", { text: name }));
+      card.appendChild(el("div", { className: "row-meta" }, [
+        el("span", { text: formatGrams(row.ingredientId, row.grams) + " г" }),
+        el("span", { text: row.bakerPct.toFixed(1) + "%" }),
+        el("span", { text: placementLabel(placeCode, machineKey) })
+      ]));
+      var detBtn = el("button", { type: "button", className: "btn btn-ghost", text: "Подробнее" });
+      var detWrap = el("div", { className: "hidden" });
+      detWrap.appendChild(buildIngDetail(row, machineKey));
+      detBtn.addEventListener("click", function () {
+        detWrap.classList.toggle("hidden");
+      });
+      card.appendChild(detBtn);
+      card.appendChild(detWrap);
+      mobile.appendChild(card);
+    });
+  }
+
+  function buildIngDetail(row, machineKey) {
+    var meta = DB.ingredients[row.ingredientId] || {};
+    var dl = el("dl", { className: "ing-detail" });
+    function item(dt, dd) {
+      dl.appendChild(el("dt", { text: dt }));
+      dl.appendChild(el("dd", { text: dd }));
+    }
+    item("Зачем добавляется?", row.detailedRole || meta.description || "—");
+    item("Что даёт хлебу?", row.role || meta.roleDefault || "—");
+    item("Если уменьшить?", row.decreaseEffect || meta.decreaseEffect || "—");
+    item("Если увеличить?", row.increaseEffect || meta.increaseEffect || "—");
+    var subs = row.substitutions || meta.substitutions || [];
+    item("Чем заменить?", subs.length ? subs.join("; ") : "Прямой замены нет / не рекомендуется");
+    if (row.placement) {
+      item("Куда в Panasonic?", placementLabel(row.placement.panasonic, "panasonic"));
+      item("Как в REDMOND?", placementLabel(row.placement.redmond, "redmond"));
+    }
+    if (row.isAddin && row.gramsRange) {
+      item("Рекомендуемый диапазон",
+        formatGrams(row.ingredientId, row.gramsRange[0]) + "–" +
+        formatGrams(row.ingredientId, row.gramsRange[1]) + " г (" +
+        row.pctRange[0] + "–" + row.pctRange[1] + "% от муки)");
+    }
+    if (row.warnings && row.warnings.length) item("Предупреждения", row.warnings.join(" "));
+    return dl;
+  }
+
+  function renderAddins(recipe, scaled) {
+    var grid = $("#addins-grid");
+    grid.textContent = "";
+    (recipe.tasteAddinIds || []).forEach(function (aid) {
+      var a = DB.tasteAddins[aid];
+      if (!a) return;
+      var on = !!state.enabledTasteAddins[aid];
+      var grams = state.targetFlourG * (a.defaultPct / 100);
+      var gMin = state.targetFlourG * a.suggestedBakerPctRange[0] / 100;
+      var gMax = state.targetFlourG * a.suggestedBakerPctRange[1] / 100;
+      var card = el("div", { className: "addin-card" + (on ? " enabled" : "") });
+      var label = el("label", {});
+      var cb = el("input", { type: "checkbox" });
+      cb.checked = on;
+      cb.addEventListener("change", function () {
+        state.enabledTasteAddins[aid] = cb.checked;
+        persist();
+        renderWorkspace();
+      });
+      var body = el("span", {});
+      body.appendChild(el("span", { className: "name", text: a.name }));
+      body.appendChild(document.createElement("br"));
+      body.appendChild(el("span", {
+        className: "meta",
+        text: a.role + " · " + a.suggestedBakerPctRange[0] + "–" + a.suggestedBakerPctRange[1] +
+          "% · для " + state.targetFlourG + " г: " +
+          formatGrams(a.ingredientId, gMin) + "–" + formatGrams(a.ingredientId, gMax) +
+          " г (по умолч. " + formatGrams(a.ingredientId, grams) + " г)"
+      }));
+      if (a.warnings && a.warnings.length) {
+        body.appendChild(document.createElement("br"));
+        body.appendChild(el("span", { className: "meta", text: "⚠ " + a.warnings.join(" ") }));
+      }
+      label.appendChild(cb);
+      label.appendChild(body);
+      card.appendChild(label);
+      grid.appendChild(card);
+    });
+  }
+
+  function renderSteps(recipe) {
+    var key = state.selectedMachineId === "panasonic_sd_yr2540hts" ? "panasonic" : "redmond";
+    var mp = recipe.machineProfiles[key];
+    var ol = $("#steps-list");
+    ol.textContent = "";
+    (mp.steps || []).forEach(function (s) {
+      var li = el("li", {});
+      li.style.marginBottom = "0.45rem";
+      // Replace placeholders roughly with current flour scale note
+      li.textContent = s.text;
+      ol.appendChild(li);
+    });
+    (mp.warnings || []).forEach(function (w) {
+      var li = el("li", {});
+      li.style.color = "var(--warn)";
+      li.textContent = "⚠ " + w;
+      ol.appendChild(li);
+    });
+  }
+
+  function updateFavoriteBtn() {
+    var btn = $("#btn-favorite");
+    var on = state.favorites.indexOf(state.selectedRecipeId) !== -1;
+    btn.textContent = on ? "★ В избранном" : "☆ В избранное";
+  }
+
+  /* =========================================================
+   * Cook Mode + Timers
+   * ========================================================= */
+  var timerInterval = null;
+
+  function openCookMode() {
+    var recipe = currentRecipe();
+    if (!recipe) return;
+    var key = state.selectedMachineId === "panasonic_sd_yr2540hts" ? "panasonic" : "redmond";
+    var mp = recipe.machineProfiles[key];
+    var steps = mp.steps || [];
+    var ckKey = recipe.id + "::" + state.selectedMachineId;
+    if (!state.checklist[ckKey]) state.checklist[ckKey] = {};
+    state.cookStepIndex = 0;
+    $("#cook-overlay").classList.remove("hidden");
+    $("#cook-sub").textContent = recipe.title + " · " + DB.machines[state.selectedMachineId].name;
+    // setup default timer from first available
+    var timers = mp.timers || [];
+    if (timers.length) {
+      state.activeTimerId = timers[0].id;
+      ensureTimer(ckKey, timers[0]);
+      $("#timer-label").textContent = timers[0].label + " (" + timers[0].minutes + " мин)";
+    } else {
+      state.activeTimerId = "custom";
+      ensureTimer(ckKey, { id: "custom", label: "Таймер", minutes: 10 });
+      $("#timer-label").textContent = "Таймер 10 мин";
+    }
+    // timer select via cycling - store list on overlay
+    $("#cook-overlay")._timers = timers;
+    $("#cook-overlay")._ckKey = ckKey;
+    renderCookSteps();
+    tickTimers();
+    if (!timerInterval) timerInterval = setInterval(tickTimers, 250);
+  }
+
+  function ensureTimer(ckKey, spec) {
+    var id = ckKey + "::" + spec.id;
+    if (!state.timers[id]) {
+      state.timers[id] = {
+        durationMs: spec.minutes * 60 * 1000,
+        remainingMs: spec.minutes * 60 * 1000,
+        running: false,
+        deadline: null,
+        label: spec.label
+      };
+    }
+    state._timerFullId = id;
+  }
+
+  function renderCookSteps() {
+    var recipe = currentRecipe();
+    var key = state.selectedMachineId === "panasonic_sd_yr2540hts" ? "panasonic" : "redmond";
+    var steps = recipe.machineProfiles[key].steps || [];
+    var ckKey = $("#cook-overlay")._ckKey;
+    var doneMap = state.checklist[ckKey] || {};
+    var wrap = $("#cook-steps");
+    wrap.textContent = "";
+    var doneCount = 0;
+    steps.forEach(function (s, i) {
+      var done = !!doneMap[s.id];
+      if (done) doneCount++;
+      var row = el("div", {
+        className: "cook-step" + (done ? " done" : "") + (i === state.cookStepIndex ? " current" : "")
+      });
+      var cb = el("input", { type: "checkbox" });
+      cb.checked = done;
+      cb.addEventListener("change", function () {
+        state.checklist[ckKey][s.id] = cb.checked;
+        persist();
+        renderCookSteps();
+      });
+      var body = el("div", {});
+      body.appendChild(el("strong", { text: "Шаг " + (i + 1) + ". " }));
+      // inject scaled amounts hint
+      var scaled = scaleRecipe(recipe, state.targetFlourG, enabledAddinList());
+      var text = s.text.replace(/(\d+)\s*г/g, function (match) { return match; });
+      body.appendChild(document.createTextNode(text));
+      if (i === 0) {
+        body.appendChild(el("div", {
+          className: "meta",
+          text: "Текущий масштаб: " + state.targetFlourG + " г муки, масса теста ≈ " +
+            Math.round(calculateDoughMass(scaled)) + " г."
+        }));
+        body.lastChild.style.fontSize = "0.8rem";
+        body.lastChild.style.color = "var(--text-soft)";
+        body.lastChild.style.marginTop = "0.35rem";
+      }
+      row.appendChild(cb);
+      row.appendChild(body);
+      wrap.appendChild(row);
+    });
+    var pct = steps.length ? (doneCount / steps.length) * 100 : 0;
+    $("#cook-progress").style.width = pct + "%";
+    $("#cook-progress-label").textContent = "Шаг " + Math.min(state.cookStepIndex + 1, steps.length) +
+      " из " + steps.length + " · выполнено " + doneCount;
+  }
+
+  function tickTimers() {
+    var id = state._timerFullId;
+    if (!id || !state.timers[id]) return;
+    var t = state.timers[id];
+    if (t.running && t.deadline) {
+      t.remainingMs = Math.max(0, t.deadline - Date.now());
+      if (t.remainingMs <= 0) {
+        t.running = false;
+        t.deadline = null;
+        t.remainingMs = 0;
+        toast("Таймер завершён: " + (t.label || ""));
+      }
+    }
+    var ms = t.remainingMs;
+    var sec = Math.ceil(ms / 1000);
+    var m = Math.floor(sec / 60);
+    var s = sec % 60;
+    $("#timer-display").textContent = String(m).padStart(2, "0") + ":" + String(s).padStart(2, "0");
+  }
+
+  function closeCookMode() {
+    $("#cook-overlay").classList.add("hidden");
+  }
+
+  /* =========================================================
+   * Export / Import / Copy
+   * ========================================================= */
+  function exportJSON() {
+    var payload = {
+      app: "BreadLab",
+      version: DB.version,
+      exportedAt: new Date().toISOString(),
+      pantry: state.pantry,
+      staplesOn: state.staplesOn,
+      nearMatchOn: state.nearMatchOn,
+      favorites: state.favorites,
+      recent: state.recent,
+      calibrations: state.calibrations,
+      enabledTasteAddins: state.enabledTasteAddins,
+      settings: {}
+    };
+    var blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
+    var a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = "breadlab-export.json";
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(function () {
+      URL.revokeObjectURL(a.href);
+      document.body.removeChild(a);
+    }, 500);
+    toast("Экспорт JSON скачан");
+  }
+
+  function importJSON(file) {
+    var reader = new FileReader();
+    reader.onload = function () {
+      try {
+        var data = JSON.parse(String(reader.result));
+        if (!data || typeof data !== "object") throw new Error("Неверный формат");
+        if (data.pantry && typeof data.pantry === "object") state.pantry = data.pantry;
+        if (typeof data.staplesOn === "boolean") state.staplesOn = data.staplesOn;
+        if (typeof data.nearMatchOn === "boolean") state.nearMatchOn = data.nearMatchOn;
+        if (Array.isArray(data.favorites)) state.favorites = data.favorites;
+        if (Array.isArray(data.recent)) state.recent = data.recent;
+        if (Array.isArray(data.calibrations)) state.calibrations = data.calibrations;
+        if (data.enabledTasteAddins && typeof data.enabledTasteAddins === "object") {
+          state.enabledTasteAddins = data.enabledTasteAddins;
+        }
+        persist();
+        renderPantry();
+        toast("Импорт выполнен");
+      } catch (e) {
+        toast("Ошибка импорта: некорректный JSON");
+      }
+    };
+    reader.readAsText(file);
+  }
+
+  function copyText(text) {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(function () { toast("Скопировано"); }, function () {
+        fallbackCopy(text);
+      });
+    } else fallbackCopy(text);
+  }
+
+  function fallbackCopy(text) {
+    var ta = el("textarea", {});
+    ta.value = text;
+    document.body.appendChild(ta);
+    ta.select();
+    try { document.execCommand("copy"); toast("Скопировано"); }
+    catch (e) { toast("Не удалось скопировать"); }
+    document.body.removeChild(ta);
+  }
+
+  /* =========================================================
+   * Self-tests
+   * ========================================================= */
+  function runSelfTests() {
+    var lines = [];
+    var pass = 0, fail = 0;
+    function assert(name, cond) {
+      if (cond) { pass++; lines.push("PASS  " + name); }
+      else { fail++; lines.push("FAIL  " + name); }
+    }
+    var M = DB.machines.panasonic_sd_yr2540hts.programs;
+    assert("prog 01 Основной", M["01"] === "Основной");
+    assert("prog 03 изюм", M["03"] === "Основной с изюмом");
+    assert("prog 04 начинка", M["04"] === "Основной с начинкой");
+    assert("prog 06 ЦЗ", M["06"] === "Цельнозерновой");
+    assert("prog 08 ЦЗ изюм", M["08"] === "Цельнозерновой с изюмом");
+    assert("prog 09 Французский", M["09"] === "Французский");
+    assert("prog 10 Ржаной", M["10"] === "Ржаной");
+    assert("prog 13 Выпечка", M["13"] === "Выпечка");
+    assert("prog 27 замес", M["27"] === "Ручной замес хлебного теста");
+    assert("prog 28 подъём", M["28"] === "Подъём теста");
+    assert("r02 uses 09", DB.recipes.r02.machineProfiles.panasonic.programNo === "09");
+    assert("r03 uses 10", DB.recipes.r03.machineProfiles.panasonic.programNo === "10");
+    assert("r04 uses 06", DB.recipes.r04.machineProfiles.panasonic.programNo === "06");
+    assert("r07 uses 03", DB.recipes.r07.machineProfiles.panasonic.programNo === "03");
+    assert("r09 uses 04", DB.recipes.r09.machineProfiles.panasonic.programNo === "04");
+    assert("r10 uses 13", DB.recipes.r10.machineProfiles.panasonic.programNo === "13");
+    assert("redmond flip not required r01", DB.recipes.r01.machineProfiles.redmond.flip.required === false);
+
+    var r = DB.recipes.r01;
+    var s450 = scaleRecipe(r, 450, []);
+    var s600 = scaleRecipe(r, 600, []);
+    assert("scale factor 600/450", Math.abs(s600.factor - 600 / 450) < 1e-9);
+    assert("water scales", Math.abs(s600.items.find(function (i) { return i.ingredientId === "water"; }).grams - 360) < 0.01);
+    var hyd = calculateHydration(s450, r);
+    assert("hydration ~60", Math.abs(hyd - 60) < 0.2);
+    assert("oil not in hydration water mass", true); // oil frac 0
+    var mass = calculateDoughMass(s450);
+    assert("dough mass > flour", mass > 450);
+    var fin = estimateFinishedWeight(mass, r.physics.bakeLossRange);
+    assert("finished min < max", fin.min < fin.max);
+    assert("finished < dough", fin.max < mass);
+
+    // mixed flour ratio lock r03
+    var r3 = DB.recipes.r03;
+    var sc = scaleRecipe(r3, 420, []);
+    var sc2 = scaleRecipe(r3, 525, []);
+    var rye1 = sc.items.find(function (i) { return i.ingredientId === "rye_flour"; }).grams;
+    var wh1 = sc.items.find(function (i) { return i.ingredientId === "wheat_flour"; }).grams;
+    var rye2 = sc2.items.find(function (i) { return i.ingredientId === "rye_flour"; }).grams;
+    var wh2 = sc2.items.find(function (i) { return i.ingredientId === "wheat_flour"; }).grams;
+    assert("mixed flour ratio", Math.abs(rye1 / wh1 - rye2 / wh2) < 1e-9);
+
+    var w349 = validateMachineLimits("panasonic_sd_yr2540hts", r, scaleRecipe(r, 349, []));
+    var w350 = validateMachineLimits("panasonic_sd_yr2540hts", r, scaleRecipe(r, 350, []));
+    var w600 = validateMachineLimits("panasonic_sd_yr2540hts", r, scaleRecipe(r, 600, []));
+    var w601 = validateMachineLimits("panasonic_sd_yr2540hts", r, scaleRecipe(r, 601, []));
+    assert("349 flour warn", w349.some(function (x) { return x.code === "flour_low"; }));
+    assert("350 flour ok", !w350.some(function (x) { return x.code === "flour_low" || x.code === "flour_high"; }));
+    assert("600 flour ok", !w600.some(function (x) { return x.code === "flour_high"; }));
+    assert("601 flour danger", w601.some(function (x) { return x.code === "flour_high"; }));
+
+    var withAdd = scaleRecipe(r, 450, ["walnut"]);
+    // force dispenser placement overload test
+    var big = scaleRecipe(r, 450, ["raisin", "walnut", "sunflower", "sesame", "flax", "dried_cranberry"]);
+    // bump by enabling high defaults — may or may not exceed; create synthetic
+    var synth = scaleRecipe(r, 450, []);
+    synth.addins.push({
+      grams: 160, placement: { panasonic: "raisinNutDispenser" }, ingredientId: "raisin", bakerPct: 35, isAddin: true
+    });
+    synth.all = synth.items.concat(synth.addins);
+    var wd = validateMachineLimits("panasonic_sd_yr2540hts", r, synth);
+    assert("dispenser >150 danger", wd.some(function (x) { return x.code === "dispenser"; }));
+
+    var pantry = new Set(["wheat_flour", "yeast", "oil"]);
+    var matches = matchRecipes(pantry, { staplesOn: true, nearMatch: true });
+    assert("match finds some", matches.length > 0);
+    assert("alias wheat", resolveIngredientId("хлебопекарная мука") === "wheat_flour");
+    assert("no NaN mass", isFinite(mass) && mass > 0);
+
+    var panel = $("#debug-panel");
+    panel.classList.remove("hidden");
+    panel.textContent = "";
+    var title = "BreadLab self-tests: " + pass + " passed, " + fail + " failed\n\n";
+    panel.appendChild(document.createTextNode(title));
+    lines.forEach(function (ln) {
+      var span = el("div", { className: ln.indexOf("PASS") === 0 ? "pass" : "fail", text: ln });
+      panel.appendChild(span);
+    });
+    return fail === 0;
+  }
+
+  /* =========================================================
+   * Events / init
+   * ========================================================= */
+  function bindEvents() {
+    $("#pantry-search").addEventListener("input", function (e) {
+      state.pantryQuery = e.target.value;
+      renderPantry();
+    });
+    $("#opt-staples").addEventListener("change", function (e) {
+      state.staplesOn = e.target.checked;
+      persist();
+    });
+    $("#opt-near").addEventListener("change", function (e) {
+      state.nearMatchOn = e.target.checked;
+      persist();
+    });
+    $("#btn-select-staples").addEventListener("click", function () {
+      DB.staples.forEach(function (id) { state.pantry[id] = true; });
+      // also common flours/yeast helpful defaults? only staples per plan
+      Object.keys(DB.ingredients).forEach(function (id) {
+        if (DB.ingredients[id].defaultPantryStaple) state.pantry[id] = true;
+      });
+      persist();
+      renderPantry();
+    });
+    $("#btn-clear-pantry").addEventListener("click", function () {
+      state.pantry = {};
+      persist();
+      renderPantry();
+    });
+    $("#btn-search").addEventListener("click", runSearch);
+
+    $all(".tab").forEach(function (t) {
+      t.addEventListener("click", function () {
+        state.resultsTab = t.getAttribute("data-tab");
+        renderResults();
+      });
+    });
+
+    $("#btn-shopping").addEventListener("click", function () {
+      var list = buildShoppingList(state.results);
+      if (!list.length) { toast("Недостающих ингредиентов нет"); return; }
+      copyText(list.join("\n"));
+    });
+
+    $("#flour-range").addEventListener("input", function (e) { setFlour(e.target.value); });
+    $("#flour-input").addEventListener("change", function (e) { setFlour(e.target.value); });
+    $("#flour-minus").addEventListener("click", function () { setFlour(state.targetFlourG - 10); });
+    $("#flour-plus").addEventListener("click", function () { setFlour(state.targetFlourG + 10); });
+
+    $("#btn-copy-ings").addEventListener("click", function () {
+      var recipe = currentRecipe();
+      if (!recipe) return;
+      var scaled = scaleRecipe(recipe, state.targetFlourG, enabledAddinList());
+      var lines = scaled.all.map(function (row) {
+        var name = row.name || (DB.ingredients[row.ingredientId] && DB.ingredients[row.ingredientId].name) || row.ingredientId;
+        return name + " — " + formatGrams(row.ingredientId, row.grams) + " г";
+      });
+      copyText(recipe.title + " (" + state.targetFlourG + " г муки)\n" + lines.join("\n"));
+    });
+
+    $("#btn-favorite").addEventListener("click", function () {
+      var id = state.selectedRecipeId;
+      var i = state.favorites.indexOf(id);
+      if (i === -1) state.favorites.push(id);
+      else state.favorites.splice(i, 1);
+      persist();
+      updateFavoriteBtn();
+    });
+
+    $("#btn-reset-addins").addEventListener("click", function () {
+      state.enabledTasteAddins = {};
+      persist();
+      renderWorkspace();
+    });
+
+    $("#btn-cook").addEventListener("click", openCookMode);
+    $("#btn-close-cook").addEventListener("click", closeCookMode);
+    $("#cook-prev").addEventListener("click", function () {
+      state.cookStepIndex = Math.max(0, state.cookStepIndex - 1);
+      renderCookSteps();
+    });
+    $("#cook-next").addEventListener("click", function () {
+      var recipe = currentRecipe();
+      var key = state.selectedMachineId === "panasonic_sd_yr2540hts" ? "panasonic" : "redmond";
+      var steps = recipe.machineProfiles[key].steps || [];
+      var ckKey = $("#cook-overlay")._ckKey;
+      var cur = steps[state.cookStepIndex];
+      if (cur) {
+        state.checklist[ckKey][cur.id] = true;
+        persist();
+      }
+      state.cookStepIndex = Math.min(steps.length - 1, state.cookStepIndex + 1);
+      renderCookSteps();
+    });
+    $("#cook-reset-all").addEventListener("click", function () {
+      var ckKey = $("#cook-overlay")._ckKey;
+      state.checklist[ckKey] = {};
+      state.cookStepIndex = 0;
+      persist();
+      renderCookSteps();
+    });
+
+    $("#timer-start").addEventListener("click", function () {
+      var t = state.timers[state._timerFullId];
+      if (!t) return;
+      if (!t.running) {
+        t.deadline = Date.now() + t.remainingMs;
+        t.running = true;
+      }
+      tickTimers();
+    });
+    $("#timer-pause").addEventListener("click", function () {
+      var t = state.timers[state._timerFullId];
+      if (!t || !t.running) return;
+      t.remainingMs = Math.max(0, t.deadline - Date.now());
+      t.running = false;
+      t.deadline = null;
+      tickTimers();
+    });
+    $("#timer-reset").addEventListener("click", function () {
+      var t = state.timers[state._timerFullId];
+      if (!t) return;
+      t.running = false;
+      t.deadline = null;
+      t.remainingMs = t.durationMs;
+      tickTimers();
+    });
+
+    // cycle timer on label click
+    $("#timer-label").style.cursor = "pointer";
+    $("#timer-label").title = "Нажмите, чтобы переключить таймер этапа";
+    $("#timer-label").addEventListener("click", function () {
+      var timers = $("#cook-overlay")._timers || [];
+      if (timers.length < 2) return;
+      var ckKey = $("#cook-overlay")._ckKey;
+      var idx = timers.findIndex(function (t) { return ckKey + "::" + t.id === state._timerFullId; });
+      idx = (idx + 1) % timers.length;
+      ensureTimer(ckKey, timers[idx]);
+      $("#timer-label").textContent = timers[idx].label + " (" + timers[idx].minutes + " мин)";
+      tickTimers();
+    });
+
+    $("#btn-save-calib").addEventListener("click", function () {
+      var w = Number($("#calib-weight").value);
+      var f = Number($("#calib-fill").value);
+      if (!state.selectedRecipeId) { toast("Сначала откройте рецепт"); return; }
+      if (!isFinite(w) || w < 50) { toast("Введите фактический вес"); return; }
+      var recipe = currentRecipe();
+      var scaled = scaleRecipe(recipe, state.targetFlourG, enabledAddinList());
+      var mass = calculateDoughMass(scaled);
+      var fin = estimateFinishedWeight(mass, recipe.physics.bakeLossRange);
+      var mid = (fin.min + fin.max) / 2;
+      state.calibrations.push({
+        recipeId: state.selectedRecipeId,
+        machineId: state.selectedMachineId,
+        targetFlourG: state.targetFlourG,
+        actualFinishedWeightG: w,
+        peakFillPercent: isFinite(f) ? f : null,
+        predictedMid: mid,
+        timestamp: new Date().toISOString()
+      });
+      persist();
+      $("#calib-status").textContent = "Сохранено. Следующий прогноз для этого рецепта будет с поправкой.";
+      renderWorkspace();
+      toast("Калибровка сохранена");
+    });
+
+    $("#btn-export").addEventListener("click", exportJSON);
+    $("#btn-import").addEventListener("click", function () { $("#import-file").click(); });
+    $("#import-file").addEventListener("change", function (e) {
+      var f = e.target.files && e.target.files[0];
+      if (f) importJSON(f);
+      e.target.value = "";
+    });
+  }
+
+  function init() {
+    var ok = StorageAdapter.check();
+    if (!ok) $("#storage-banner").classList.remove("hidden");
+    restore();
+    bindEvents();
+    renderPantry();
+    if (state.selectedRecipeId && DB.recipes[state.selectedRecipeId]) {
+      $("#recipe-workspace").classList.remove("hidden");
+      $("#calibration").classList.remove("hidden");
+      renderWorkspace();
+    }
+    var debug = /[?&]debug=1/.test(location.search) || location.hash === "#debug";
+    if (debug) runSelfTests();
+
+    // Expose for console debugging (optional)
+    window.BreadLab = {
+      DB: DB,
+      state: state,
+      scaleRecipe: scaleRecipe,
+      matchRecipes: matchRecipes,
+      runSelfTests: runSelfTests
+    };
+  }
+
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init);
+  else init();
+})();
+  </script>
+</body>
+</html>
