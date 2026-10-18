@@ -501,7 +501,6 @@
         <div class="pantry-grid" id="pantry-list" role="group" aria-label="Список продуктов"></div>
         <div class="toolbar">
           <div style="display:flex;flex-wrap:wrap;gap:0.5rem;align-items:center">
-            <button type="button" class="btn btn-secondary" id="btn-select-staples">Соль и сахар</button>
             <button type="button" class="btn btn-ghost" id="btn-clear-pantry">Очистить</button>
             <button type="button" class="btn btn-primary btn-lg" id="btn-search">Найти, что можно испечь</button>
           </div>
@@ -698,8 +697,8 @@
    * ========================================================= */
   const DB = {
     version: "1.0.0",
-    staples: ["salt", "sugar"],
-    alwaysAvailable: ["water", "scald_water", "potato_water", "seed_mix"],
+    staples: [],
+    alwaysAvailable: ["water", "scald_water", "potato_water", "seed_mix", "salt", "sugar"],
     categories: [
       { id: "all", name: "Все" },
       { id: "flour", name: "Мука" },
@@ -707,7 +706,6 @@
       { id: "liquid", name: "Жидкости" },
       { id: "fat", name: "Масла" },
       { id: "sweetener", name: "Сладости" },
-      { id: "salt", name: "Соль" },
       { id: "dairy", name: "Молочное" },
       { id: "seed", name: "Семена" },
       { id: "nut", name: "Орехи" },
@@ -816,8 +814,8 @@
     increaseEffect: "Тяжелее подъём, богаче вкус.",
     decreaseEffect: "Менее сдобный мякиш.",
     substitutions: ["Маргарин для выпечки (хуже вкус)"] });
-  ing({ id: "sugar", name: "Сахар-песок", category: "sweetener",
-    aliases: ["сахар"], defaultPantryStaple: true,
+  ing({ id: "sugar", name: "Сахар", hideFromPantry: true, category: "sweetener",
+    aliases: ["сахар", "сахар-песок"], defaultPantryStaple: true,
     description: "Питание дрожжей и карамелизация корочки.",
     roleDefault: "Питание дрожжей / цвет",
     increaseEffect: "Быстрее брожение, темнее корочка.",
@@ -828,8 +826,8 @@
     description: "Сладость, цвет и удержание влаги.",
     roleDefault: "Сладость / влага",
     substitutions: ["Тёмная патока", "Сахар + чуть воды"] });
-  ing({ id: "salt", name: "Соль поваренная мелкая", category: "salt",
-    aliases: ["соль"], defaultPantryStaple: true,
+  ing({ id: "salt", name: "Соль", hideFromPantry: true, category: "salt",
+    aliases: ["соль", "соль поваренная", "соль мелкая"], defaultPantryStaple: true,
     description: "Вкус, контроль ферментации, укрепление клейковины.",
     roleDefault: "Вкус и структура",
     increaseEffect: "Замедление дрожжей, жёстче вкус.",
@@ -2873,11 +2871,6 @@
       state.nearMatchOn = e.target.checked;
       persist();
       if (!$("#search-results").classList.contains("hidden")) runSearch();
-    });
-    $("#btn-select-staples").addEventListener("click", function () {
-      ["salt", "sugar"].forEach(function (id) { state.pantry[id] = true; });
-      persist();
-      renderPantry();
     });
     $("#btn-clear-pantry").addEventListener("click", function () {
       state.pantry = {};
