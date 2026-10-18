@@ -1,0 +1,1068 @@
+{
+  "wheat_flour": {
+    "aliases": [
+      "пшеничная мука",
+      "хлебопекарная мука",
+      "белая мука",
+      "мука в/с"
+    ],
+    "defaultPantryStaple": false,
+    "hydrationFraction": 0,
+    "densityGPerMl": 1,
+    "unitDefault": "g",
+    "description": "Основной клейковинный каркас теста.",
+    "roleDefault": "Структура и объём",
+    "increaseEffect": "Плотнее тесто, может потребоваться больше воды.",
+    "decreaseEffect": "Слабее каркас, меньший объём буханки.",
+    "substitutions": [
+      "Мука 1 сорта",
+      "Смесь в/с + цельнозерновая (до 20%)"
+    ],
+    "id": "wheat_flour",
+    "name": "Мука пшеничная",
+    "category": "flour"
+  },
+  "ww_flour": {
+    "aliases": [
+      "цельнозерновая мука",
+      "обойная пшеничная"
+    ],
+    "defaultPantryStaple": false,
+    "hydrationFraction": 0,
+    "densityGPerMl": 1,
+    "unitDefault": "g",
+    "description": "Содержит отруби; даёт плотный полезный хлеб.",
+    "roleDefault": "Клетчатка и вкус зерна",
+    "increaseEffect": "Ниже подъём, грубее мякиш.",
+    "decreaseEffect": "Более лёгкий мякиш.",
+    "substitutions": [
+      "Смесь пшеничной + отрубей"
+    ],
+    "id": "ww_flour",
+    "name": "Мука пшеничная цельнозерновая",
+    "category": "flour"
+  },
+  "rye_flour": {
+    "aliases": [
+      "ржаная мука",
+      "обдирная ржаная",
+      "мука ржаная обдирная"
+    ],
+    "defaultPantryStaple": false,
+    "hydrationFraction": 0,
+    "densityGPerMl": 1,
+    "unitDefault": "g",
+    "description": "Мало глютена; структура за счёт слизей и кислотности.",
+    "roleDefault": "Ржаной вкус и плотность",
+    "increaseEffect": "Плотнее и кислее мякиш.",
+    "decreaseEffect": "Ближе к пшеничному характеру.",
+    "substitutions": [
+      "Обойная ржаная (чуть грубее)"
+    ],
+    "id": "rye_flour",
+    "name": "Мука ржаная",
+    "category": "flour"
+  },
+  "corn_flour": {
+    "aliases": [
+      "кукурузная мука"
+    ],
+    "defaultPantryStaple": false,
+    "hydrationFraction": 0,
+    "densityGPerMl": 1,
+    "unitDefault": "g",
+    "description": "Цвет и рассыпчатость; ослабляет глютен.",
+    "roleDefault": "Цвет и текстура",
+    "increaseEffect": "Крошливее мякиш — нужен глютен.",
+    "decreaseEffect": "Менее выраженный кукурузный вкус.",
+    "substitutions": [
+      "Кукурузная крупа мелкого помола"
+    ],
+    "id": "corn_flour",
+    "name": "Мука кукурузная",
+    "category": "flour"
+  },
+  "water": {
+    "aliases": [
+      "вода",
+      "тёплая вода"
+    ],
+    "defaultPantryStaple": true,
+    "hydrationFraction": 1,
+    "densityGPerMl": 1,
+    "unitDefault": "g",
+    "description": "Гидратация белков и крахмала.",
+    "roleDefault": "Гидратация",
+    "increaseEffect": "Липкое слабое тесто, риск опадения.",
+    "decreaseEffect": "Плотный мякиш, слабый подъём.",
+    "substitutions": [
+      "Слабый картофельный отвар"
+    ],
+    "id": "water",
+    "name": "Вода",
+    "hideFromPantry": true,
+    "category": "liquid"
+  },
+  "milk": {
+    "aliases": [
+      "молоко",
+      "тёплое молоко"
+    ],
+    "defaultPantryStaple": false,
+    "hydrationFraction": 0.87,
+    "densityGPerMl": 1,
+    "unitDefault": "g",
+    "description": "Смягчает мякиш, даёт лёгкую сладость.",
+    "roleDefault": "Нежность мякиша",
+    "increaseEffect": "Мягче, быстрее черствение корочки.",
+    "decreaseEffect": "Суше мякиш.",
+    "substitutions": [
+      "Вода + сухое молоко"
+    ],
+    "id": "milk",
+    "name": "Молоко",
+    "category": "dairy",
+    "category_note": "dairy"
+  },
+  "kefir": {
+    "aliases": [
+      "кефир"
+    ],
+    "defaultPantryStaple": false,
+    "hydrationFraction": 0.88,
+    "densityGPerMl": 1,
+    "unitDefault": "g",
+    "description": "Кисломолочная среда; активирует соду или смягчает клейковину.",
+    "roleDefault": "Кислотность / разрыхление",
+    "increaseEffect": "Кислее вкус, мягче тесто.",
+    "decreaseEffect": "Слабее реакция с содой.",
+    "substitutions": [
+      "Простокваша",
+      "Натуральный йогурт (разбавить водой)"
+    ],
+    "id": "kefir",
+    "name": "Кефир",
+    "category": "dairy"
+  },
+  "potato_water": {
+    "aliases": [
+      "картофельный отвар"
+    ],
+    "defaultPantryStaple": false,
+    "hydrationFraction": 1,
+    "densityGPerMl": 1,
+    "unitDefault": "g",
+    "description": "Крахмалистая жидкость для мягкости.",
+    "roleDefault": "Гидратация + крахмал",
+    "increaseEffect": "Усиление соответствующей функции ингредиента.",
+    "decreaseEffect": "Ослабление соответствующей функции ингредиента.",
+    "substitutions": [
+      "Вода"
+    ],
+    "id": "potato_water",
+    "name": "Отвар картофельный",
+    "hideFromPantry": true,
+    "category": "liquid"
+  },
+  "scald_water": {
+    "aliases": [
+      "кипяток",
+      "крутой кипяток"
+    ],
+    "defaultPantryStaple": false,
+    "hydrationFraction": 1,
+    "densityGPerMl": 1,
+    "unitDefault": "g",
+    "description": "Заваривает солод и специи.",
+    "roleDefault": "Заварка",
+    "increaseEffect": "Усиление соответствующей функции ингредиента.",
+    "decreaseEffect": "Ослабление соответствующей функции ингредиента.",
+    "substitutions": [],
+    "id": "scald_water",
+    "name": "Кипяток для заварки",
+    "hideFromPantry": true,
+    "category": "liquid"
+  },
+  "oil": {
+    "aliases": [
+      "растительное масло",
+      "подсолнечное масло"
+    ],
+    "defaultPantryStaple": false,
+    "hydrationFraction": 0,
+    "densityGPerMl": 1,
+    "unitDefault": "g",
+    "description": "Пластифицирует клейковину, смягчает мякиш.",
+    "roleDefault": "Пластичность",
+    "increaseEffect": "Тяжелее подъём, маслянистее мякиш.",
+    "decreaseEffect": "Суше корочка.",
+    "substitutions": [
+      "Оливковое",
+      "Горчичное"
+    ],
+    "id": "oil",
+    "name": "Масло растительное",
+    "category": "fat"
+  },
+  "olive_oil": {
+    "aliases": [
+      "оливковое масло"
+    ],
+    "defaultPantryStaple": false,
+    "hydrationFraction": 0,
+    "densityGPerMl": 1,
+    "unitDefault": "g",
+    "description": "Аромат и пластичность.",
+    "roleDefault": "Жир / аромат",
+    "increaseEffect": "Усиление соответствующей функции ингредиента.",
+    "decreaseEffect": "Ослабление соответствующей функции ингредиента.",
+    "substitutions": [
+      "Подсолнечное"
+    ],
+    "id": "olive_oil",
+    "name": "Масло оливковое",
+    "category": "fat"
+  },
+  "butter": {
+    "aliases": [
+      "сливочное масло"
+    ],
+    "defaultPantryStaple": false,
+    "hydrationFraction": 0.16,
+    "densityGPerMl": 1,
+    "unitDefault": "g",
+    "description": "Сдобность и слоистость мякиша.",
+    "roleDefault": "Сдобность",
+    "increaseEffect": "Тяжелее подъём, богаче вкус.",
+    "decreaseEffect": "Менее сдобный мякиш.",
+    "substitutions": [
+      "Маргарин для выпечки (хуже вкус)"
+    ],
+    "id": "butter",
+    "name": "Масло сливочное",
+    "category": "fat"
+  },
+  "sugar": {
+    "aliases": [
+      "сахар",
+      "сахар-песок"
+    ],
+    "defaultPantryStaple": true,
+    "hydrationFraction": 0,
+    "densityGPerMl": 1,
+    "unitDefault": "g",
+    "description": "Питание дрожжей и карамелизация корочки.",
+    "roleDefault": "Питание дрожжей / цвет",
+    "increaseEffect": "Быстрее брожение, темнее корочка.",
+    "decreaseEffect": "Бледнее корочка, медленнее подъём.",
+    "substitutions": [
+      "Мёд (уменьшить жидкость)",
+      "Патока"
+    ],
+    "id": "sugar",
+    "name": "Сахар",
+    "hideFromPantry": true,
+    "category": "sweetener"
+  },
+  "honey": {
+    "aliases": [
+      "мёд",
+      "патока"
+    ],
+    "defaultPantryStaple": false,
+    "hydrationFraction": 0.18,
+    "densityGPerMl": 1,
+    "unitDefault": "g",
+    "description": "Сладость, цвет и удержание влаги.",
+    "roleDefault": "Сладость / влага",
+    "increaseEffect": "Усиление соответствующей функции ингредиента.",
+    "decreaseEffect": "Ослабление соответствующей функции ингредиента.",
+    "substitutions": [
+      "Тёмная патока",
+      "Сахар + чуть воды"
+    ],
+    "id": "honey",
+    "name": "Мёд натуральный",
+    "category": "sweetener"
+  },
+  "salt": {
+    "aliases": [
+      "соль",
+      "соль поваренная",
+      "соль мелкая"
+    ],
+    "defaultPantryStaple": true,
+    "hydrationFraction": 0,
+    "densityGPerMl": 1,
+    "unitDefault": "g",
+    "description": "Вкус, контроль ферментации, укрепление клейковины.",
+    "roleDefault": "Вкус и структура",
+    "increaseEffect": "Замедление дрожжей, жёстче вкус.",
+    "decreaseEffect": "Быстрый подъём, пресный вкус.",
+    "substitutions": [
+      "Морская мелкого помола"
+    ],
+    "id": "salt",
+    "name": "Соль",
+    "hideFromPantry": true,
+    "category": "salt"
+  },
+  "yeast": {
+    "aliases": [
+      "дрожжи",
+      "сухие дрожжи",
+      "инстантные дрожжи",
+      "саф-момент"
+    ],
+    "defaultPantryStaple": false,
+    "hydrationFraction": 0,
+    "densityGPerMl": 1,
+    "unitDefault": "g",
+    "description": "Газообразование для подъёма теста.",
+    "roleDefault": "Подъём",
+    "increaseEffect": "Быстрый подъём, риск опадения и дрожжевого запаха.",
+    "decreaseEffect": "Слабый подъём, плотный мякиш.",
+    "substitutions": [
+      "Свежие дрожжи ×3 по массе (не в диспенсер Panasonic без адаптации)"
+    ],
+    "id": "yeast",
+    "name": "Дрожжи сухие",
+    "category": "yeast"
+  },
+  "dry_milk": {
+    "aliases": [
+      "сухое молоко"
+    ],
+    "defaultPantryStaple": false,
+    "hydrationFraction": 0,
+    "densityGPerMl": 1,
+    "unitDefault": "g",
+    "description": "Улучшает цвет корочки и мягкость.",
+    "roleDefault": "Обогащение",
+    "increaseEffect": "Усиление соответствующей функции ингредиента.",
+    "decreaseEffect": "Ослабление соответствующей функции ингредиента.",
+    "substitutions": [
+      "Заменить часть воды молоком"
+    ],
+    "id": "dry_milk",
+    "name": "Молоко сухое",
+    "category": "dairy"
+  },
+  "gluten": {
+    "aliases": [
+      "глютен",
+      "клейковина"
+    ],
+    "defaultPantryStaple": false,
+    "hydrationFraction": 0,
+    "densityGPerMl": 1,
+    "unitDefault": "g",
+    "description": "Усиливает каркас при слабой/кукурузной муке.",
+    "roleDefault": "Усиление структуры",
+    "increaseEffect": "Жёстче мякиш.",
+    "decreaseEffect": "Слабее подъём в безглютеновых добавках.",
+    "substitutions": [],
+    "id": "gluten",
+    "name": "Клейковина пшеничная",
+    "category": "other"
+  },
+  "malt": {
+    "aliases": [
+      "ржаной солод",
+      "солод"
+    ],
+    "defaultPantryStaple": false,
+    "hydrationFraction": 0,
+    "densityGPerMl": 1,
+    "unitDefault": "g",
+    "description": "Цвет, аромат и ферменты для бородинского профиля.",
+    "roleDefault": "Цвет и аромат заварки",
+    "increaseEffect": "Усиление соответствующей функции ингредиента.",
+    "decreaseEffect": "Ослабление соответствующей функции ингредиента.",
+    "substitutions": [
+      "Солодовый экстракт (осторожно с жидкостью)"
+    ],
+    "id": "malt",
+    "name": "Солод ржаной",
+    "category": "other"
+  },
+  "coriander": {
+    "aliases": [
+      "кориандр"
+    ],
+    "defaultPantryStaple": false,
+    "hydrationFraction": 0,
+    "densityGPerMl": 1,
+    "unitDefault": "g",
+    "description": "Пряный аромат бородинского хлеба.",
+    "roleDefault": "Аромат",
+    "increaseEffect": "Усиление соответствующей функции ингредиента.",
+    "decreaseEffect": "Ослабление соответствующей функции ингредиента.",
+    "substitutions": [
+      "Семена кориандра дроблёные"
+    ],
+    "id": "coriander",
+    "name": "Кориандр",
+    "category": "spice"
+  },
+  "caraway": {
+    "aliases": [
+      "тмин"
+    ],
+    "defaultPantryStaple": false,
+    "hydrationFraction": 0,
+    "densityGPerMl": 1,
+    "unitDefault": "g",
+    "description": "Посыпка и аромат.",
+    "roleDefault": "Посыпка / аромат",
+    "increaseEffect": "Усиление соответствующей функции ингредиента.",
+    "decreaseEffect": "Ослабление соответствующей функции ингредиента.",
+    "substitutions": [
+      "Семена фенхеля"
+    ],
+    "id": "caraway",
+    "name": "Тмин",
+    "category": "spice"
+  },
+  "vinegar": {
+    "aliases": [
+      "уксус",
+      "яблочный уксус"
+    ],
+    "defaultPantryStaple": false,
+    "hydrationFraction": 0.94,
+    "densityGPerMl": 1,
+    "unitDefault": "g",
+    "description": "Подкисление ржаного теста, контроль амилазы.",
+    "roleDefault": "Кислотность",
+    "increaseEffect": "Усиление соответствующей функции ингредиента.",
+    "decreaseEffect": "Ослабление соответствующей функции ингредиента.",
+    "substitutions": [
+      "Лимонный сок"
+    ],
+    "id": "vinegar",
+    "name": "Уксус яблочный 6%",
+    "category": "other"
+  },
+  "potato": {
+    "aliases": [
+      "картошка",
+      "картофель красный",
+      "картофель ранний",
+      "батат",
+      "сладкий картофель",
+      "пюре",
+      "картофельное пюре"
+    ],
+    "defaultPantryStaple": false,
+    "hydrationFraction": 0.78,
+    "densityGPerMl": 1,
+    "unitDefault": "g",
+    "description": "Обычный, красный, ранний картофель или батат — вид на ваш вкус. В рецепте из него делают пюре.",
+    "roleDefault": "Влага и мягкость мякиша",
+    "increaseEffect": "Мягче и влажнее мякиш; тесто может стать слабее.",
+    "decreaseEffect": "Суше мякиш, быстрее черствение.",
+    "substitutions": [
+      "Батат",
+      "Картофельные хлопья + вода (по инструкции на упаковке)"
+    ],
+    "id": "potato",
+    "name": "Картофель",
+    "category": "veg"
+  },
+  "cheese": {
+    "aliases": [
+      "сыр",
+      "тёртый сыр"
+    ],
+    "defaultPantryStaple": false,
+    "hydrationFraction": 0,
+    "densityGPerMl": 1,
+    "unitDefault": "g",
+    "description": "Вкус и жирность закусочного хлеба. Влажный — в форму, не в диспенсер.",
+    "roleDefault": "Вкус",
+    "increaseEffect": "Тяжелее мякиш, жирнее.",
+    "decreaseEffect": "Слабее сырный вкус.",
+    "substitutions": [
+      "Гауда",
+      "Российский",
+      "Чеддер"
+    ],
+    "id": "cheese",
+    "name": "Сыр полутвёрдый",
+    "category": "dairy"
+  },
+  "onion_fried": {
+    "aliases": [
+      "лук",
+      "жареный лук"
+    ],
+    "defaultPantryStaple": false,
+    "hydrationFraction": 0,
+    "densityGPerMl": 1,
+    "unitDefault": "g",
+    "description": "Сладость и аромат; лучше остудить перед закладкой.",
+    "roleDefault": "Вкус",
+    "increaseEffect": "Усиление соответствующей функции ингредиента.",
+    "decreaseEffect": "Ослабление соответствующей функции ингредиента.",
+    "substitutions": [
+      "Сушёный жареный лук (меньше влаги)"
+    ],
+    "id": "onion_fried",
+    "name": "Лук репчатый",
+    "category": "veg"
+  },
+  "garlic_dry": {
+    "aliases": [
+      "сушёный чеснок",
+      "чеснок гранулированный"
+    ],
+    "defaultPantryStaple": false,
+    "hydrationFraction": 0,
+    "densityGPerMl": 1,
+    "unitDefault": "g",
+    "description": "Стойкий чесночный аромат без лишней влаги.",
+    "roleDefault": "Аромат",
+    "increaseEffect": "Усиление соответствующей функции ингредиента.",
+    "decreaseEffect": "Ослабление соответствующей функции ингредиента.",
+    "substitutions": [
+      "Свежий чеснок (меньше по массе, в форму)"
+    ],
+    "id": "garlic_dry",
+    "name": "Чеснок сушёный",
+    "category": "spice"
+  },
+  "garlic_fresh": {
+    "aliases": [
+      "чеснок",
+      "свежий чеснок"
+    ],
+    "defaultPantryStaple": false,
+    "hydrationFraction": 0,
+    "densityGPerMl": 1,
+    "unitDefault": "g",
+    "description": "Яркий аромат; влажный — не в диспенсер.",
+    "roleDefault": "Аромат",
+    "increaseEffect": "Усиление соответствующей функции ингредиента.",
+    "decreaseEffect": "Ослабление соответствующей функции ингредиента.",
+    "substitutions": [
+      "Сушёный чеснок"
+    ],
+    "id": "garlic_fresh",
+    "name": "Чеснок свежий",
+    "category": "veg"
+  },
+  "dill": {
+    "aliases": [
+      "укроп свежий",
+      "зелень укропа"
+    ],
+    "defaultPantryStaple": false,
+    "hydrationFraction": 0,
+    "densityGPerMl": 1,
+    "unitDefault": "g",
+    "description": "Свежий укроп для аромата.",
+    "roleDefault": "Аромат",
+    "increaseEffect": "Усиление соответствующей функции ингредиента.",
+    "decreaseEffect": "Ослабление соответствующей функции ингредиента.",
+    "substitutions": [
+      "Сушёный укроп (⅓ массы)"
+    ],
+    "id": "dill",
+    "name": "Укроп",
+    "category": "veg"
+  },
+  "parsley": {
+    "aliases": [
+      "петрушка свежая",
+      "зелень петрушки"
+    ],
+    "defaultPantryStaple": false,
+    "hydrationFraction": 0,
+    "densityGPerMl": 1,
+    "unitDefault": "g",
+    "description": "Свежая петрушка для аромата.",
+    "roleDefault": "Аромат",
+    "increaseEffect": "Усиление соответствующей функции ингредиента.",
+    "decreaseEffect": "Ослабление соответствующей функции ингредиента.",
+    "substitutions": [
+      "Сушёная петрушка (⅓ массы)"
+    ],
+    "id": "parsley",
+    "name": "Петрушка",
+    "category": "veg"
+  },
+  "eggs": {
+    "aliases": [
+      "яйца",
+      "яйцо"
+    ],
+    "defaultPantryStaple": false,
+    "hydrationFraction": 0.75,
+    "densityGPerMl": 1,
+    "unitDefault": "g",
+    "description": "Структура, цвет и сдобность бриоши.",
+    "roleDefault": "Связывание / сдобность",
+    "increaseEffect": "Усиление соответствующей функции ингредиента.",
+    "decreaseEffect": "Ослабление соответствующей функции ингредиента.",
+    "substitutions": [],
+    "id": "eggs",
+    "name": "Яйца куриные",
+    "category": "dairy"
+  },
+  "vanilla": {
+    "aliases": [
+      "ваниль",
+      "ванилин"
+    ],
+    "defaultPantryStaple": false,
+    "hydrationFraction": 0,
+    "densityGPerMl": 1,
+    "unitDefault": "g",
+    "description": "Аромат сдобы.",
+    "roleDefault": "Аромат",
+    "increaseEffect": "Усиление соответствующей функции ингредиента.",
+    "decreaseEffect": "Ослабление соответствующей функции ингредиента.",
+    "substitutions": [
+      "Ванильный сахар"
+    ],
+    "id": "vanilla",
+    "name": "Ванилин",
+    "category": "spice"
+  },
+  "soda": {
+    "aliases": [
+      "сода"
+    ],
+    "defaultPantryStaple": false,
+    "hydrationFraction": 0,
+    "densityGPerMl": 1,
+    "unitDefault": "g",
+    "description": "Химический разрыхлитель с кислотой кефира.",
+    "roleDefault": "Разрыхление",
+    "increaseEffect": "Мыльный привкус.",
+    "decreaseEffect": "Плотный мякиш.",
+    "substitutions": [
+      "Разрыхлитель (без реакции с кефиром — другой профиль)"
+    ],
+    "id": "soda",
+    "name": "Сода пищевая",
+    "category": "other"
+  },
+  "seed_mix": {
+    "aliases": [
+      "семена",
+      "кунжут",
+      "лён",
+      "семечки"
+    ],
+    "defaultPantryStaple": false,
+    "hydrationFraction": 0,
+    "densityGPerMl": 1,
+    "unitDefault": "g",
+    "description": "Хруст и питательность.",
+    "roleDefault": "Текстура",
+    "increaseEffect": "Усиление соответствующей функции ингредиента.",
+    "decreaseEffect": "Ослабление соответствующей функции ингредиента.",
+    "substitutions": [
+      "Любые сухие семена"
+    ],
+    "id": "seed_mix",
+    "name": "Смесь семян",
+    "hideFromPantry": true,
+    "category": "seed"
+  },
+  "oat_flour": {
+    "aliases": [
+      "овсяная мука"
+    ],
+    "defaultPantryStaple": false,
+    "hydrationFraction": 0,
+    "densityGPerMl": 1,
+    "unitDefault": "g",
+    "description": "Смягчает мякиш, слегка ослабляет клейковину.",
+    "roleDefault": "Нежность",
+    "increaseEffect": "Плотнее и крошливее мякиш.",
+    "decreaseEffect": "Менее овсяный вкус.",
+    "substitutions": [
+      "Мелкие овсяные хлопья (частично)"
+    ],
+    "id": "oat_flour",
+    "name": "Мука овсяная",
+    "category": "flour"
+  },
+  "buckwheat_flour": {
+    "aliases": [
+      "гречневая мука"
+    ],
+    "defaultPantryStaple": false,
+    "hydrationFraction": 0,
+    "densityGPerMl": 1,
+    "unitDefault": "g",
+    "description": "Ореховый аромат; ослабляет глютен.",
+    "roleDefault": "Аромат",
+    "increaseEffect": "Темнее мякиш, слабее подъём.",
+    "decreaseEffect": "Слабее гречневый вкус.",
+    "substitutions": [],
+    "id": "buckwheat_flour",
+    "name": "Мука гречневая",
+    "category": "flour"
+  },
+  "spelt_flour": {
+    "aliases": [
+      "полба",
+      "спельта",
+      "мука спельта"
+    ],
+    "defaultPantryStaple": false,
+    "hydrationFraction": 0,
+    "densityGPerMl": 1,
+    "unitDefault": "g",
+    "description": "Мягкий ореховый вкус полбы (спельты).",
+    "roleDefault": "Вкус зерна",
+    "increaseEffect": "Может потребоваться чуть больше воды.",
+    "decreaseEffect": "Ближе к обычному пшеничному.",
+    "substitutions": [
+      "Пшеничная цельнозерновая"
+    ],
+    "id": "spelt_flour",
+    "name": "Мука из полбы",
+    "category": "flour"
+  },
+  "bran": {
+    "aliases": [
+      "отруби"
+    ],
+    "defaultPantryStaple": false,
+    "hydrationFraction": 0,
+    "densityGPerMl": 1,
+    "unitDefault": "g",
+    "description": "Клетчатка; впитывают влагу.",
+    "roleDefault": "Клетчатка",
+    "increaseEffect": "Суше и плотнее мякиш — можно добавить воду.",
+    "decreaseEffect": "Меньше грубости.",
+    "substitutions": [
+      "Отруби ржаные"
+    ],
+    "id": "bran",
+    "name": "Отруби пшеничные",
+    "category": "other"
+  },
+  "seven_grain": {
+    "aliases": [
+      "семь злаков",
+      "хлопья 7 злаков",
+      "мультизлаковая смесь"
+    ],
+    "defaultPantryStaple": false,
+    "hydrationFraction": 0,
+    "densityGPerMl": 1,
+    "unitDefault": "g",
+    "description": "Мелкая смесь хлопьев семи злаков.",
+    "roleDefault": "Злаковый вкус",
+    "increaseEffect": "Грубее текстура, больше влаги нужно.",
+    "decreaseEffect": "Менее «злаковый» вкус.",
+    "substitutions": [
+      "Мелкие овсяные хлопья"
+    ],
+    "id": "seven_grain",
+    "name": "Смесь 7 злаков",
+    "category": "other"
+  },
+  "gf_mix": {
+    "aliases": [
+      "безглютеновая смесь",
+      "без глютена смесь",
+      "хлебная смесь бг"
+    ],
+    "defaultPantryStaple": false,
+    "hydrationFraction": 0,
+    "densityGPerMl": 1,
+    "unitDefault": "g",
+    "description": "Готовая хлебопекарная смесь без глютена и без дрожжей в составе.",
+    "roleDefault": "Основа без глютена",
+    "increaseEffect": "Гуще масса.",
+    "decreaseEffect": "Жидже масса.",
+    "substitutions": [],
+    "id": "gf_mix",
+    "name": "Смесь безглютеновая",
+    "category": "flour"
+  },
+  "yogurt": {
+    "aliases": [
+      "йогурт",
+      "натуральный йогурт"
+    ],
+    "defaultPantryStaple": false,
+    "hydrationFraction": 0.85,
+    "densityGPerMl": 1,
+    "unitDefault": "g",
+    "description": "Кисломолочная нежность и лёгкая кислота.",
+    "roleDefault": "Нежность / кислота",
+    "increaseEffect": "Усиление соответствующей функции ингредиента.",
+    "decreaseEffect": "Ослабление соответствующей функции ингредиента.",
+    "substitutions": [
+      "Кефир",
+      "Сметана + молоко"
+    ],
+    "id": "yogurt",
+    "name": "Йогурт натуральный",
+    "category": "dairy"
+  },
+  "olives": {
+    "aliases": [
+      "оливки без косточек",
+      "маслины"
+    ],
+    "defaultPantryStaple": false,
+    "hydrationFraction": 0,
+    "densityGPerMl": 1,
+    "unitDefault": "g",
+    "description": "Солёный акцент; обсушить перед закладкой. Влажные — в форму, не в диспенсер.",
+    "roleDefault": "Вкус",
+    "increaseEffect": "Усиление соответствующей функции ингредиента.",
+    "decreaseEffect": "Ослабление соответствующей функции ингредиента.",
+    "substitutions": [
+      "Маслины без косточек"
+    ],
+    "id": "olives",
+    "name": "Оливки",
+    "category": "veg"
+  },
+  "baking_powder": {
+    "aliases": [
+      "разрыхлитель",
+      "пекарский порошок"
+    ],
+    "defaultPantryStaple": false,
+    "hydrationFraction": 0,
+    "densityGPerMl": 1,
+    "unitDefault": "g",
+    "description": "Химический подъём для бездрожжевых программ.",
+    "roleDefault": "Разрыхление",
+    "increaseEffect": "Горьковатый привкус.",
+    "decreaseEffect": "Плотный мякиш.",
+    "substitutions": [],
+    "id": "baking_powder",
+    "name": "Разрыхлитель теста",
+    "category": "other"
+  },
+  "pumpkin_seeds": {
+    "aliases": [
+      "тыквенные семечки"
+    ],
+    "defaultPantryStaple": false,
+    "hydrationFraction": 0,
+    "densityGPerMl": 1,
+    "unitDefault": "g",
+    "description": "Хруст и ореховый тон.",
+    "roleDefault": "Текстура",
+    "increaseEffect": "Усиление соответствующей функции ингредиента.",
+    "decreaseEffect": "Ослабление соответствующей функции ингредиента.",
+    "substitutions": [
+      "Семечки подсолнечника"
+    ],
+    "id": "pumpkin_seeds",
+    "name": "Семечки тыквы",
+    "category": "seed"
+  },
+  "herbs_provence": {
+    "aliases": [
+      "прованские травы",
+      "травы прованса"
+    ],
+    "defaultPantryStaple": false,
+    "hydrationFraction": 0,
+    "densityGPerMl": 1,
+    "unitDefault": "g",
+    "description": "Сухая смесь трав для аромата.",
+    "roleDefault": "Аромат",
+    "increaseEffect": "Усиление соответствующей функции ингредиента.",
+    "decreaseEffect": "Ослабление соответствующей функции ингредиента.",
+    "substitutions": [
+      "Розмарин + тимьян"
+    ],
+    "id": "herbs_provence",
+    "name": "Прованские травы",
+    "category": "spice"
+  },
+  "malt_dry": {
+    "aliases": [
+      "сухой солод",
+      "красный солод сухой"
+    ],
+    "defaultPantryStaple": false,
+    "hydrationFraction": 0,
+    "densityGPerMl": 1,
+    "unitDefault": "g",
+    "description": "Цвет и аромат без заварки.",
+    "roleDefault": "Цвет / аромат",
+    "increaseEffect": "Усиление соответствующей функции ингредиента.",
+    "decreaseEffect": "Ослабление соответствующей функции ингредиента.",
+    "substitutions": [
+      "Солод ферментированный (с заваркой)"
+    ],
+    "id": "malt_dry",
+    "name": "Солод ржаной сухой",
+    "category": "other"
+  },
+  "yeast_gf": {
+    "aliases": [
+      "дрожжи без глютена",
+      "безглютеновые дрожжи"
+    ],
+    "defaultPantryStaple": false,
+    "hydrationFraction": 0,
+    "densityGPerMl": 1,
+    "unitDefault": "g",
+    "description": "Сухие дрожжи, маркированные как безглютеновые.",
+    "roleDefault": "Подъём",
+    "increaseEffect": "Усиление соответствующей функции ингредиента.",
+    "decreaseEffect": "Ослабление соответствующей функции ингредиента.",
+    "substitutions": [
+      "Обычные сухие дрожжи (если нет цели строгого БГ)"
+    ],
+    "id": "yeast_gf",
+    "name": "Дрожжи безглютеновые",
+    "category": "yeast"
+  },
+  "water_extra": {
+    "aliases": [
+      "вода дополнительно"
+    ],
+    "defaultPantryStaple": true,
+    "hydrationFraction": 1,
+    "densityGPerMl": 1,
+    "unitDefault": "g",
+    "description": "Вторая порция воды после заварки солода.",
+    "roleDefault": "Гидратация",
+    "increaseEffect": "Усиление соответствующей функции ингредиента.",
+    "decreaseEffect": "Ослабление соответствующей функции ингредиента.",
+    "substitutions": [
+      "Вода"
+    ],
+    "id": "water_extra",
+    "name": "Вода (вторая порция)",
+    "hideFromPantry": true,
+    "category": "liquid"
+  },
+  "walnut": {
+    "aliases": [
+      "грецкий орех"
+    ],
+    "defaultPantryStaple": false,
+    "hydrationFraction": 0,
+    "densityGPerMl": 1,
+    "unitDefault": "g",
+    "description": "",
+    "roleDefault": "",
+    "increaseEffect": "Усиление соответствующей функции ингредиента.",
+    "decreaseEffect": "Ослабление соответствующей функции ингредиента.",
+    "substitutions": [],
+    "id": "walnut",
+    "name": "Грецкий орех",
+    "category": "nut"
+  },
+  "raisin": {
+    "aliases": [
+      "изюм"
+    ],
+    "defaultPantryStaple": false,
+    "hydrationFraction": 0,
+    "densityGPerMl": 1,
+    "unitDefault": "g",
+    "description": "",
+    "roleDefault": "",
+    "increaseEffect": "Усиление соответствующей функции ингредиента.",
+    "decreaseEffect": "Ослабление соответствующей функции ингредиента.",
+    "substitutions": [],
+    "id": "raisin",
+    "name": "Изюм",
+    "category": "other"
+  },
+  "sunflower": {
+    "aliases": [
+      "семечки подсолнечника"
+    ],
+    "defaultPantryStaple": false,
+    "hydrationFraction": 0,
+    "densityGPerMl": 1,
+    "unitDefault": "g",
+    "description": "",
+    "roleDefault": "",
+    "increaseEffect": "Усиление соответствующей функции ингредиента.",
+    "decreaseEffect": "Ослабление соответствующей функции ингредиента.",
+    "substitutions": [],
+    "id": "sunflower",
+    "name": "Семечки подсолнечника",
+    "category": "seed"
+  },
+  "sesame": {
+    "aliases": [
+      "кунжут"
+    ],
+    "defaultPantryStaple": false,
+    "hydrationFraction": 0,
+    "densityGPerMl": 1,
+    "unitDefault": "g",
+    "description": "",
+    "roleDefault": "",
+    "increaseEffect": "Усиление соответствующей функции ингредиента.",
+    "decreaseEffect": "Ослабление соответствующей функции ингредиента.",
+    "substitutions": [],
+    "id": "sesame",
+    "name": "Кунжут",
+    "category": "seed"
+  },
+  "flax": {
+    "aliases": [
+      "семена льна"
+    ],
+    "defaultPantryStaple": false,
+    "hydrationFraction": 0,
+    "densityGPerMl": 1,
+    "unitDefault": "g",
+    "description": "",
+    "roleDefault": "",
+    "increaseEffect": "Усиление соответствующей функции ингредиента.",
+    "decreaseEffect": "Ослабление соответствующей функции ингредиента.",
+    "substitutions": [],
+    "id": "flax",
+    "name": "Семена льна",
+    "category": "seed"
+  },
+  "rosemary": {
+    "aliases": [
+      "розмарин сушёный"
+    ],
+    "defaultPantryStaple": false,
+    "hydrationFraction": 0,
+    "densityGPerMl": 1,
+    "unitDefault": "g",
+    "description": "",
+    "roleDefault": "",
+    "increaseEffect": "Усиление соответствующей функции ингредиента.",
+    "decreaseEffect": "Ослабление соответствующей функции ингредиента.",
+    "substitutions": [],
+    "id": "rosemary",
+    "name": "Розмарин сушёный",
+    "category": "spice"
+  },
+  "dried_cranberry": {
+    "aliases": [
+      "клюква сушёная"
+    ],
+    "defaultPantryStaple": false,
+    "hydrationFraction": 0,
+    "densityGPerMl": 1,
+    "unitDefault": "g",
+    "description": "",
+    "roleDefault": "",
+    "increaseEffect": "Усиление соответствующей функции ингредиента.",
+    "decreaseEffect": "Ослабление соответствующей функции ингредиента.",
+    "substitutions": [],
+    "id": "dried_cranberry",
+    "name": "Клюква сушёная",
+    "category": "other"
+  }
+}

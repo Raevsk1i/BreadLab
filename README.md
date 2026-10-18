@@ -2,26 +2,36 @@
 
 Автономное русскоязычное приложение для подбора и масштабирования рецептов хлеба под **Panasonic SD-YR2540HTS** и **REDMOND SkyCooker RMC-M92S**.
 
-## Запуск (offline)
+## Мобильное приложение (Flutter)
+
+Основная реализация — каталог [`breadlab/`](breadlab/):
+
+```bash
+cd breadlab
+flutter pub get
+flutter run
+flutter test
+```
+
+Документация сборок:
+
+- [breadlab/docs/ANDROID_MAGICOS_BUILD.md](breadlab/docs/ANDROID_MAGICOS_BUILD.md)
+- [breadlab/docs/HARMONYOS_BUILD.md](breadlab/docs/HARMONYOS_BUILD.md)
+- [breadlab/docs/MIGRATION_MAP.md](breadlab/docs/MIGRATION_MAP.md)
+
+## Legacy HTML (сверка)
+
+Исходный однофайловый веб-клиент сохранён для аудита и экспорта данных:
 
 1. Откройте `bread_lab.html` двойным кликом  
    или
 2. Windows: `run.bat`  
 3. Linux / macOS: `chmod +x run.sh && ./run.sh`
 
-Сервер, npm и интернет **не нужны**. Весь CSS, JavaScript и база рецептов встроены в один HTML-файл.
+Сервер не нужен. Мобильный runtime **не** использует HTML/WebView.
 
-На Linux Chrome иногда пишет в терминал `zygote … Broken pipe`, если браузер уже открыт: это шум вспомогательного процесса, вкладка при этом открывается. `run.sh` запускает браузер отдельно и эти строки не показывает. Если вкладки нет — откройте `bread_lab.html` двойным щелчком.
+Переэкспорт базы в Flutter assets:
 
-## Возможности
-
-- 35 технологических карт из сборника для REDMOND RMC-M92S и Panasonic SD-YR2540HTS
-- Панель «Что есть дома» и локальный поиск рецептов
-- Раздельная выдача для Panasonic и REDMOND (номера меню русской редакции)
-- Масштабирование по пекарским процентам (слайдер муки 300–600 г)
-- KPI: гидратация, масса теста, пиковый объём, вес буханки, лимиты техники
-- «Добавить по вкусу», Cook Mode с таймерами, калибровка, экспорт/импорт JSON
-
-## Отладка
-
-Откройте `bread_lab.html?debug=1` — внизу страницы появятся встроенные self-tests.
+```bash
+cd breadlab && node tool/export_db.mjs ../bread_lab.html
+```
