@@ -394,6 +394,21 @@
       background: var(--text); color: #fff; padding: 0.75rem 1rem;
       border-radius: var(--radius-sm); font-size: 0.85rem; box-shadow: var(--shadow-card);
     }
+    .toast--ok { background: var(--green-dark, #2f6b3a); }
+    .toast--err { background: #8b2e2e; }
+    .toast--warn { background: #8a6a12; }
+
+    body.cook-open { overflow: hidden; }
+
+    .pantry-empty {
+      grid-column: 1 / -1;
+      padding: 1rem 0.25rem;
+      color: var(--text-soft);
+      font-size: 0.9rem;
+    }
+
+    .chip[role="tab"], .tab[role="tab"] { cursor: pointer; }
+    .chip[aria-selected="true"], .tab[aria-selected="true"] { /* active already styled */ }
 
     /* Dialog */
     dialog {
@@ -3305,6 +3320,7 @@
 
   var StorageAdapter = {
     available: false,
+    lastLoadCorrupt: false,
     check: function () {
       try {
         var k = "__bl_test__";
@@ -3317,23 +3333,32 @@
       return this.available;
     },
     load: function () {
+      this.lastLoadCorrupt = false;
       if (!this.available) return null;
       try {
         var raw = localStorage.getItem(STORAGE_KEY);
-        return raw ? JSON.parse(raw) : null;
-      } catch (e) { return null; }
+        if (!raw) return null;
+        return JSON.parse(raw);
+      } catch (e) {
+        this.lastLoadCorrupt = true;
+        return null;
+      }
     },
     save: function (data) {
       if (!this.available) return false;
       try {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
         return true;
-      } catch (e) { return false; }
+      } catch (e) {
+        return false;
+      }
     }
   };
 
+  var _persistFailNotified = false;
+
   function persist() {
-    StorageAdapter.save({
+    var ok = StorageAdapter.save({
       pantry: state.pantry,
       staplesOn: state.staplesOn,
       nearMatchOn: state.nearMatchOn,
@@ -3346,10 +3371,20 @@
       targetFlourG: state.targetFlourG,
       checklist: state.checklist
     });
+    if (!ok && StorageAdapter.available && !_persistFailNotified) {
+      _persistFailNotified = true;
+      toast("Не удалось сохранить данные (квота хранилища?)", "err");
+    }
+    if (ok) _persistFailNotified = false;
+    return ok;
   }
 
   function restore() {
     var data = StorageAdapter.load();
+    if (StorageAdapter.lastLoadCorrupt) {
+      toast("Сохранённые данные повреждены — начата новая сессия", "warn");
+      return;
+    }
     if (!data) return;
     if (data.pantry) state.pantry = data.pantry;
     if (typeof data.staplesOn === "boolean") state.staplesOn = data.staplesOn;
@@ -3389,11 +3424,29 @@
     return node;
   }
 
-  function toast(msg) {
+  function toast(msg, type) {
     var wrap = $("#toasts");
-    var t = el("div", { className: "toast", text: msg });
+    if (!wrap) return;
+    var cls = "toast";
+    if (type === "ok") cls += " toast--ok";
+    else if (type === "err") cls += " toast--err";
+    else if (type === "warn") cls += " toast--warn";
+    var t = el("div", { className: cls, text: msg, role: "status" });
     wrap.appendChild(t);
     setTimeout(function () { if (t.parentNode) t.parentNode.removeChild(t); }, 3200);
+  }
+
+  function debounce(fn, ms) {
+    var timer = null;
+    return function () {
+      var ctx = this;
+      var args = arguments;
+      if (timer) clearTimeout(timer);
+      timer = setTimeout(function () {
+        timer = null;
+        fn.apply(ctx, args);
+      }, ms);
+    };
   }
 
   function pantrySet() {
@@ -3401,6 +3454,19 @@
     Object.keys(state.pantry).forEach(function (id) { if (state.pantry[id]) s.add(id); });
     return s;
   }
+
+  /** Cached sorted ingredient ids (catalog is static). */
+  var _sortedIngredientIds = null;
+  function sortedIngredientIds() {
+    if (!_sortedIngredientIds) {
+      _sortedIngredientIds = Object.keys(DB.ingredients).sort(function (a, b) {
+        return DB.ingredients[a].name.localeCompare(DB.ingredients[b].name, "ru");
+      });
+    }
+    return _sortedIngredientIds;
+  }
+
+  var _pantryDelegated = false;
 
   function confidenceBadge(c) {
     if (c === "official") return el("span", { className: "badge badge-green", text: "🟢 Официально" });
@@ -3414,11 +3480,15 @@
   function renderPantryCats() {
     var wrap = $("#pantry-cats");
     wrap.textContent = "";
+    wrap.setAttribute("role", "tablist");
     DB.categories.forEach(function (c) {
+      var selected = state.pantryCategory === c.id;
       var b = el("button", {
         type: "button",
-        className: "chip" + (state.pantryCategory === c.id ? " active" : ""),
-        text: c.name
+        className: "chip" + (selected ? " active" : ""),
+        text: c.name,
+        role: "tab",
+        "aria-selected": selected ? "true" : "false"
       });
       b.addEventListener("click", function () {
         state.pantryCategory = c.id;
@@ -3428,15 +3498,35 @@
     });
   }
 
+  function ensurePantryDelegation() {
+    if (_pantryDelegated) return;
+    var list = $("#pantry-list");
+    if (!list) return;
+    _pantryDelegated = true;
+    list.addEventListener("change", function (e) {
+      var t = e.target;
+      if (!t || t.type !== "checkbox") return;
+      var id = t.getAttribute("data-ing-id");
+      if (!id) return;
+      state.pantry[id] = !!t.checked;
+      var row = t.closest ? t.closest(".check-row") : t.parentNode;
+      if (row && row.classList) {
+        if (t.checked) row.classList.add("checked");
+        else row.classList.remove("checked");
+      }
+      persist();
+      updatePantryStat();
+    });
+  }
+
   function renderPantry() {
     renderPantryCats();
+    ensurePantryDelegation();
     var list = $("#pantry-list");
     list.textContent = "";
     var q = normalizeName(state.pantryQuery);
-    var ids = Object.keys(DB.ingredients).sort(function (a, b) {
-      return DB.ingredients[a].name.localeCompare(DB.ingredients[b].name, "ru");
-    });
-    ids.forEach(function (id) {
+    var shown = 0;
+    sortedIngredientIds().forEach(function (id) {
       var ingr = DB.ingredients[id];
       if (ingr.hideFromPantry) return;
       if (state.pantryCategory !== "all" && ingr.category !== state.pantryCategory) return;
@@ -3446,14 +3536,8 @@
       }
       var checked = !!state.pantry[id];
       var row = el("label", { className: "check-row" + (checked ? " checked" : "") });
-      var cb = el("input", { type: "checkbox" });
+      var cb = el("input", { type: "checkbox", "data-ing-id": id });
       cb.checked = checked;
-      cb.addEventListener("change", function () {
-        state.pantry[id] = cb.checked;
-        persist();
-        renderPantry();
-        updatePantryStat();
-      });
       var textWrap = el("span", {}, [
         el("span", { className: "name", text: ingr.name }),
         el("span", { className: "meta", text: " · " + categoryName(ingr.category) })
@@ -3461,7 +3545,16 @@
       row.appendChild(cb);
       row.appendChild(textWrap);
       list.appendChild(row);
+      shown++;
     });
+    if (!shown) {
+      list.appendChild(el("p", {
+        className: "pantry-empty",
+        text: q
+          ? "Ничего не найдено по запросу «" + state.pantryQuery + "». Сбросьте фильтр или измените поиск."
+          : "В этой категории пока нет продуктов."
+      }));
+    }
     var nearEl = $("#opt-near");
     if (nearEl) nearEl.checked = state.nearMatchOn;
     updatePantryStat();
@@ -3503,7 +3596,10 @@
     $("#results-panasonic").classList.toggle("hidden", tab !== "panasonic");
     $("#results-redmond").classList.toggle("hidden", tab !== "redmond");
     $all(".tab").forEach(function (t) {
-      t.classList.toggle("active", t.getAttribute("data-tab") === tab);
+      var on = t.getAttribute("data-tab") === tab;
+      t.classList.toggle("active", on);
+      t.setAttribute("aria-selected", on ? "true" : "false");
+      t.setAttribute("role", "tab");
     });
   }
 
@@ -3600,7 +3696,7 @@
     renderKPIs(recipe, scaled);
     renderIngredientTable(recipe, scaled);
     renderAddins(recipe, scaled);
-    renderSteps(recipe);
+    renderSteps(recipe, scaled);
     updateFavoriteBtn();
   }
 
@@ -3909,10 +4005,11 @@
     });
   }
 
-  function renderSteps(recipe) {
+  function renderSteps(recipe, scaled) {
     var key = state.selectedMachineId === "panasonic_sd_yr2540hts" ? "panasonic" : "redmond";
     var mp = recipe.machineProfiles[key];
-    var scaled = scaleRecipe(recipe, state.targetFlourG, enabledAddinList());
+    if (!mp) return;
+    if (!scaled) scaled = scaleRecipe(recipe, state.targetFlourG, enabledAddinList());
     var steps = getCookingSteps(recipe, key, scaled);
     var ol = $("#steps-list");
     ol.textContent = "";
@@ -3941,20 +4038,49 @@
    * Cook Mode + Timers
    * ========================================================= */
   var timerInterval = null;
+  var _cookReturnFocus = null;
+
+  function isCookOpen() {
+    var ov = $("#cook-overlay");
+    return ov && !ov.classList.contains("hidden");
+  }
+
+  function cookFocusables() {
+    var ov = $("#cook-overlay");
+    if (!ov) return [];
+    return $all("button, [href], input, select, textarea, [tabindex]:not([tabindex='-1'])", ov)
+      .filter(function (n) { return !n.disabled && n.offsetParent !== null; });
+  }
 
   function openCookMode() {
     var recipe = currentRecipe();
-    if (!recipe) return;
+    if (!recipe) {
+      toast("Сначала откройте рецепт", "warn");
+      return;
+    }
+    if (!state.selectedMachineId || !DB.machines[state.selectedMachineId]) {
+      toast("Выберите машину", "warn");
+      return;
+    }
     var key = state.selectedMachineId === "panasonic_sd_yr2540hts" ? "panasonic" : "redmond";
     var mp = recipe.machineProfiles[key];
+    if (!mp || !mp.compatible) {
+      toast("Рецепт несовместим с выбранной машиной", "err");
+      return;
+    }
+
     var scaledCook = scaleRecipe(recipe, state.targetFlourG, enabledAddinList());
     var steps = getCookingSteps(recipe, key, scaledCook);
     var ckKey = recipe.id + "::" + state.selectedMachineId + "::addins:" + enabledAddinList().sort().join(",");
     if (!state.checklist[ckKey]) state.checklist[ckKey] = {};
     state.cookStepIndex = 0;
-    $("#cook-overlay").classList.remove("hidden");
+
+    _cookReturnFocus = document.activeElement;
+    var overlay = $("#cook-overlay");
+    overlay.classList.remove("hidden");
+    document.body.classList.add("cook-open");
     $("#cook-sub").textContent = recipe.title + " · " + DB.machines[state.selectedMachineId].name;
-    // setup default timer from first available
+
     var timers = mp.timers || [];
     if (timers.length) {
       state.activeTimerId = timers[0].id;
@@ -3965,13 +4091,19 @@
       ensureTimer(ckKey, { id: "custom", label: "Таймер", minutes: 10 });
       $("#timer-label").textContent = "Таймер 10 мин";
     }
-    // timer select via cycling - store list on overlay
-    $("#cook-overlay")._timers = timers;
-    $("#cook-overlay")._ckKey = ckKey;
-    $("#cook-overlay")._steps = steps;
+
+    overlay._timers = timers;
+    overlay._ckKey = ckKey;
+    overlay._steps = steps;
+    overlay._scaled = scaledCook;
     renderCookSteps();
     tickTimers();
     if (!timerInterval) timerInterval = setInterval(tickTimers, 250);
+
+    var closeBtn = $("#btn-close-cook");
+    if (closeBtn && closeBtn.focus) {
+      setTimeout(function () { closeBtn.focus(); }, 0);
+    }
   }
 
   function ensureTimer(ckKey, spec) {
@@ -3990,13 +4122,20 @@
 
   function renderCookSteps() {
     var recipe = currentRecipe();
+    if (!recipe) return;
     var key = state.selectedMachineId === "panasonic_sd_yr2540hts" ? "panasonic" : "redmond";
-    var steps = $("#cook-overlay")._steps || recipe.machineProfiles[key].steps || [];
-    var ckKey = $("#cook-overlay")._ckKey;
-    var doneMap = state.checklist[ckKey] || {};
+    var overlay = $("#cook-overlay");
+    var steps = (overlay && overlay._steps) || (recipe.machineProfiles[key] && recipe.machineProfiles[key].steps) || [];
+    var ckKey = overlay && overlay._ckKey;
+    if (!ckKey) return;
+    if (!state.checklist[ckKey]) state.checklist[ckKey] = {};
+    var doneMap = state.checklist[ckKey];
     var wrap = $("#cook-steps");
     wrap.textContent = "";
+
+    var scaled = (overlay && overlay._scaled) || scaleRecipe(recipe, state.targetFlourG, enabledAddinList());
     var doneCount = 0;
+
     steps.forEach(function (s, i) {
       var done = !!doneMap[s.id];
       if (done) doneCount++;
@@ -4012,8 +4151,6 @@
       });
       var body = el("div", {});
       body.appendChild(el("strong", { text: "Шаг " + (i + 1) + ". " }));
-      // inject scaled amounts hint
-      var scaled = scaleRecipe(recipe, state.targetFlourG, enabledAddinList());
       var text = fillStepText(s.text, scaled);
       body.appendChild(document.createTextNode(text));
       if (i === 0) {
@@ -4030,6 +4167,7 @@
       row.appendChild(body);
       wrap.appendChild(row);
     });
+
     var pct = steps.length ? (doneCount / steps.length) * 100 : 0;
     $("#cook-progress").style.width = pct + "%";
     $("#cook-progress-label").textContent = "Шаг " + Math.min(state.cookStepIndex + 1, steps.length) +
@@ -4037,6 +4175,7 @@
   }
 
   function tickTimers() {
+    if (!isCookOpen()) return;
     var id = state._timerFullId;
     if (!id || !state.timers[id]) return;
     var t = state.timers[id];
@@ -4046,18 +4185,44 @@
         t.running = false;
         t.deadline = null;
         t.remainingMs = 0;
-        toast("Таймер завершён: " + (t.label || ""));
+        toast("Таймер завершён: " + (t.label || ""), "ok");
       }
     }
     var ms = t.remainingMs;
     var sec = Math.ceil(ms / 1000);
     var m = Math.floor(sec / 60);
     var s = sec % 60;
-    $("#timer-display").textContent = String(m).padStart(2, "0") + ":" + String(s).padStart(2, "0");
+    var display = $("#timer-display");
+    if (display) {
+      display.textContent = String(m).padStart(2, "0") + ":" + String(s).padStart(2, "0");
+    }
+  }
+
+  function stopCookTimerInterval() {
+    if (timerInterval) {
+      clearInterval(timerInterval);
+      timerInterval = null;
+    }
   }
 
   function closeCookMode() {
-    $("#cook-overlay").classList.add("hidden");
+    var overlay = $("#cook-overlay");
+    if (!overlay) return;
+    overlay.classList.add("hidden");
+    document.body.classList.remove("cook-open");
+    stopCookTimerInterval();
+    // Pause running timer so it does not resume unexpectedly
+    var t = state.timers[state._timerFullId];
+    if (t && t.running && t.deadline) {
+      t.remainingMs = Math.max(0, t.deadline - Date.now());
+      t.running = false;
+      t.deadline = null;
+    }
+    var back = _cookReturnFocus || $("#btn-cook");
+    _cookReturnFocus = null;
+    if (back && back.focus) {
+      try { back.focus(); } catch (e) { /* ignore */ }
+    }
   }
 
   /* =========================================================
@@ -4087,15 +4252,38 @@
       URL.revokeObjectURL(a.href);
       document.body.removeChild(a);
     }, 500);
-    toast("Экспорт JSON скачан");
+    toast("Экспорт JSON скачан", "ok");
+  }
+
+  /** Accept BreadLab exports or plain state snapshots with known keys. */
+  function isBreadLabImportPayload(data) {
+    if (!data || typeof data !== "object" || Array.isArray(data)) return false;
+    if (data.app === "BreadLab") return true;
+    var keys = ["pantry", "favorites", "calibrations", "recent", "enabledTasteAddins", "checklist"];
+    return keys.some(function (k) { return Object.prototype.hasOwnProperty.call(data, k); });
   }
 
   function importJSON(file) {
+    if (!file) {
+      toast("Файл не выбран", "err");
+      return;
+    }
+    var btn = $("#btn-import");
+    if (btn) btn.disabled = true;
     var reader = new FileReader();
+    reader.onerror = function () {
+      if (btn) btn.disabled = false;
+      toast("Не удалось прочитать файл", "err");
+    };
     reader.onload = function () {
+      if (btn) btn.disabled = false;
       try {
-        var data = JSON.parse(String(reader.result));
-        if (!data || typeof data !== "object") throw new Error("Неверный формат");
+        var raw = String(reader.result || "");
+        if (!raw.trim()) throw new Error("Пустой файл");
+        var data = JSON.parse(raw);
+        if (!isBreadLabImportPayload(data)) {
+          throw new Error("Это не экспорт BreadLab");
+        }
         if (data.pantry && typeof data.pantry === "object") state.pantry = data.pantry;
         if (typeof data.staplesOn === "boolean") state.staplesOn = data.staplesOn;
         if (typeof data.nearMatchOn === "boolean") state.nearMatchOn = data.nearMatchOn;
@@ -4107,9 +4295,12 @@
         }
         persist();
         renderPantry();
-        toast("Импорт выполнен");
+        if (state.selectedRecipeId && DB.recipes[state.selectedRecipeId]) {
+          renderWorkspace();
+        }
+        toast("Импорт выполнен", "ok");
       } catch (e) {
-        toast("Ошибка импорта: некорректный JSON");
+        toast("Ошибка импорта: " + (e.message || "некорректный JSON"), "err");
       }
     };
     reader.readAsText(file);
@@ -4117,7 +4308,7 @@
 
   function copyText(text) {
     if (navigator.clipboard && navigator.clipboard.writeText) {
-      navigator.clipboard.writeText(text).then(function () { toast("Скопировано"); }, function () {
+      navigator.clipboard.writeText(text).then(function () { toast("Скопировано", "ok"); }, function () {
         fallbackCopy(text);
       });
     } else fallbackCopy(text);
@@ -4128,8 +4319,12 @@
     ta.value = text;
     document.body.appendChild(ta);
     ta.select();
-    try { document.execCommand("copy"); toast("Скопировано"); }
-    catch (e) { toast("Не удалось скопировать"); }
+    try {
+      document.execCommand("copy");
+      toast("Скопировано", "ok");
+    } catch (e) {
+      toast("Не удалось скопировать", "err");
+    }
     document.body.removeChild(ta);
   }
 
@@ -4223,6 +4418,21 @@
     assert("salt hidden", !!DB.ingredients.salt.hideFromPantry);
     assert("sugar hidden", !!DB.ingredients.sugar.hideFromPantry);
 
+    // QoL / robustness helpers
+    assert("import rejects empty object", !isBreadLabImportPayload({}));
+    assert("import rejects array", !isBreadLabImportPayload([]));
+    assert("import accepts BreadLab app", isBreadLabImportPayload({ app: "BreadLab", pantry: {} }));
+    assert("import accepts pantry snapshot", isBreadLabImportPayload({ pantry: { wheat_flour: true } }));
+    assert("sortedIngredientIds cached", sortedIngredientIds() === sortedIngredientIds());
+
+    // Cook timer cleanup (no DOM dependency beyond overlay class)
+    var prevInterval = timerInterval;
+    timerInterval = setInterval(function () {}, 1000);
+    assert("timer interval set", !!timerInterval);
+    stopCookTimerInterval();
+    assert("timer interval cleared", timerInterval === null);
+    timerInterval = prevInterval;
+
     var panel = $("#debug-panel");
     panel.classList.remove("hidden");
     panel.textContent = "";
@@ -4238,10 +4448,53 @@
   /* =========================================================
    * Events / init
    * ========================================================= */
-  function bindEvents() {
+  function saveCalibration() {
+    var w = Number($("#calib-weight").value);
+    var f = Number($("#calib-fill").value);
+    if (!state.selectedRecipeId) {
+      toast("Сначала откройте рецепт", "warn");
+      return;
+    }
+    if (!isFinite(w) || w < 50) {
+      toast("Введите фактический вес", "warn");
+      return;
+    }
+    var recipe = currentRecipe();
+    if (!recipe) return;
+    var scaled = scaleRecipe(recipe, state.targetFlourG, enabledAddinList());
+    var mass = calculateDoughMass(scaled);
+    var fin = estimateFinishedWeight(mass, recipe.physics.bakeLossRange);
+    var mid = (fin.min + fin.max) / 2;
+    state.calibrations.push({
+      recipeId: state.selectedRecipeId,
+      machineId: state.selectedMachineId,
+      targetFlourG: state.targetFlourG,
+      actualFinishedWeightG: w,
+      peakFillPercent: isFinite(f) ? f : null,
+      predictedMid: mid,
+      timestamp: new Date().toISOString()
+    });
+    persist();
+    $("#calib-status").textContent = "Сохранено. Следующий прогноз для этого рецепта будет с поправкой.";
+    renderWorkspace();
+    toast("Калибровка сохранена", "ok");
+  }
+
+  function bindPantryEvents() {
+    var debouncedPantry = debounce(function () { renderPantry(); }, 180);
     $("#pantry-search").addEventListener("input", function (e) {
       state.pantryQuery = e.target.value;
-      renderPantry();
+      debouncedPantry();
+    });
+    $("#pantry-search").addEventListener("keydown", function (e) {
+      if (e.key !== "Enter") return;
+      e.preventDefault();
+      var n = Object.keys(state.pantry).filter(function (k) { return state.pantry[k]; }).length;
+      if (!n) {
+        toast("Отметьте продукты в списке «Что есть дома»", "warn");
+        return;
+      }
+      runSearch();
     });
     $("#opt-near").addEventListener("change", function (e) {
       state.nearMatchOn = e.target.checked;
@@ -4249,22 +4502,37 @@
       if (!$("#search-results").classList.contains("hidden")) runSearch();
     });
     $("#btn-clear-pantry").addEventListener("click", function () {
+      var n = Object.keys(state.pantry).filter(function (k) { return state.pantry[k]; }).length;
+      if (!n) {
+        toast("Список уже пуст", "warn");
+        return;
+      }
+      if (!window.confirm("Очистить все отмеченные продукты?")) return;
       state.pantry = {};
       persist();
       renderPantry();
+      toast("Список продуктов очищен", "ok");
     });
     $("#btn-search").addEventListener("click", runSearch);
+  }
 
+  function bindResultsEvents() {
     $all(".tab").forEach(function (t) {
+      t.setAttribute("role", "tab");
       t.addEventListener("click", function () {
         state.resultsTab = t.getAttribute("data-tab");
         renderResults();
       });
     });
+  }
 
+  function bindWorkspaceEvents() {
     $("#btn-shopping").addEventListener("click", function () {
       var list = missingForCurrentRecipe();
-      if (!list.length) { toast("Для этого рецепта всё есть"); return; }
+      if (!list.length) {
+        toast("Для этого рецепта всё есть", "ok");
+        return;
+      }
       var title = currentRecipe() ? currentRecipe().title : "Рецепт";
       copyText("Не хватает для «" + title + "»:\n" + list.join("\n"));
     });
@@ -4276,7 +4544,10 @@
 
     $("#btn-copy-ings").addEventListener("click", function () {
       var recipe = currentRecipe();
-      if (!recipe) return;
+      if (!recipe) {
+        toast("Сначала откройте рецепт", "warn");
+        return;
+      }
       var scaled = scaleRecipe(recipe, state.targetFlourG, enabledAddinList());
       var lines = scaled.all.map(function (row) {
         var name = row.name || (DB.ingredients[row.ingredientId] && DB.ingredients[row.ingredientId].name) || row.ingredientId;
@@ -4287,9 +4558,15 @@
 
     $("#btn-favorite").addEventListener("click", function () {
       var id = state.selectedRecipeId;
+      if (!id) return;
       var i = state.favorites.indexOf(id);
-      if (i === -1) state.favorites.push(id);
-      else state.favorites.splice(i, 1);
+      if (i === -1) {
+        state.favorites.push(id);
+        toast("Добавлено в избранное", "ok");
+      } else {
+        state.favorites.splice(i, 1);
+        toast("Убрано из избранного", "ok");
+      }
       persist();
       updateFavoriteBtn();
     });
@@ -4298,29 +4575,54 @@
       state.enabledTasteAddins = {};
       persist();
       renderWorkspace();
+      toast("Добавки сброшены", "ok");
     });
 
+    $("#btn-save-calib").addEventListener("click", saveCalibration);
+    ["#calib-weight", "#calib-fill"].forEach(function (sel) {
+      var node = $(sel);
+      if (!node) return;
+      node.addEventListener("keydown", function (e) {
+        if ((e.ctrlKey || e.metaKey) && e.key === "Enter") {
+          e.preventDefault();
+          saveCalibration();
+        }
+      });
+    });
+  }
+
+  function bindCookEvents() {
     $("#btn-cook").addEventListener("click", openCookMode);
     $("#btn-close-cook").addEventListener("click", closeCookMode);
+
     $("#cook-prev").addEventListener("click", function () {
+      if (!isCookOpen() || !currentRecipe()) return;
       state.cookStepIndex = Math.max(0, state.cookStepIndex - 1);
       renderCookSteps();
     });
+
     $("#cook-next").addEventListener("click", function () {
+      if (!isCookOpen()) return;
       var recipe = currentRecipe();
-      var key = state.selectedMachineId === "panasonic_sd_yr2540hts" ? "panasonic" : "redmond";
-      var steps = $("#cook-overlay")._steps || recipe.machineProfiles[key].steps || [];
-      var ckKey = $("#cook-overlay")._ckKey;
+      if (!recipe) return;
+      var overlay = $("#cook-overlay");
+      var steps = (overlay && overlay._steps) || [];
+      var ckKey = overlay && overlay._ckKey;
+      if (!ckKey) return;
+      if (!state.checklist[ckKey]) state.checklist[ckKey] = {};
       var cur = steps[state.cookStepIndex];
       if (cur) {
         state.checklist[ckKey][cur.id] = true;
         persist();
       }
-      state.cookStepIndex = Math.min(steps.length - 1, state.cookStepIndex + 1);
+      state.cookStepIndex = Math.min(Math.max(steps.length - 1, 0), state.cookStepIndex + 1);
       renderCookSteps();
     });
+
     $("#cook-reset-all").addEventListener("click", function () {
+      if (!isCookOpen()) return;
       var ckKey = $("#cook-overlay")._ckKey;
+      if (!ckKey) return;
       state.checklist[ckKey] = {};
       state.cookStepIndex = 0;
       persist();
@@ -4353,7 +4655,6 @@
       tickTimers();
     });
 
-    // cycle timer on label click
     $("#timer-label").style.cursor = "pointer";
     $("#timer-label").title = "Нажмите, чтобы переключить таймер этапа";
     $("#timer-label").addEventListener("click", function () {
@@ -4366,32 +4667,9 @@
       $("#timer-label").textContent = timers[idx].label + " (" + timers[idx].minutes + " мин)";
       tickTimers();
     });
+  }
 
-    $("#btn-save-calib").addEventListener("click", function () {
-      var w = Number($("#calib-weight").value);
-      var f = Number($("#calib-fill").value);
-      if (!state.selectedRecipeId) { toast("Сначала откройте рецепт"); return; }
-      if (!isFinite(w) || w < 50) { toast("Введите фактический вес"); return; }
-      var recipe = currentRecipe();
-      var scaled = scaleRecipe(recipe, state.targetFlourG, enabledAddinList());
-      var mass = calculateDoughMass(scaled);
-      var fin = estimateFinishedWeight(mass, recipe.physics.bakeLossRange);
-      var mid = (fin.min + fin.max) / 2;
-      state.calibrations.push({
-        recipeId: state.selectedRecipeId,
-        machineId: state.selectedMachineId,
-        targetFlourG: state.targetFlourG,
-        actualFinishedWeightG: w,
-        peakFillPercent: isFinite(f) ? f : null,
-        predictedMid: mid,
-        timestamp: new Date().toISOString()
-      });
-      persist();
-      $("#calib-status").textContent = "Сохранено. Следующий прогноз для этого рецепта будет с поправкой.";
-      renderWorkspace();
-      toast("Калибровка сохранена");
-    });
-
+  function bindIOEvents() {
     $("#btn-export").addEventListener("click", exportJSON);
     $("#btn-import").addEventListener("click", function () { $("#import-file").click(); });
     $("#import-file").addEventListener("change", function (e) {
@@ -4399,6 +4677,41 @@
       if (f) importJSON(f);
       e.target.value = "";
     });
+  }
+
+  function bindGlobalKeyboard() {
+    document.addEventListener("keydown", function (e) {
+      if (!isCookOpen()) return;
+
+      if (e.key === "Escape") {
+        e.preventDefault();
+        closeCookMode();
+        return;
+      }
+
+      // Simple focus trap inside Cook Mode
+      if (e.key !== "Tab") return;
+      var nodes = cookFocusables();
+      if (nodes.length < 2) return;
+      var first = nodes[0];
+      var last = nodes[nodes.length - 1];
+      if (e.shiftKey && document.activeElement === first) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault();
+        first.focus();
+      }
+    });
+  }
+
+  function bindEvents() {
+    bindPantryEvents();
+    bindResultsEvents();
+    bindWorkspaceEvents();
+    bindCookEvents();
+    bindIOEvents();
+    bindGlobalKeyboard();
   }
 
   function init() {
@@ -4415,13 +4728,16 @@
     var debug = /[?&]debug=1/.test(location.search) || location.hash === "#debug";
     if (debug) runSelfTests();
 
-    // Expose for console debugging (optional)
     window.BreadLab = {
       DB: DB,
       state: state,
       scaleRecipe: scaleRecipe,
       matchRecipes: matchRecipes,
-      runSelfTests: runSelfTests
+      runSelfTests: runSelfTests,
+      isBreadLabImportPayload: isBreadLabImportPayload,
+      stopCookTimerInterval: stopCookTimerInterval,
+      closeCookMode: closeCookMode,
+      openCookMode: openCookMode
     };
   }
 
