@@ -940,6 +940,7 @@
     suggestedBakerPctRange: [5, 12], defaultPct: 8,
     role: "Хруст и ореховый вкус",
     effect: "Большое количество ослабляет клейковину.",
+    prep: "Крупно порубите орехи (фракция 3–6 мм), при желании слегка подсушите на сухой сковороде 2–3 минуты и остудите.",
     warnings: ["Крупные куски могут мешать подъёму"],
     placement: { panasonic: "raisinNutDispenser", redmond: "manual" },
     dry: true });
@@ -947,6 +948,7 @@
     suggestedBakerPctRange: [8, 20], defaultPct: 12,
     role: "Сладость и сочность",
     effect: "Предварительно обсушить; липкий изюм — риск залипания диспенсера.",
+    prep: "Промойте изюм, обсушите бумажным полотенцем. Если очень липкий — обваляйте в 1 ч. л. муки.",
     warnings: [],
     placement: { panasonic: "raisinNutDispenser", redmond: "manual" },
     dry: true });
@@ -954,6 +956,7 @@
     suggestedBakerPctRange: [5, 12], defaultPct: 8,
     role: "Хруст и вкус",
     effect: "Подсушить на сухой сковороде.",
+    prep: "Подсушите семечки на сухой сковороде 2–3 минуты до лёгкого аромата, остудите.",
     warnings: [],
     placement: { panasonic: "raisinNutDispenser", redmond: "manual" },
     dry: true });
@@ -961,6 +964,7 @@
     suggestedBakerPctRange: [2, 6], defaultPct: 3,
     role: "Аромат и посыпка",
     effect: "Можно частью посыпать верх перед выпечкой.",
+    prep: "При желании слегка обжарьте кунжут до золотистого оттенка и остудите.",
     warnings: [],
     placement: { panasonic: "raisinNutDispenser", redmond: "manual" },
     dry: true });
@@ -968,6 +972,7 @@
     suggestedBakerPctRange: [2, 8], defaultPct: 4,
     role: "Клетчатка и ореховый тон",
     effect: "Впитывает влагу — можно слегка увеличить воду.",
+    prep: "Используйте цельные или слегка дроблёные семена льна; предварительно замачивать не обязательно.",
     warnings: [],
     placement: { panasonic: "raisinNutDispenser", redmond: "manual" },
     dry: true });
@@ -975,6 +980,7 @@
     suggestedBakerPctRange: [0.3, 1], defaultPct: 0.6,
     role: "Травяной аромат",
     effect: "Сильный аромат — не переборщите.",
+    prep: "Разотрите сушёный розмарин пальцами, чтобы раскрыть аромат.",
     warnings: [],
     placement: { panasonic: "pan", redmond: "manual" },
     dry: true });
@@ -982,6 +988,7 @@
     suggestedBakerPctRange: [0.5, 1.5], defaultPct: 0.8,
     role: "Чесночный акцент",
     effect: "Хорошо сочетается с сыром и травами.",
+    prep: "Отмерьте сушёный чеснок; смешайте с сухими ингредиентами теста.",
     warnings: [],
     placement: { panasonic: "pan", redmond: "manual" },
     dry: true });
@@ -989,6 +996,7 @@
     suggestedBakerPctRange: [8, 20], defaultPct: 12,
     role: "Сырный вкус",
     effect: "Влажный — только в форму, не в диспенсер.",
+    prep: "Натрите сыр на крупной тёрке и слегка отожмите лишнюю влагу салфеткой.",
     warnings: ["Не класть в диспенсер добавок Panasonic"],
     placement: { panasonic: "pan", redmond: "manual" },
     dry: false });
@@ -996,6 +1004,7 @@
     suggestedBakerPctRange: [6, 15], defaultPct: 10,
     role: "Кисло-сладкий акцент",
     effect: "Обвалять в муке перед добавлением.",
+    prep: "Крупную клюкву разрежьте пополам, обсушите и обваляйте в 1 ч. л. муки.",
     warnings: [],
     placement: { panasonic: "raisinNutDispenser", redmond: "manual" },
     dry: true });
@@ -2536,6 +2545,60 @@
     });
   }
 
+
+  function buildAddinInstructionSteps(machineKey, scaled) {
+    var steps = [];
+    (scaled.addins || []).forEach(function (row, idx) {
+      var a = DB.tasteAddins[row.addinId];
+      if (!a) return;
+      var grams = formatGrams(row.ingredientId, row.grams) + " г";
+      var place = (a.placement && a.placement[machineKey]) || "manual";
+      var prep = a.prep || a.effect || "";
+      var whenWhere;
+      if (machineKey === "panasonic") {
+        if (place === "raisinNutDispenser") {
+          whenWhere = "Перед запуском программы засыпьте в диспенсер добавок (не в дрожжевой). Автомат внесёт их ближе к концу замеса.";
+        } else if (place === "pan") {
+          whenWhere = a.dry === false
+            ? "Положите прямо в чашу с основными ингредиентами (влажные/плавящиеся добавки — не в диспенсер)."
+            : "Добавьте в чашу вместе с сухими ингредиентами до старта программы.";
+        } else {
+          whenWhere = "Внесите вручную по сигналу программы или в конце замеса.";
+        }
+      } else {
+        if (place === "pan" || a.dry === false) {
+          whenWhere = a.dry === false
+            ? "Вмешайте в тесто в самом конце замеса, равномерно распределяя, затем уложите в чашу."
+            : "Добавьте к сухим ингредиентам при замесе или вмешайте в конце замеса перед расстойкой.";
+        } else {
+          whenWhere = "Вмешайте вручную в конце замеса (последние 1–2 минуты), затем сформируйте шар и уложите в чашу.";
+        }
+      }
+      var text = "Добавка по вкусу — " + a.name + " (" + grams + "). " +
+        (prep ? ("Подготовка: " + prep + " ") : "") +
+        whenWhere;
+      if (a.warnings && a.warnings.length) text += " Важно: " + a.warnings.join(" ");
+      steps.push({ id: "addin-" + row.addinId, text: text, isAddin: true });
+    });
+    return steps;
+  }
+
+  function getCookingSteps(recipe, machineKey, scaled) {
+    var base = (recipe.machineProfiles[machineKey] && recipe.machineProfiles[machineKey].steps) || [];
+    var addins = buildAddinInstructionSteps(machineKey, scaled);
+    if (!addins.length) return base.slice();
+    // Insert add-in steps after early prep (before program start): after first 2 steps, or before last 2
+    var insertAt = Math.min(2, Math.max(1, base.length - 2));
+    if (machineKey === "panasonic") {
+      // After loading basics — typically after step that mentions чашу / диспенсер yeast; use index 2
+      insertAt = Math.min(3, base.length);
+    } else {
+      // After liquid/yeast activation, before long proof — around step 2–3
+      insertAt = Math.min(3, Math.max(2, base.length - 3));
+    }
+    return base.slice(0, insertAt).concat(addins).concat(base.slice(insertAt));
+  }
+
   function fillStepText(text, scaled) {
     var map = {};
     (scaled.all || []).forEach(function (row) {
@@ -2551,11 +2614,13 @@
     var key = state.selectedMachineId === "panasonic_sd_yr2540hts" ? "panasonic" : "redmond";
     var mp = recipe.machineProfiles[key];
     var scaled = scaleRecipe(recipe, state.targetFlourG, enabledAddinList());
+    var steps = getCookingSteps(recipe, key, scaled);
     var ol = $("#steps-list");
     ol.textContent = "";
-    (mp.steps || []).forEach(function (s) {
+    steps.forEach(function (s) {
       var li = el("li", {});
       li.style.marginBottom = "0.55rem";
+      if (s.isAddin) li.style.color = "var(--green-dark)";
       li.textContent = fillStepText(s.text, scaled);
       ol.appendChild(li);
     });
@@ -2583,8 +2648,9 @@
     if (!recipe) return;
     var key = state.selectedMachineId === "panasonic_sd_yr2540hts" ? "panasonic" : "redmond";
     var mp = recipe.machineProfiles[key];
-    var steps = mp.steps || [];
-    var ckKey = recipe.id + "::" + state.selectedMachineId;
+    var scaledCook = scaleRecipe(recipe, state.targetFlourG, enabledAddinList());
+    var steps = getCookingSteps(recipe, key, scaledCook);
+    var ckKey = recipe.id + "::" + state.selectedMachineId + "::addins:" + enabledAddinList().sort().join(",");
     if (!state.checklist[ckKey]) state.checklist[ckKey] = {};
     state.cookStepIndex = 0;
     $("#cook-overlay").classList.remove("hidden");
@@ -2603,6 +2669,7 @@
     // timer select via cycling - store list on overlay
     $("#cook-overlay")._timers = timers;
     $("#cook-overlay")._ckKey = ckKey;
+    $("#cook-overlay")._steps = steps;
     renderCookSteps();
     tickTimers();
     if (!timerInterval) timerInterval = setInterval(tickTimers, 250);
@@ -2625,7 +2692,7 @@
   function renderCookSteps() {
     var recipe = currentRecipe();
     var key = state.selectedMachineId === "panasonic_sd_yr2540hts" ? "panasonic" : "redmond";
-    var steps = recipe.machineProfiles[key].steps || [];
+    var steps = $("#cook-overlay")._steps || recipe.machineProfiles[key].steps || [];
     var ckKey = $("#cook-overlay")._ckKey;
     var doneMap = state.checklist[ckKey] || {};
     var wrap = $("#cook-steps");
@@ -2933,7 +3000,7 @@
     $("#cook-next").addEventListener("click", function () {
       var recipe = currentRecipe();
       var key = state.selectedMachineId === "panasonic_sd_yr2540hts" ? "panasonic" : "redmond";
-      var steps = recipe.machineProfiles[key].steps || [];
+      var steps = $("#cook-overlay")._steps || recipe.machineProfiles[key].steps || [];
       var ckKey = $("#cook-overlay")._ckKey;
       var cur = steps[state.cookStepIndex];
       if (cur) {
