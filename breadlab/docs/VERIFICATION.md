@@ -48,11 +48,17 @@ cd breadlab && flutter analyze && flutter test
 
 Flutter в среде: официальный **stable 3.47.7** (не SIG fork). Для HAP нужен SIG.
 
-## Ручные сценарии (код готов)
+## Ручные сценарии
 
-- Навигация: Главная / Ингредиенты / Каталог / Рецепты / Настройки
-- Калькулятор, Cook Mode, калибровка — отдельные экраны
-- Persistence через `AppStorage` (JSON)
+Запуск `flutter run -d linux` в среде агента (DISPLAY=:1):
+
+- Главная: бренд BreadLab, техника Panasonic/REDMOND, badge «Автономно»
+- Каталог: «Все 35 технологических карт», фильтры, карточки p01+
+- Калькулятор: «Экспресс-батон», слайдер муки, KPI гидратация/тесто/буханка/объём/диспенсер, таблица ингредиентов с пекарскими %
+
+Скриншоты: `/opt/cursor/artifacts/screenshots/01-home.png`, `02-catalog.png`, `03-calculator.png`.
+
+На Linux desktop лог показал Impeller OpenGLES — это **не** подтверждение Impeller на HarmonyOS NEXT.
 
 ## Блокеры платформ
 

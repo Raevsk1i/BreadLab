@@ -49,28 +49,23 @@ class SoftCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final content = Container(
-      width: double.infinity,
+    final radius = BorderRadius.circular(14);
+    final padded = Padding(
       padding: padding ?? const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Theme.of(context).cardTheme.color ?? BreadLabColors.surface,
-        borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: BreadLabColors.border),
-        boxShadow: const [
-          BoxShadow(
-            color: Color(0x0F2C221E),
-            blurRadius: 24,
-            offset: Offset(0, 6),
-          ),
-        ],
-      ),
       child: child,
     );
-    if (onTap == null) return content;
-    return InkWell(
-      borderRadius: BorderRadius.circular(14),
-      onTap: onTap,
-      child: content,
+    return Material(
+      color: Theme.of(context).cardTheme.color ?? BreadLabColors.surface,
+      elevation: 1,
+      shadowColor: const Color(0x0F2C221E),
+      shape: RoundedRectangleBorder(
+        borderRadius: radius,
+        side: const BorderSide(color: BreadLabColors.border),
+      ),
+      clipBehavior: Clip.antiAlias,
+      child: onTap == null
+          ? padded
+          : InkWell(onTap: onTap, borderRadius: radius, child: padded),
     );
   }
 }
