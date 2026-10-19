@@ -1,0 +1,22 @@
+/* Guards for narrow WebView windows. Media queries from the original stay in layout.css and components.css so the cascade does not change. */
+.grid-2, .grid-3, .grid-kpi, .card, .hero-card, main, .app-header-inner {
+  min-width: 0;
+}
+
+/* WebKitGTK hides the contents of a closed <details> even when display:contents is set.
+   On wide windows the menu is a normal flex row; the summary stays a mobile-only control. */
+@media (min-width: 640px) {
+  #nav-menu {
+    display: flex;
+    align-items: center;
+  }
+  #nav-menu > summary {
+    display: none !important;
+  }
+  #nav-menu > .nav {
+    display: flex !important;
+  }
+}
+.scale-row, .header-actions, .toolbar, .cook-actions, .timer-box {
+  max-width: 100%;
+}

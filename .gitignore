@@ -2,3 +2,8 @@
 *.apk
 !BreadLab.apk
 *.hap
+
+node_modules/
+desktop-dist/
+src-tauri/target/
+src-tauri/gen/schemas/

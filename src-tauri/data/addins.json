@@ -1,0 +1,186 @@
+{
+  "walnut": {
+    "id": "walnut",
+    "ingredientId": "walnut",
+    "name": "Грецкий орех",
+    "category": "nut",
+    "suggestedBakerPctRange": [
+      5,
+      12
+    ],
+    "defaultPct": 8,
+    "role": "Хруст и ореховый вкус",
+    "effect": "Большое количество ослабляет клейковину.",
+    "prep": "Крупно порубите орехи (фракция 3–6 мм), при желании слегка подсушите на сухой сковороде 2–3 минуты и остудите.",
+    "warnings": [
+      "Крупные куски могут мешать подъёму"
+    ],
+    "placement": {
+      "panasonic": "raisinNutDispenser",
+      "redmond": "manual"
+    },
+    "dry": true
+  },
+  "raisin": {
+    "id": "raisin",
+    "ingredientId": "raisin",
+    "name": "Изюм",
+    "category": "other",
+    "suggestedBakerPctRange": [
+      8,
+      20
+    ],
+    "defaultPct": 12,
+    "role": "Сладость и сочность",
+    "effect": "Предварительно обсушить; липкий изюм — риск залипания диспенсера.",
+    "prep": "Промойте изюм, обсушите бумажным полотенцем. Если очень липкий — обваляйте в 1 ч. л. муки.",
+    "warnings": [],
+    "placement": {
+      "panasonic": "raisinNutDispenser",
+      "redmond": "manual"
+    },
+    "dry": true
+  },
+  "sunflower": {
+    "id": "sunflower",
+    "ingredientId": "sunflower",
+    "name": "Семечки подсолнечника",
+    "category": "seed",
+    "suggestedBakerPctRange": [
+      5,
+      12
+    ],
+    "defaultPct": 8,
+    "role": "Хруст и вкус",
+    "effect": "Подсушить на сухой сковороде.",
+    "prep": "Подсушите семечки на сухой сковороде 2–3 минуты до лёгкого аромата, остудите.",
+    "warnings": [],
+    "placement": {
+      "panasonic": "raisinNutDispenser",
+      "redmond": "manual"
+    },
+    "dry": true
+  },
+  "sesame": {
+    "id": "sesame",
+    "ingredientId": "sesame",
+    "name": "Кунжут",
+    "category": "seed",
+    "suggestedBakerPctRange": [
+      2,
+      6
+    ],
+    "defaultPct": 3,
+    "role": "Аромат и посыпка",
+    "effect": "Можно частью посыпать верх перед выпечкой.",
+    "prep": "При желании слегка обжарьте кунжут до золотистого оттенка и остудите.",
+    "warnings": [],
+    "placement": {
+      "panasonic": "raisinNutDispenser",
+      "redmond": "manual"
+    },
+    "dry": true
+  },
+  "flax": {
+    "id": "flax",
+    "ingredientId": "flax",
+    "name": "Семена льна",
+    "category": "seed",
+    "suggestedBakerPctRange": [
+      2,
+      8
+    ],
+    "defaultPct": 4,
+    "role": "Клетчатка и ореховый тон",
+    "effect": "Впитывает влагу — можно слегка увеличить воду.",
+    "prep": "Используйте цельные или слегка дроблёные семена льна; предварительно замачивать не обязательно.",
+    "warnings": [],
+    "placement": {
+      "panasonic": "raisinNutDispenser",
+      "redmond": "manual"
+    },
+    "dry": true
+  },
+  "rosemary": {
+    "id": "rosemary",
+    "ingredientId": "rosemary",
+    "name": "Розмарин сушёный",
+    "category": "spice",
+    "suggestedBakerPctRange": [
+      0.3,
+      1
+    ],
+    "defaultPct": 0.6,
+    "role": "Травяной аромат",
+    "effect": "Сильный аромат — не переборщите.",
+    "prep": "Разотрите сушёный розмарин пальцами, чтобы раскрыть аромат.",
+    "warnings": [],
+    "placement": {
+      "panasonic": "pan",
+      "redmond": "manual"
+    },
+    "dry": true
+  },
+  "garlic_add": {
+    "id": "garlic_add",
+    "ingredientId": "garlic_dry",
+    "name": "Чеснок сушёный дополнительно",
+    "category": "spice",
+    "suggestedBakerPctRange": [
+      0.5,
+      1.5
+    ],
+    "defaultPct": 0.8,
+    "role": "Чесночный акцент",
+    "effect": "Хорошо сочетается с сыром и травами.",
+    "prep": "Отмерьте сушёный чеснок; смешайте с сухими ингредиентами теста.",
+    "warnings": [],
+    "placement": {
+      "panasonic": "pan",
+      "redmond": "manual"
+    },
+    "dry": true
+  },
+  "cheese_add": {
+    "id": "cheese_add",
+    "ingredientId": "cheese",
+    "name": "Сыр (добавка)",
+    "category": "dairy",
+    "suggestedBakerPctRange": [
+      8,
+      20
+    ],
+    "defaultPct": 12,
+    "role": "Сырный вкус",
+    "effect": "Влажный — только в форму, не в диспенсер.",
+    "prep": "Натрите сыр на крупной тёрке и слегка отожмите лишнюю влагу салфеткой.",
+    "warnings": [
+      "Не класть в диспенсер добавок Panasonic"
+    ],
+    "placement": {
+      "panasonic": "pan",
+      "redmond": "manual"
+    },
+    "dry": false
+  },
+  "dried_cranberry": {
+    "id": "dried_cranberry",
+    "ingredientId": "dried_cranberry",
+    "name": "Клюква сушёная",
+    "category": "other",
+    "suggestedBakerPctRange": [
+      6,
+      15
+    ],
+    "defaultPct": 10,
+    "role": "Кисло-сладкий акцент",
+    "effect": "Обвалять в муке перед добавлением.",
+    "prep": "Крупную клюкву разрежьте пополам, обсушите и обваляйте в 1 ч. л. муки.",
+    "warnings": [],
+    "placement": {
+      "panasonic": "raisinNutDispenser",
+      "redmond": "manual"
+    },
+    "dry": true
+  }
+}

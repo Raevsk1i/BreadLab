@@ -1,0 +1,12 @@
+/* Print */
+    @media print {
+      .app-header, .header-actions, .nav, #pantry, #search-results,
+      .no-print, .toast-wrap, #debug-panel, .storage-banner,
+      .btn, .tabs, .presets, input[type="range"], .cook-overlay {
+        display: none !important;
+      }
+      body { background: #fff; }
+      #recipe-workspace { display: block !important; }
+      .card, .recipe-card { box-shadow: none; break-inside: avoid; }
+      a { color: #000; text-decoration: none; }
+    }
