@@ -1,0 +1,4 @@
+# Ignore accidental local APKs except the release installer
+*.apk
+!BreadLab.apk
+*.hap
