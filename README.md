@@ -40,7 +40,6 @@ flutter test
 
 Сервер не нужен. Мобильный runtime **не** использует HTML/WebView.
 
-Переэкспорт базы в Flutter assets:
 
 ```bash
 cd breadlab && node tool/export_db.mjs ../bread_lab.html
