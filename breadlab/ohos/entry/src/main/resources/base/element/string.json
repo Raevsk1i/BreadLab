@@ -1,0 +1,8 @@
+{
+  "string": [
+    { "name": "app_name", "value": "BreadLab" },
+    { "name": "module_desc", "value": "BreadLab HarmonyOS entry" },
+    { "name": "EntryAbility_desc", "value": "BreadLab" },
+    { "name": "EntryAbility_label", "value": "BreadLab" }
+  ]
+}

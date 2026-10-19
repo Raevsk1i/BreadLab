@@ -1,0 +1,17 @@
+{
+  "version": "1.0.0",
+  "alwaysAvailable": [
+    "water",
+    "water_extra",
+    "scald_water",
+    "potato_water",
+    "seed_mix",
+    "salt",
+    "sugar"
+  ],
+  "staples": [],
+  "recipeCount": 35,
+  "ingredientCount": 54,
+  "exportedFrom": "bread_lab.html",
+  "exportedAt": "2026-10-18T22:30:54.748Z"
+}
