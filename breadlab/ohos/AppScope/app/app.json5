@@ -1,0 +1,10 @@
+{
+  "app": {
+    "bundleName": "com.breadlab.app",
+    "vendor": "BreadLab",
+    "versionCode": 2,
+    "versionName": "0.0.2",
+    "icon": "$media:app_icon",
+    "label": "$string:app_name"
+  }
+}
