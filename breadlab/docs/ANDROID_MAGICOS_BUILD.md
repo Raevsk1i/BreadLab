@@ -21,7 +21,14 @@ flutter pub get
 flutter build apk --release
 ```
 
-Артефакт: `build/app/outputs/flutter-apk/app-release.apk`
+Артефакт сборки: `build/app/outputs/flutter-apk/app-release.apk`  
+Релиз для установки: корневой файл репозитория **`BreadLab.apk`** (версия из `pubspec.yaml`, тег `0.0.2`).
+
+Установка на Android / MagicOS / HarmonyOS (если устройство ставит Android APK):
+
+1. Скопируйте `BreadLab.apk` на телефон.
+2. Откройте файл и подтвердите установку.
+3. Запустите приложение **BreadLab** с рабочего стола (LAUNCHER intent уже в манифесте).
 
 Отладочная сборка:
 

@@ -2,9 +2,19 @@
 
 Автономное русскоязычное приложение для подбора и масштабирования рецептов хлеба под **Panasonic SD-YR2540HTS** и **REDMOND SkyCooker RMC-M92S**.
 
-## Мобильное приложение (Flutter)
+## Установка (Android / MagicOS / HarmonyOS с Android APK)
 
-Основная реализация — каталог [`breadlab/`](breadlab/):
+Релиз **0.0.2**: скачайте [`BreadLab.apk`](BreadLab.apk), установите на устройство и запустите **BreadLab** с рабочего стола.
+
+```bash
+# пересборка
+cd breadlab && flutter build apk --release
+cp build/app/outputs/flutter-apk/app-release.apk ../BreadLab.apk
+```
+
+## Исходники Flutter
+
+Каталог [`breadlab/`](breadlab/):
 
 ```bash
 cd breadlab
