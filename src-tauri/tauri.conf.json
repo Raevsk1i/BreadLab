@@ -1,0 +1,46 @@
+{
+  "$schema": "https://schema.tauri.app/config/2",
+  "productName": "BreadLab",
+  "version": "1.0.0",
+  "identifier": "app.breadlab.desktop",
+  "build": {
+    "frontendDist": "../desktop-dist",
+    "devUrl": "http://localhost:1420",
+    "beforeDevCommand": "npm run dev",
+    "beforeBuildCommand": "npm run build"
+  },
+  "app": {
+    "windows": [
+      {
+        "label": "main",
+        "title": "BreadLab — лаборатория хлеба",
+        "width": 1280,
+        "height": 800,
+        "minWidth": 390,
+        "minHeight": 640,
+        "resizable": true,
+        "fullscreen": false,
+        "center": true
+      }
+    ],
+    "security": {
+      "csp": "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: asset:; font-src 'self'; connect-src 'self' ipc: http://ipc.localhost"
+    }
+  },
+  "bundle": {
+    "active": true,
+    "targets": ["deb", "appimage", "nsis", "msi"],
+    "icon": [
+      "icons/32x32.png",
+      "icons/128x128.png",
+      "icons/128x128@2x.png",
+      "icons/icon.png",
+      "icons/icon.icns",
+      "icons/icon.ico"
+    ],
+    "shortDescription": "Лаборатория хлеба для Panasonic и REDMOND",
+    "longDescription": "Автономное настольное приложение BreadLab: подбор, масштабирование и приготовление хлеба без интернета.",
+    "category": "Utility",
+    "copyright": "BreadLab"
+  }
+}

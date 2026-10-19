@@ -1,0 +1,171 @@
+{
+  "version": "1.0.0",
+  "alwaysAvailable": [
+    "water",
+    "water_extra",
+    "scald_water",
+    "potato_water",
+    "seed_mix",
+    "salt",
+    "sugar"
+  ],
+  "staples": [],
+  "categories": [
+    {
+      "id": "all",
+      "name": "Все"
+    },
+    {
+      "id": "flour",
+      "name": "Мука"
+    },
+    {
+      "id": "yeast",
+      "name": "Дрожжи"
+    },
+    {
+      "id": "liquid",
+      "name": "Жидкости"
+    },
+    {
+      "id": "fat",
+      "name": "Масла"
+    },
+    {
+      "id": "sweetener",
+      "name": "Сладости"
+    },
+    {
+      "id": "dairy",
+      "name": "Молочное"
+    },
+    {
+      "id": "seed",
+      "name": "Семена"
+    },
+    {
+      "id": "nut",
+      "name": "Орехи"
+    },
+    {
+      "id": "spice",
+      "name": "Специи"
+    },
+    {
+      "id": "veg",
+      "name": "Овощи/зелень"
+    },
+    {
+      "id": "other",
+      "name": "Прочее"
+    }
+  ],
+  "catalogCategoryOrder": [
+    "Базовые",
+    "Европейские",
+    "Цельнозерновые",
+    "Смесовые",
+    "Ржаные",
+    "Добавки",
+    "Кисломолочные",
+    "Сладкие",
+    "Семена",
+    "Без дрожжей",
+    "Без глютена"
+  ],
+  "recipeCount": 35,
+  "ingredientCount": 54,
+  "recipeIds": [
+    "p01",
+    "p02",
+    "p03",
+    "p04",
+    "p05",
+    "p06",
+    "p07",
+    "p08",
+    "p09",
+    "p10",
+    "p11",
+    "p12",
+    "p13",
+    "p14",
+    "p15",
+    "p16",
+    "p17",
+    "p18",
+    "p19",
+    "p20",
+    "p21",
+    "p22",
+    "p23",
+    "p24",
+    "p25",
+    "p26",
+    "p27",
+    "p28",
+    "p29",
+    "p30",
+    "p31",
+    "p32",
+    "p33",
+    "p34",
+    "p35"
+  ],
+  "ingredientIds": [
+    "wheat_flour",
+    "ww_flour",
+    "rye_flour",
+    "corn_flour",
+    "water",
+    "milk",
+    "kefir",
+    "potato_water",
+    "scald_water",
+    "oil",
+    "olive_oil",
+    "butter",
+    "sugar",
+    "honey",
+    "salt",
+    "yeast",
+    "dry_milk",
+    "gluten",
+    "malt",
+    "coriander",
+    "caraway",
+    "vinegar",
+    "potato",
+    "cheese",
+    "onion_fried",
+    "garlic_dry",
+    "garlic_fresh",
+    "dill",
+    "parsley",
+    "eggs",
+    "vanilla",
+    "soda",
+    "seed_mix",
+    "oat_flour",
+    "buckwheat_flour",
+    "spelt_flour",
+    "bran",
+    "seven_grain",
+    "gf_mix",
+    "yogurt",
+    "olives",
+    "baking_powder",
+    "pumpkin_seeds",
+    "herbs_provence",
+    "malt_dry",
+    "yeast_gf",
+    "water_extra",
+    "walnut",
+    "raisin",
+    "sunflower",
+    "sesame",
+    "flax",
+    "rosemary",
+    "dried_cranberry"
+  ]
+}
