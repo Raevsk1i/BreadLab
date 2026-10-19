@@ -42,7 +42,7 @@ cd breadlab && flutter analyze && flutter test
 
 | Цель | Результат |
 |------|-----------|
-| Android APK release | **Успешно**: `build/app/outputs/flutter-apk/app-release.apk` (~52.1 MB), копия `dist/BreadLab-release.apk` |
+| Android APK release **0.0.2** | **Успешно**: корневой [`BreadLab.apk`](../../BreadLab.apk) (~52 MB), `versionName=0.0.2`, LAUNCHER activity. Для Android и HarmonyOS/MagicOS с поддержкой Android APK. |
 | HarmonyOS HAP | **Не собирался**: нет OpenHarmony SIG Flutter, DevEco Studio, OHOS SDK в среде. Каркас `ohos/` + инструкция `HARMONYOS_BUILD.md` |
 | Impeller | **Не подтверждён** для OHOS Engine в этой среде |
 
