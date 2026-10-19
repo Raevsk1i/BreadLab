@@ -1,0 +1,95 @@
+plugins {
+    id "com.android.application"
+}
+
+def keystoreProperties = new Properties()
+keystoreProperties.load(new FileInputStream(rootProject.file("keystore.properties")))
+
+android {
+    namespace "dev.breadlab.app"
+    compileSdk 34
+
+    defaultConfig {
+        minSdk 26
+        targetSdk 34
+        versionCode 1
+        versionName "1.0.0"
+    }
+
+    flavorDimensions = ["platform"]
+    productFlavors {
+        androidApp {
+            dimension "platform"
+            applicationId "dev.breadlab.app"
+            manifestPlaceholders = [platformName: "android"]
+        }
+        harmony {
+            dimension "platform"
+            applicationId "dev.breadlab.harmony"
+            manifestPlaceholders = [platformName: "harmonyos"]
+        }
+    }
+
+    signingConfigs {
+        release {
+            storeFile rootProject.file(keystoreProperties["storeFile"])
+            storePassword keystoreProperties["storePassword"]
+            keyAlias keystoreProperties["keyAlias"]
+            keyPassword keystoreProperties["keyPassword"]
+            enableV1Signing true
+            enableV2Signing true
+            enableV3Signing true
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            signingConfig signingConfigs.release
+        }
+        debug {
+            signingConfig signingConfigs.release
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+
+    applicationVariants.configureEach { variant ->
+        def apkName = variant.flavorName == "harmony" ? "BreadLab-harmony.apk" : "BreadLab-android.apk"
+        variant.outputs.configureEach { output ->
+            output.outputFileName = apkName
+        }
+    }
+
+    lint {
+        abortOnError true
+    }
+}
+
+tasks.register("syncBreadLabHtml", Copy) {
+    from rootProject.file("../bread_lab.html")
+    into layout.projectDirectory.dir("src/main/assets")
+}
+
+tasks.named("preBuild").configure {
+    dependsOn tasks.named("syncBreadLabHtml")
+}
+
+tasks.register("copyReleaseApks", Copy) {
+    dependsOn "assembleAndroidAppRelease", "assembleHarmonyRelease"
+    from(layout.buildDirectory.file("outputs/apk/androidApp/release/BreadLab-android.apk"))
+    from(layout.buildDirectory.file("outputs/apk/harmony/release/BreadLab-harmony.apk"))
+    into(rootProject.file("../dist"))
+}
+
+afterEvaluate {
+    tasks.named("assembleRelease").configure {
+        finalizedBy tasks.named("copyReleaseApks")
+    }
+}
+
+dependencies {
+}

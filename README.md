@@ -22,6 +22,26 @@
 - KPI: гидратация, масса теста, пиковый объём, вес буханки, лимиты техники
 - «Добавить по вкусу», Cook Mode с таймерами, калибровка, экспорт/импорт JSON
 
+## Android и HarmonyOS
+
+Готовые пакеты лежат в `dist/`:
+
+- `BreadLab-android.apk` — Android 8.0 и новее (`dev.breadlab.app`)
+- `BreadLab-harmony.apk` — HarmonyOS 2, 3 и 4, где ставятся Android APK (`dev.breadlab.harmony`)
+
+Оба файла — это BreadLab в системном WebView: сервер и интернет не используются, рецепты и сохранения остаются на устройстве. Экспорт открывает системный диалог «Сохранить как», импорт — выбор JSON-файла. Кнопка «Назад» закрывает Cook Mode, а со стартового экрана выходит из приложения.
+
+HarmonyOS NEXT (пакеты HAP) эти APK не устанавливает: там нет Android-слоя. Файл `BreadLab-harmony.apk` рассчитан на HarmonyOS с совместимостью Android-приложений.
+
+Пересборка (нужны JDK 17+ и Android SDK, `compileSdk` 34):
+
+```bash
+cd android
+./gradlew :app:assembleRelease
+```
+
+Скрипт кладёт оба APK в `dist/`. Подпись релиза: `android/keystore/breadlab-release.jks`, пароли — в `android/keystore.properties`.
+
 ## Отладка
 
 Откройте `bread_lab.html?debug=1` — внизу страницы появятся встроенные self-tests.

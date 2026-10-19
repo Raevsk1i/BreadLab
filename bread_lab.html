@@ -4997,7 +4997,14 @@
         largeSteps: state.largeSteps
       }
     };
-    var blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
+    var json = JSON.stringify(payload, null, 2);
+    if (window.BreadLabNative && typeof window.BreadLabNative.saveTextFile === "function") {
+      try {
+        window.BreadLabNative.saveTextFile("breadlab-export.json", json);
+        return;
+      } catch (e) { /* браузерный скачиватель ниже */ }
+    }
+    var blob = new Blob([json], { type: "application/json" });
     var a = document.createElement("a");
     a.href = URL.createObjectURL(blob);
     a.download = "breadlab-export.json";
@@ -5082,6 +5089,13 @@
   }
 
   function fallbackCopy(text) {
+    if (window.BreadLabNative && typeof window.BreadLabNative.copyText === "function") {
+      try {
+        window.BreadLabNative.copyText(text);
+        toast("Скопировано", "ok");
+        return;
+      } catch (e) { /* execCommand ниже */ }
+    }
     var ta = el("textarea", {});
     ta.value = text;
     document.body.appendChild(ta);
